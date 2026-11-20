@@ -93,8 +93,11 @@
       partnership: 'Thanks — your enquiry has been received. Our team will get in touch.',
       testimonial: 'Thank you for sharing your story. We will contact you before publishing anything.',
       guide: 'Thanks! Your guide is ready.' };
-    form.querySelector('.form-status').textContent = msg[form.dataset.form] || msg.partnership;
-    if (form.dataset.form !== 'guide') form.reset();
+    const data = new URLSearchParams(new FormData(form));
+    data.append('form', form.dataset.form || 'enquiry'); data.append('page', location.pathname);
+    const btn = form.querySelector('button[type=submit]'); if (btn) btn.disabled = true;
+    const done = () => { form.querySelector('.form-status').textContent = msg[form.dataset.form] || msg.partnership; if (btn) btn.disabled = false; if (form.dataset.form !== 'guide') form.reset(); };
+    if (window.MUM_FORM_URL) fetch(window.MUM_FORM_URL, { method: 'POST', mode: 'no-cors', body: data }).then(done, done); else done();
   }));
 
   // Filters + typo-tolerant search (schools and universities)
