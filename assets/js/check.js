@@ -148,13 +148,13 @@
   const track = () => A.stream === 'pcmb' ? 'pcmb' : (A.stream === 'comm' || A.stream === 'com') ? 'com' : A.stream || 'und';
   const studyStream = () => (A.cls === '9' || A.cls === '10') ? null : A.stream;
 
-  function scores() {
+  function scores(base) {
     const sc = {}, mx = {};
     TR[track()].forEach(([, w], i) => { const v = A.cards[i]; if (v == null) return; for (const k in w) { sc[k] = (sc[k] || 0) + w[k] * v; mx[k] = (mx[k] || 0) + w[k] * 2; } });
     const prim = new Set(); TR[track()].forEach(([, w]) => { for (const k in w) if (w[k] >= 1) prim.add(k); });
     const out = Object.keys(mx).map(k => ({ k, raw: sc[k], s: sc[k] / (mx[k] + 1) * (prim.has(k) ? 1 : .7) }));
-    if (A.tie) out.forEach(o => { if (o.k === A.tie) o.s += .15; });
-    if (A.exams) out.forEach(o => { if (blocked(o.k)) o.s -= .12; });
+    if (A.tie && !base) out.forEach(o => { if (o.k === A.tie) o.s += .15; });
+    if (A.exams && !base) out.forEach(o => { if (blocked(o.k)) o.s -= .12; });
     const st = studyStream(); if (st) out.forEach(o => { if (!CL[o.k].co.some(c => c.st.includes(st))) o.s -= .2; });
     return out.sort((a, b) => b.s - a.s || b.raw - a.raw);
   }
@@ -164,7 +164,7 @@
   function steps() {
     const s = ['cls', 'stream', 'cards'];
     if (A.cards.length === 10) {
-      const top = scores().filter(o => o.raw > 0).slice(0, 2);
+      const top = scores(true).filter(o => o.raw > 0).slice(0, 2);
       top.forEach(o => { if (CL[o.k].dq) s.push('deep:' + o.k); });
       if (top.length === 2 && top[0].s - top[1].s < .1) s.push('tie');
       s.push('years', 'exams', 'where', 'gate');
@@ -207,7 +207,7 @@
       return one(id, dq.q, `Because <strong>${CL[k].n.toLowerCase()}</strong> is one of your top matches.`, dq.o.map((o, i) => [String(i), o[0]]), A.deep[k], v => { A.deep[k] = v; });
     }
     if (id === 'tie') {
-      const [a, b] = scores();
+      const [a, b] = scores(true);
       return one(id, 'If you had to choose one for the next five years…', 'These two are neck and neck for you.', [[a.k, CL[a.k].n, CL[a.k].c], [b.k, CL[b.k].n, CL[b.k].c]], A.tie, v => { A.tie = v; });
     }
     if (id === 'years') return one(id, 'How long are you happy to study after Class 12?', '', [['3', 'About 3 years'], ['4', 'About 4 years'], ['5', '5 years or more is fine'], ['ns', 'Not sure yet']], A.years, v => { A.years = v; });
