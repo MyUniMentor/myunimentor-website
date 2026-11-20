@@ -1262,3 +1262,36 @@ input, select, textarea { background-color: #fff; color: var(--ink); }
 .press-head { margin: 0; color: var(--ink); font-weight: 600; line-height: 1.4; }
 @media (max-width: 760px) { .hs-a .press-list { --hs-w: 80%; } }
 .pf-social { display: flex; gap: 1.2rem; margin-top: 1.2rem; } .pf-social a { color: var(--cyan-hi); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+/* ===== v14: softer surfaces — no large areas of pure white ===== */
+:root {
+  --paper: #F3F7FA;            /* soft cool off-white for the page */
+  --paper-2: #EAF2F7;          /* slightly deeper band */
+  --card: #FFFFFF;             /* cards stay white so they lift off the page */
+  --glow-c: rgba(17,189,222,.10);
+  --glow-i: rgba(59,91,219,.07);
+}
+body { background: var(--paper); }
+.site-header { background: rgba(243,247,250,.9); }
+/* every light section gets a faint texture and two soft glows instead of flat white */
+.section:not(.tint):not(.summit):not(.fp-dark):not(.beliefs-band):not(.page-hero) {
+  background-color: var(--paper);
+  background-image: radial-gradient(60% 50% at 0% 0%, var(--glow-c), transparent 70%), radial-gradient(50% 45% at 100% 100%, var(--glow-i), transparent 70%), var(--noise);
+  background-blend-mode: normal, normal, soft-light;
+}
+.section:not(.tint):not(.summit):not(.fp-dark):not(.beliefs-band):nth-of-type(even) {
+  background-image: radial-gradient(55% 50% at 100% 0%, var(--glow-c), transparent 70%), radial-gradient(45% 45% at 0% 100%, var(--glow-i), transparent 70%), var(--noise);
+}
+.section.tint { background-color: var(--paper-2); }
+.journey, .delegates, .om-action, .press { background: linear-gradient(180deg, var(--paper), var(--paper-2)) !important; }
+.trust { background: radial-gradient(50% 60% at 0% 0%, rgba(17,189,222,.12), transparent 70%), radial-gradient(40% 50% at 100% 100%, var(--glow-i), transparent 70%), var(--paper) !important; }
+.faq { background-color: var(--paper) !important; background-image: radial-gradient(#D3E3EC 1px, transparent 1px) !important; background-size: 22px 22px !important; }
+.founder-band { background: linear-gradient(160deg, #EAF6FB 0%, #DCEFF7 100%) !important; }
+/* cards: crisp white with a soft shadow so they read clearly on the tinted page */
+.help-card, .pillars li, .org-card, .tcard, .post, .course-card a, .ex-body, .aside-card:not(.dark), .lor-carousel, .j-card, .faq .faq-list, .summit-sched li, .topic-list li, .area, .form-card, .facts div, .cred-list, .quiz {
+  background-color: var(--card);
+  box-shadow: 0 1px 2px rgba(14,37,64,.04), 0 18px 40px -30px rgba(14,37,64,.35);
+}
+.article { color: #3A4B5C; }
+.table-wrap tbody tr:nth-child(even) { background: #F5F9FB; }
+@media (prefers-reduced-transparency: reduce) { .site-header { background: var(--paper); } }
