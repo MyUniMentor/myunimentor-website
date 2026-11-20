@@ -1295,3 +1295,18 @@ body { background: var(--paper); }
 .article { color: #3A4B5C; }
 .table-wrap tbody tr:nth-child(even) { background: #F5F9FB; }
 @media (prefers-reduced-transparency: reduce) { .site-header { background: var(--paper); } }
+
+/* ===== v15: giant wordmark at the very end of the footer — faded, lights up under the cursor ===== */
+.site-footer { overflow: hidden; }
+.foot-mark { position: relative; text-align: center; margin: 2.2rem auto 0; padding: 0 1rem .06em; user-select: none; line-height: 1; }
+.foot-mark span { position: relative; display: inline-block; font-family: var(--f-display); font-weight: 800; letter-spacing: -.045em; font-size: clamp(2.6rem, 14.2vw, 12rem); color: #1B3247; transition: color .5s ease; }
+.foot-mark span::after { content: attr(data-t); position: absolute; inset: 0; color: transparent;
+  background: linear-gradient(100deg, #7FE3F5 0%, #FFFFFF 45%, #9DB6FF 100%); -webkit-background-clip: text; background-clip: text;
+  -webkit-mask-image: radial-gradient(circle 15vw at var(--mx, 50%) var(--my, 50%), #000 0%, rgba(0,0,0,.35) 45%, transparent 75%);
+          mask-image: radial-gradient(circle 15vw at var(--mx, 50%) var(--my, 50%), #000 0%, rgba(0,0,0,.35) 45%, transparent 75%);
+  opacity: 0; transition: opacity .45s ease; }
+.foot-mark:hover span { color: #26445F; }
+.foot-mark:hover span::after { opacity: 1; }
+@media (hover: none) { .foot-mark span { color: #22405A; } }
+@media (prefers-reduced-motion: reduce) { .foot-mark span, .foot-mark span::after { transition: none; } }
+@media (max-width: 760px) { .foot-mark { margin-bottom: 4.6rem; } }

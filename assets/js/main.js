@@ -460,3 +460,13 @@ function autoplay(el, tick, ms = 3800) {
     if (hit) { hit.classList.remove('glow-hit'); void hit.offsetWidth; hit.classList.add('glow-hit'); setTimeout(() => hit.classList.remove('glow-hit'), 750); }
   }, { passive: true });
 })();
+
+/* footer wordmark: spotlight follows the cursor */
+(function () {
+  var m = document.querySelector('.foot-mark span'); if (!m) return;
+  m.parentNode.addEventListener('pointermove', function (e) {
+    var r = m.getBoundingClientRect();
+    m.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    m.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+})();
