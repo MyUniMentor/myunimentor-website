@@ -83,7 +83,7 @@
     });
   });
   if (location.hash === '#partner') { const t = document.getElementById('t-f2'); if (t) select(t); }
-  $$('[data-tab="partner"]').forEach(a => { if (a.getAttribute('href') === 'contact.html') a.setAttribute('href', 'contact.html#partner'); });
+  $$('[data-tab="partner"]').forEach(a => { const h = a.getAttribute('href'); if (h === 'contact.html' || h === '/contact') a.setAttribute('href', h + '#partner'); });
 
   // Lead forms — connected to email, Google Sheet and WhatsApp alerts at launch
   $$('.lead-form').forEach(form => form.addEventListener('submit', e => {
@@ -262,21 +262,21 @@
     }).join('');
     const tips = [];
     if (ans.cls === '10') tips.push(`You are choosing your stream now — the most important step. Your answers point towards <strong>${SUGGEST_STREAM[ranked[0]]}</strong>.`);
-    if (ans.cls === 'p12') tips.push('Some 2027 entrance registrations may already be closed. Check the <a href="exam-calendar.html">exam calendar</a> and ask us about direct-admission options.');
+    if (ans.cls === 'p12') tips.push('Some 2027 entrance registrations may already be closed. Check the <a href="/exam-calendar">exam calendar</a> and ask us about direct-admission options.');
     if (ans.budget === 'lt3') tips.push('Aim for government and central universities through JEE, NEET and CUET — their fees are far lower. Merit scholarships at private universities can help too.');
     if (ans.budget === '3to8') tips.push('Many good private universities fall in this range, and scholarships based on Class 12 marks or entrance scores can lower fees further.');
     if (ans.budget === '8to15' || ans.budget === 'gt15') tips.push('You have wide options. Compare placements, faculty and recognition — not just the brand.');
-    if (ans.where === 'near') tips.push('Uttarakhand and nearby states have strong options. See our <a href="network.html#universities">29 partner universities</a>.');
+    if (ans.where === 'near') tips.push('Uttarakhand and nearby states have strong options. See our <a href="/network#universities">29 partner universities</a>.');
     if (ans.where === 'abroad' || (ans.prio || []).includes('abroad')) tips.push('If you want to study or work abroad later, plan early for English tests like IELTS or TOEFL and build a strong profile from Class 11.');
     if (ans.years === '3' && ranked.some(k => ['health', 'law'].includes(k))) tips.push('Some courses in your results take 4–5 years or more. A counsellor can show you shorter routes into the same field.');
     if ((ans.prio || []).includes('secure')) tips.push('Government jobs through UPSC, state PSCs, SSC and banking are open to graduates of any stream.');
-    tips.push('Use the <a href="free-guide.html">free Class 12 Decision Guide</a> to shortlist universities with a checklist.');
+    tips.push('Use the <a href="/free-guide">free Class 12 Decision Guide</a> to shortlist universities with a checklist.');
     stage.innerHTML = `<div class="result"><p class="res-k">Your results</p><h2>Your best-fit career areas</h2>
       <p class="muted">Based on your answers as a ${ans.cls === 'p12' ? 'student who has passed Class 12' : 'Class ' + ans.cls + ' student'} in ${STREAM_NAME[ans.stream]}.</p>
       <div class="areas">${cards}</div>
       <div class="tips"><h3>Tips for you</h3><ul>${tips.map(t => `<li>${t}</li>`).join('')}</ul></div>
       <div class="result-cta"><p><strong>This is a starting point, not a final answer.</strong> A counsellor will look at your marks, strengths and budget and build your actual plan.</p>
-      <div class="hero-actions"><a href="contact.html" class="btn btn-cyan btn-lg">Get my plan — book free counselling</a><button type="button" class="btn btn-outline" data-restart>Start again</button></div>
+      <div class="hero-actions"><a href="/contact" class="btn btn-cyan btn-lg">Get my plan — book free counselling</a><button type="button" class="btn btn-outline" data-restart>Start again</button></div>
       </div></div>`;
     quiz.querySelector('.quiz-nav').hidden = true; quiz.querySelector('.quiz-top').hidden = true;
     stage.querySelector('[data-restart]').addEventListener('click', () => { for (const k in ans) delete ans[k]; i = 0; quiz.querySelector('.quiz-nav').hidden = false; quiz.querySelector('.quiz-top').hidden = false; render(); quiz.scrollIntoView({ behavior: 'smooth' }); });
