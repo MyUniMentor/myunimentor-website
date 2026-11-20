@@ -1,0 +1,80 @@
+[
+ {
+  "name": "Allaya Gupta",
+  "role": "BBA (Finance and Marketing Analytics)",
+  "org": "Christ University, Yeshwanthpur",
+  "quote": "MyUniMentor helped me fill in my university application forms and guided me towards the options that were best for me. I'm really thankful for their support.",
+  "photo": "allaya-gupta.webp",
+  "pw": 520,
+  "ph": 650
+ },
+ {
+  "name": "Kanan Gupta",
+  "role": "B.Des (Interior Design)",
+  "org": "UPES, Bidholi",
+  "quote": "MyUniMentor exceeded my expectations with their expert guidance and support. Their counsellors took me through every step and made the whole process smooth. I highly recommend them to any student looking for top-notch college application support. Five stars aren't enough!",
+  "photo": "kanan-gupta.webp",
+  "pw": 386,
+  "ph": 496
+ },
+ {
+  "name": "Lagan Goyal",
+  "role": "B.Com (Hons)",
+  "org": "Graphic Era Deemed to be University, Dehradun",
+  "quote": "I had a great experience with MyUniMentor. The team is supportive and professional, and gave me clear guidance throughout the admission process. Highly recommended for any student looking for reliable admission guidance!",
+  "photo": "lagan-goyal.webp",
+  "pw": 600,
+  "ph": 804
+ },
+ {
+  "name": "Samriddhi Mishra",
+  "role": "B.Sc in Data Science and Applications",
+  "org": "IIT Madras",
+  "quote": "Great counsellors who are always there for students when they need them. MyUniMentor is a genuine platform you can trust.",
+  "photo": "samriddhi-mishra.webp",
+  "pw": 301,
+  "ph": 301
+ },
+ {
+  "name": "Poshak Chaudhary",
+  "role": "BA (English and History)",
+  "org": "Maharaja Agrasen College, University of Delhi",
+  "quote": "I've been in touch with Om Sir for a long time. He helped me understand my interests and guided me all the way to getting into Delhi University.",
+  "photo": "poshak-chaudhary.webp",
+  "pw": 640,
+  "ph": 800
+ },
+ {
+  "name": "Jahan Ahluwalia",
+  "role": "B.Tech (Electronics)",
+  "org": "IIT Gandhinagar",
+  "quote": "Truly the best of both worlds. MyUniMentor helped me a lot on my journey to securing a seat at the college I wanted. They're the best people to talk to and the best mentors for deciding your career. Truly the best in the business!"
+ },
+ {
+  "name": "Shreya Kanabar",
+  "role": "BBA LLB",
+  "org": "UPES, Dehradun",
+  "quote": "Om Sir helped me a lot in finding the right college and the perfect course for me.",
+  "photo": "shreya-kanabar.webp",
+  "pw": 640,
+  "ph": 800
+ },
+ {
+  "name": "Muskan Rawat",
+  "role": "BBA (HR)",
+  "org": "JB Institute of Technology, Rampur, Dehradun",
+  "quote": "I got great guidance through the whole admission process, from choosing the right college to completing my admission.",
+  "photo": "muskan-rawat.webp",
+  "pw": 640,
+  "ph": 800
+ },
+ {
+  "name": "Ridhima Singhal",
+  "role": "B.Tech (Computer Science and Engineering)",
+  "org": "Graphic Era Deemed to be University, Dehradun",
+  "quote": "It was a great experience with MyUniMentor. They really helped me choose the right university and guided me so well that I have no confusion now. I'm really thankful to them.",
+  "photo": "ridhima-singhal.webp",
+  "pw": 520,
+  "ph": 650
+ }
+]

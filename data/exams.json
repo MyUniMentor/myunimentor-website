@@ -1,0 +1,128 @@
+[
+ {
+  "exam": "CLAT 2027",
+  "for": "Law (BA LLB, BBA LLB) at National Law Universities",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2026-12-06",
+  "label": "6 Dec 2026",
+  "status": "confirmed",
+  "note": "Applications closed on 31 Oct 2026.",
+  "site": "https://consortiumofnlus.ac.in"
+ },
+ {
+  "exam": "NID DAT 2027 (Prelims)",
+  "for": "B.Des at National Institutes of Design",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2026-12-20",
+  "label": "20 Dec 2026",
+  "status": "confirmed",
+  "note": "Last date to apply: 30 Nov 2026.",
+  "site": "https://admissions.nid.edu"
+ },
+ {
+  "exam": "NIFT 2027",
+  "for": "B.Des and B.FTech at NIFT campuses",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2027-01-10",
+  "label": "10 Jan 2027",
+  "status": "tentative",
+  "note": "Marked tentative by NTA. Regular-fee deadline was 16 Nov 2026.",
+  "site": "https://exams.nta.nic.in/niftee"
+ },
+ {
+  "exam": "UCEED 2027",
+  "for": "B.Des at IIT Bombay, Delhi, Guwahati, Hyderabad, Indore, Roorkee and IIITDM Jabalpur",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2027-01-17",
+  "label": "17 Jan 2027",
+  "status": "confirmed",
+  "note": "9 am to 12 noon.",
+  "site": "https://www.uceed.iitb.ac.in"
+ },
+ {
+  "exam": "JEE Main 2027 (Session 1)",
+  "for": "B.Tech, B.Arch at NITs, IIITs and many private universities",
+  "streams": [
+   "pcm"
+  ],
+  "date": "2027-01-22",
+  "label": "22–24 & 28–30 Jan 2027",
+  "status": "confirmed",
+  "note": "31 Jan 2027 is a buffer date. Session 2 is expected in April 2027.",
+  "site": "https://jeemain.nta.nic.in"
+ },
+ {
+  "exam": "IPMAT Indore 2027",
+  "for": "Five-year Integrated Programme in Management at IIM Indore",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2027-04-24",
+  "label": "24 Apr 2027",
+  "status": "confirmed",
+  "note": "Afternoon shift. Registration dates awaited.",
+  "site": "https://www.iimidr.ac.in"
+ },
+ {
+  "exam": "NEET UG 2027",
+  "for": "MBBS, BDS, BAMS and other medical courses",
+  "streams": [
+   "pcb"
+  ],
+  "date": "2027-05-02",
+  "label": "Early May 2027",
+  "status": "expected",
+  "note": "Not announced yet. NEET is usually held on the first Sunday of May.",
+  "site": "https://neet.nta.nic.in"
+ },
+ {
+  "exam": "CUET UG 2027",
+  "for": "UG admission at central and many other universities",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2027-05-15",
+  "label": "May 2027",
+  "status": "expected",
+  "note": "Not announced yet. Registration is usually open in January–February.",
+  "site": "https://cuet.nta.nic.in"
+ },
+ {
+  "exam": "JEE Advanced 2027",
+  "for": "B.Tech at the IITs",
+  "streams": [
+   "pcm"
+  ],
+  "date": "2027-05-23",
+  "label": "23 May 2027",
+  "status": "confirmed",
+  "note": "Organised by IIT Delhi. Only top JEE Main candidates are eligible.",
+  "site": "https://jeeadv.ac.in"
+ }
+]

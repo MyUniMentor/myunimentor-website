@@ -1,0 +1,136 @@
+[
+ {
+  "name": "Alpine Public School",
+  "city": "Saharanpur",
+  "board": "CBSE",
+  "summit": {
+   "date": "2026-10-10",
+   "start": "11:15",
+   "end": "13:30"
+  }
+ },
+ {
+  "name": "Beverly Hills Shalini School",
+  "city": "Dehradun",
+  "board": "CBSE",
+  "reel": "https://www.instagram.com/p/De4Ob8Ku8E1/",
+  "summit": {
+   "date": "2026-10-16",
+   "start": "08:30",
+   "end": "11:00"
+  }
+ },
+ {
+  "name": "Brooklyn School",
+  "city": "Dehradun",
+  "board": "CISCE",
+  "summit": {
+   "date": "2026-10-15",
+   "start": "08:30",
+   "end": "11:00"
+  }
+ },
+ {
+  "name": "Brownwood Public School",
+  "city": "Saharanpur",
+  "board": "CBSE",
+  "note": "First MyUniMentor seminar, 9 Oct 2026",
+  "reel": "https://www.instagram.com/p/DfUbz4oRgXy/",
+  "summit": {
+   "date": "2026-10-09",
+   "start": "08:30",
+   "end": "11:00"
+  }
+ },
+ {
+  "name": "Carman School",
+  "city": "Dehradun",
+  "board": "CISCE",
+  "summit": {
+   "date": "2026-10-16",
+   "start": "11:00",
+   "end": "13:30",
+   "with": "The Indian Cambridge School"
+  }
+ },
+ {
+  "name": "Doon Cambridge School",
+  "city": "Dehradun",
+  "board": "CISCE",
+  "summit": {
+   "date": "2026-10-15",
+   "start": "11:15",
+   "end": "13:30"
+  }
+ },
+ {
+  "name": "Doon World School",
+  "city": "Dehradun",
+  "board": "CBSE",
+  "summit": {
+   "date": "2026-10-17",
+   "start": "08:30",
+   "end": "11:00"
+  }
+ },
+ {
+  "name": "Olympus High",
+  "city": "Dehradun",
+  "board": "CBSE",
+  "lor": {
+   "img": "assets/lors/olympus-high.webp",
+   "thumb": "assets/lors/olympus-high-thumb.webp",
+   "signed": "Principal / Management, Olympus High",
+   "quote": "We strongly recommend MyUniMentor to schools, educational institutions, and organizations seeking a trusted, efficient, and impactful career counseling and event management partner."
+  },
+  "reel": "https://www.instagram.com/p/DfHKSdvR50R/",
+  "summit": {
+   "date": "2026-10-14",
+   "start": "11:15",
+   "end": "13:30"
+  }
+ },
+ {
+  "name": "Pine Hall School",
+  "city": "Dehradun",
+  "board": "CISCE",
+  "summit": {
+   "date": "2026-10-13",
+   "start": "11:00",
+   "end": "13:30"
+  }
+ },
+ {
+  "name": "Saigrace Academy International",
+  "city": "Dehradun",
+  "board": "CBSE",
+  "reel": "https://www.instagram.com/p/De__vUIOIGQ/",
+  "summit": {
+   "date": "2026-10-17",
+   "start": "11:15",
+   "end": "13:30"
+  }
+ },
+ {
+  "name": "St. Mary's School",
+  "city": "Saharanpur",
+  "board": "CBSE",
+  "summit": {
+   "date": "2026-10-10",
+   "start": "08:30",
+   "end": "11:00"
+  }
+ },
+ {
+  "name": "The Indian Cambridge School",
+  "city": "Dehradun",
+  "board": "CISCE",
+  "summit": {
+   "date": "2026-10-16",
+   "start": "11:00",
+   "end": "13:30",
+   "with": "Carman School"
+  },
+  "no_reel": true
+ }
+]

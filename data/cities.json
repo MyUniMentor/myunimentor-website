@@ -1,0 +1,14 @@
+[
+ {"slug":"dehradun","city":"Dehradun","state":"Uttarakhand","status":"active",
+  "intro":"Dehradun is where MyUniMentor was founded and where most of our work happens — from free school seminars to the School Career Guidance Summit and one-on-one counselling.",
+  "local":"Dehradun is home to many universities, so students here have more options than most — and more reason to choose carefully."},
+ {"slug":"saharanpur","city":"Saharanpur","state":"Uttar Pradesh","status":"active",
+  "intro":"Saharanpur is where MyUniMentor ran its very first seminar — at Brownwood Public School on 9 October 2026 — and where three of our partner schools are.",
+  "local":"Students in Saharanpur are close to university hubs in Dehradun, Roorkee and the Delhi NCR, and we help them compare all of them clearly."},
+ {"slug":"roorkee","city":"Roorkee","state":"Uttarakhand","status":"next",
+  "intro":"Roorkee is one of the cities where we plan to bring school career guidance in 2027. Students in Roorkee can already book free one-on-one counselling with us today.",
+  "local":"Roorkee is home to several universities in our network, so local students can explore strong options close to home."},
+ {"slug":"rishikesh","city":"Rishikesh","state":"Uttarakhand","status":"next",
+  "intro":"Rishikesh is one of the cities where we plan to bring school career guidance in 2027. Students in Rishikesh can already book free one-on-one counselling with us today.",
+  "local":"Rishikesh is close to Dehradun's universities, and we help students and parents compare options across the region."}
+]

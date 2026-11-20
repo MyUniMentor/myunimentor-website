@@ -1,0 +1,156 @@
+[
+ {
+  "name": "Amity University",
+  "city": "Mohali",
+  "region": "Punjab & Chandigarh"
+ },
+ {
+  "name": "Bennett University",
+  "city": "Greater Noida",
+  "region": "Uttar Pradesh"
+ },
+ {
+  "name": "BF Institute of Technology",
+  "city": "Dehradun",
+  "region": "Uttarakhand",
+  "short": "BFIT"
+ },
+ {
+  "name": "CGC University",
+  "city": "Landran",
+  "region": "Punjab & Chandigarh",
+  "short": "CGC"
+ },
+ {
+  "name": "Chandigarh University",
+  "city": "Chandigarh",
+  "region": "Punjab & Chandigarh"
+ },
+ {
+  "name": "Chitkara University",
+  "city": "Chandigarh",
+  "region": "Punjab & Chandigarh"
+ },
+ {
+  "name": "COER University",
+  "city": "Roorkee",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Dev Bhoomi Uttarakhand University",
+  "short": "DBUU",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "DIT University",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Geeta University",
+  "city": "Panipat",
+  "region": "Haryana"
+ },
+ {
+  "name": "Graphic Era University",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Haridwar University",
+  "city": "Roorkee",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Himalayan Institute of Technology",
+  "city": "Dehradun",
+  "region": "Uttarakhand",
+  "short": "HIT"
+ },
+ {
+  "name": "IILM University",
+  "city": "Greater Noida",
+  "region": "Uttar Pradesh"
+ },
+ {
+  "name": "IMS Unison University",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Jaypee University of Information Technology",
+  "short": "JUIT",
+  "city": "Solan",
+  "region": "Other states"
+ },
+ {
+  "name": "Lovely Professional University",
+  "short": "LPU",
+  "city": "Phagwara",
+  "region": "Punjab & Chandigarh"
+ },
+ {
+  "name": "Maharishi Markandeshwar University",
+  "city": "Ambala",
+  "region": "Haryana"
+ },
+ {
+  "name": "Maya Devi University",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "MIT World Peace University",
+  "short": "MIT-WPU",
+  "city": "Pune",
+  "region": "Other states"
+ },
+ {
+  "name": "O.P. Jindal Global University",
+  "city": "Sonipat",
+  "region": "Haryana"
+ },
+ {
+  "name": "Phonics University",
+  "city": "Roorkee",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Quantum University",
+  "city": "Roorkee",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Roorkee Institute of Technology",
+  "short": "RIT",
+  "city": "Roorkee",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Sharda University",
+  "city": "Greater Noida",
+  "region": "Uttar Pradesh"
+ },
+ {
+  "name": "Siddhartha Group of Institutions",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Swami Rama Himalayan University",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "Tulas University",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
+ },
+ {
+  "name": "University of Petroleum and Energy Studies",
+  "city": "Dehradun",
+  "region": "Uttarakhand",
+  "short": "UPES"
+ }
+]
