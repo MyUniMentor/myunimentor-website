@@ -1,5 +1,20 @@
 [
  {
+  "exam": "CHRIST University Entrance Test 2027",
+  "for": "UG programmes at CHRIST (Deemed to be University)",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2026-12-05",
+  "label": "5 Dec 2026",
+  "status": "confirmed",
+  "note": "Online test. Apply by 25 Nov 2026 (5 pm) for entrance-test programmes. Skill assessment and interviews: 11–13 Dec 2026.",
+  "site": "https://christuniversity.in/admission/ugpg-selection-process-dates-2027"
+ },
+ {
   "exam": "CLAT 2027",
   "for": "Law (BA LLB, BBA LLB) at National Law Universities",
   "streams": [
