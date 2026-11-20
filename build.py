@@ -1061,11 +1061,11 @@ def build_profile():
 <section class="section"><div class="wrap split-grid">
   <div data-reveal><h2>Education and certifications</h2></div>
   <ul class="cred-list" data-reveal style="--d:1">
-    <li><strong>Olympus High, Dehradun</strong><span>School alumnus</span></li>
-    <li><strong>Sridev Suman Uttarakhand University</strong><span>BBA graduate</span></li>
-    <li><strong>Vanderbilt University</strong><span>Certification in applied AI</span></li>
-    <li><strong>IBM</strong><span>Certification in applied AI</span></li>
-    <li><strong>Lund University</strong><span>Certification in applied AI</span></li>
+    <li class="cr-school"><i aria-hidden="true"></i><strong>Olympus High, Dehradun</strong><span>School alumnus</span></li>
+    <li class="cr-uni"><i aria-hidden="true"></i><strong>Sridev Suman Uttarakhand University</strong><span>BBA graduate</span></li>
+    <li class="cr-cert"><i aria-hidden="true"></i><strong>Vanderbilt University</strong><span>Certification in applied AI</span></li>
+    <li class="cr-cert"><i aria-hidden="true"></i><strong>IBM</strong><span>Certification in applied AI</span></li>
+    <li class="cr-cert"><i aria-hidden="true"></i><strong>Lund University</strong><span>Certification in applied AI</span></li>
   </ul>
 </div></section>
 <section class="section tint"><div class="wrap split-grid">

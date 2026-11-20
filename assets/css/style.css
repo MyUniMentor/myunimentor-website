@@ -1310,3 +1310,23 @@ body { background: var(--paper); }
 @media (hover: none) { .foot-mark span { color: #22405A; } }
 @media (prefers-reduced-motion: reduce) { .foot-mark span, .foot-mark span::after { transition: none; } }
 @media (max-width: 760px) { .foot-mark { margin-bottom: 4.6rem; } }
+
+/* ===== v16: education & certifications as a proper card ===== */
+.cred-list { list-style: none; margin: 0; padding: .6rem 1.6rem; border-radius: 22px; border: 1px solid #E1EBF2; }
+.cred-list li { display: grid; grid-template-columns: 2.6rem 1fr auto; align-items: center; gap: 1rem; padding: 1.05rem 0; border-bottom: 1px solid #E8F0F5; }
+.cred-list li:first-child { border-top: 0; }
+.cred-list li:last-child { border-bottom: 0; }
+.cred-list strong { color: var(--ink); font-weight: 700; }
+.cred-list span { justify-self: end; font-size: .86rem; font-weight: 600; padding: .32rem .8rem; border-radius: 99px; background: #EAF7FB; color: #0B6F86; white-space: nowrap; }
+.cred-list i { width: 2.6rem; height: 2.6rem; border-radius: 12px; display: grid; place-items: center; background: #EAF7FB; }
+.cred-list i::before { content: ""; width: 1.25rem; height: 1.25rem; background: #0E9CB8; -webkit-mask: var(--ic) center/contain no-repeat; mask: var(--ic) center/contain no-repeat; }
+.cred-list .cr-school i::before { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3 1 9l11 6 9-4.9V17h2V9L12 3zm-7 9.2v4L12 20l7-3.8v-4L12 16l-7-3.8z'/%3E%3C/svg%3E"); }
+.cred-list .cr-uni i::before { --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2 2 7v2h20V7L12 2zM4 11v7h3v-7H4zm6.5 0v7h3v-7h-3zM17 11v7h3v-7h-3zM2 20v2h20v-2H2z'/%3E%3C/svg%3E"); }
+.cred-list .cr-cert i { background: #EEF1FF; }
+.cred-list .cr-cert i::before { background: #4F5FD8; --ic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1a7 7 0 0 0-4 12.74V23l4-2 4 2v-9.26A7 7 0 0 0 12 1zm0 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2.2-1 2-2.2.3 1.6 1.6-.4 2.2 2-1 2 1-.4-2.2 1.6-1.6-2.2-.3-1-2z'/%3E%3C/svg%3E"); }
+.cred-list .cr-cert span { background: #EEF1FF; color: #3F4DBF; }
+@media (max-width: 560px) {
+  .cred-list { padding: .4rem 1.1rem; }
+  .cred-list li { grid-template-columns: 2.4rem 1fr; row-gap: .4rem; }
+  .cred-list span { grid-column: 2; justify-self: start; }
+}
