@@ -205,7 +205,18 @@ import hashlib, rcssmin, rjsmin
 _css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read()
 VER = hashlib.md5((_css + _js).encode()).hexdigest()[:8]
 open(os.path.join(ROOT, 'assets/css/style.min.css'), 'w').write(rcssmin.cssmin(_css))
-open(os.path.join(ROOT, 'assets/js/main.min.js'), 'w').write(rjsmin.jsmin(_js))
+FORM_URL = 'https://script.google.com/macros/s/AKfycbwcvPVe57-G-AyYdHVcCyGneK9waUp5nRnvPbH8xneLtcKcp0AnnB0sjrx2DaRnrbZ4kw/exec'   # Google Apps Script web app URL for the lead forms
+open(os.path.join(ROOT, 'assets/js/main.min.js'), 'w').write((f"window.MUM_FORM_URL='{FORM_URL}';" if FORM_URL else '') + rjsmin.jsmin(_js))
+
+CLEAN_URLS = os.environ.get('CLEAN_URLS', '1') == '1'   # 1 = /about style links (GitHub Pages); 0 = about.html (local preview)
+
+def clean_urls(h):
+    if not CLEAN_URLS: return h
+    h = re.sub(r'(href|data-href)="index\.html(#[^"]*)?"', lambda m: f'{m.group(1)}="/{m.group(2) or ""}"', h)
+    h = re.sub(r'(href)="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'{m.group(1)}="/{m.group(2)}{m.group(3) or ""}"', h)
+    h = re.sub(r'((?:src|href|data-src|srcset|content)=")assets/', r'\1/assets/', h)
+    h = re.sub(r'(href=")(favicon\.(?:ico|svg)|site\.webmanifest)"', r'\1/\2"', h)
+    return h
 
 def slim_html(h):
     h = re.sub(r'\n[ \t]+', '\n', h)
@@ -222,10 +233,14 @@ def page(fname, title, desc, active, body, schema=''):
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
 <meta property="og:type" content="website"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
-<meta property="og:image" content="https://myunimentor.in/assets/img/og-image.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image" content="https://myunimentor.in/assets/img/og-image.jpg"><meta property="og:image:secure_url" content="https://myunimentor.in/assets/img/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="MyUniMentor: Right Guidance. Right Fit. Right University.">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:site_name" content="MyUniMentor"><meta property="og:locale" content="en_IN"><meta property="og:url" content="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="https://myunimentor.in/assets/img/og-image.jpg">
 <link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-192.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png"><link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#0E2540">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -245,7 +260,7 @@ def page(fname, title, desc, active, body, schema=''):
 </body>
 </html>
 '''
-    open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(doc.replace('{VER}', VER)))
+    open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER))))
 
 ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for Class 11–12 students in India, based in Dehradun, Uttarakhand.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
 
