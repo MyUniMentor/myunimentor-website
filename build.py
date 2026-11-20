@@ -38,7 +38,7 @@ def rays_svg(n=23, color='%2311BDDE'):
     return ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 640' preserveAspectRatio='xMidYMax slice'%3E"
             f"%3Cpath d='{' '.join(lines)}' stroke='{color}' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E")
 
-SHOW_CAREER_CHECK = False   # flip to True when the new career check is ready
+SHOW_CAREER_CHECK = True   # adaptive career check, live since 20 Nov 2026
 SHOW_GUIDE = False          # flip to True when the Class 12 guide is ready
 SHOW_LEGAL = False          # flip to True after the lawyer reviews Privacy Policy and Terms
 
@@ -57,7 +57,7 @@ NAV = [
         ('Testimonials', 'testimonials.html', 'Students, parents and schools')]),
     ('Resources', 'exam-calendar.html', [
         ('Exam calendar 2027', 'exam-calendar.html', 'JEE, NEET, CUET, CLAT and more'),
-        ('Free career check', 'career-check.html', '12 questions, about 3 minutes'),
+        ('Free career check', 'career-check.html', 'About 4 minutes, built around your stream'),
         ('Free Class 12 guide', 'free-guide.html', 'Download the PDF'),
         ('Course guides', 'courses.html', 'BBA, B.Tech, Law, Design and more'),
         ('Blog', 'blog.html', 'Guides and articles')]),
@@ -161,8 +161,8 @@ META = {
 "Call or WhatsApp +91 74175 57070 or email info@myunimentor.in to book free 1-on-1 counselling, a free school seminar or a university partnership."
 ],
 "career-check.html": [
-"Free Career Test for Class 10–12 | MyUniMentor",
-"A free 3-minute career check: answer 12 questions on your stream, interests and priorities and see the courses, exams and careers that fit you."
+"Free Career Test for Class 9–12 | MyUniMentor",
+"A free 4-minute career check for Class 9–12. Questions change with your stream and answers, then show the careers, courses and entrance exams that fit you."
 ],
 "exam-calendar.html": [
 "Entrance Exam Calendar 2027: JEE, NEET, CUET, CLAT",
@@ -203,8 +203,10 @@ META = {
 }
 
 import hashlib, rcssmin, rjsmin
-_css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read()
-VER = hashlib.md5((_css + _js).encode()).hexdigest()[:8]
+_css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read(); _cjs = open(os.path.join(ROOT, 'assets/js/check.js')).read()
+VER = hashlib.md5((_css + _js + _cjs).encode()).hexdigest()[:8]
+# rjsmin squeezes spaces inside template strings, so check.js is only trimmed
+open(os.path.join(ROOT, 'assets/js/check.min.js'), 'w').write('\n'.join(l.strip() for l in _cjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/css/style.min.css'), 'w').write(rcssmin.cssmin(_css))
 FORM_URL = 'https://script.google.com/macros/s/AKfycbwcvPVe57-G-AyYdHVcCyGneK9waUp5nRnvPbH8xneLtcKcp0AnnB0sjrx2DaRnrbZ4kw/exec'   # Google Apps Script web app URL for the lead forms
 open(os.path.join(ROOT, 'assets/js/main.min.js'), 'w').write((f"window.MUM_FORM_URL='{FORM_URL}';" if FORM_URL else '') + rjsmin.jsmin(_js))
@@ -214,7 +216,7 @@ CLEAN_URLS = os.environ.get('CLEAN_URLS', '1') == '1'   # 1 = /about style links
 def clean_urls(h):
     if not CLEAN_URLS: return h
     h = re.sub(r'(href|data-href)="index\.html(#[^"]*)?"', lambda m: f'{m.group(1)}="/{m.group(2) or ""}"', h)
-    h = re.sub(r'(href)="([a-z0-9-]+)\.html(#[^"]*)?"', lambda m: f'{m.group(1)}="/{m.group(2)}{m.group(3) or ""}"', h)
+    h = re.sub(r'(href)="([a-z0-9-]+)\.html(\?[^"#]*)?(#[^"]*)?"', lambda m: f'{m.group(1)}="/{m.group(2)}{m.group(3) or ""}{m.group(4) or ""}"', h)
     h = re.sub(r'((?:src|href|data-src|srcset|content)=")assets/', r'\1/assets/', h)
     h = re.sub(r'(href=")(favicon\.(?:ico|svg)|site\.webmanifest)"', r'\1/\2"', h)
     return h
@@ -490,7 +492,38 @@ def journey_section():
     </div>
     <div class="j-end" data-reveal>
       <p class="j-end-k">Not sure where you are on this path?</p>
-      <a href="contact.html" class="btn btn-cyan btn-lg">Book a free counselling session</a>
+      {j_end_actions()}
+    </div>
+  </div>
+</section>'''
+
+def j_end_actions():
+    if not SHOW_CAREER_CHECK:
+        return '<a href="contact.html" class="btn btn-cyan btn-lg">Book a free counselling session</a>'
+    return '''<div class="j-end-btns"><a href="career-check.html" class="btn btn-cyan btn-lg">Take the free career check</a><a href="contact.html" class="btn btn-outline btn-lg">Book a free counselling session</a></div>
+      <p class="j-end-note">About 4 minutes · the questions change with your stream</p>'''
+
+def cc_hero_link():
+    return '<a class="cc-hero-link" href="career-check.html"><span class="new">New</span>Not sure what fits you? Take the free 4-minute career check</a>'
+
+def cc_band():
+    demo = [('Commerce', 'Find the mistake hidden in a company\'s accounts'), ('PCB', 'Help someone walk and move again after an injury'),
+            ('PCM', 'Teach a robot or an AI to do a task on its own'), ('Humanities', 'Argue a case and win the debate')]
+    cards = ''.join(f'<div class="ccd-card" style="--i:{i}"><span class="ccd-tag">For {t} students</span><p>{q}</p></div>' for i, (t, q) in enumerate(demo))
+    cls = ''.join(f'<a class="ccb-cls" href="career-check.html?c={c}">Class {c}</a>' for c in ('9', '10', '11', '12'))
+    return f'''<section class="cc-band" style="--rays:url(&quot;{rays_svg(17)}&quot;)">
+  <div class="wrap ccb-grid">
+    <div class="ccb-copy" data-reveal>
+      <p class="ccb-pill">Free · About 4 minutes · Class 9–12</p>
+      <h2>The career check that changes with you</h2>
+      <p class="ccb-sub">A Commerce student and a PCB student never get the same questions. Answer quick activity cards, go deeper on your top areas, and see the careers, courses and entrance exams that fit you.</p>
+      <ul class="ccb-points"><li>Questions picked for your stream</li><li>Follow-ups only on your top matches</li><li>Download your result as a PDF</li></ul>
+      <p class="ccb-start">Start with your class</p>
+      <div class="ccb-classes">{cls}</div>
+    </div>
+    <div class="ccd" aria-hidden="true">
+      <div class="ccd-deck">{cards}</div>
+      <div class="ccd-acts"><span>Not me</span><span>Maybe</span><span class="yes">Love it</span></div>
     </div>
   </div>
 </section>'''
@@ -510,6 +543,7 @@ def build_home():
         <a href="contact.html" class="btn btn-cyan btn-lg">Book a free counselling session</a>
         <a href="services-schools.html" class="btn btn-outline-light btn-lg">Partner with us</a>
       </div>
+      {cc_hero_link() if SHOW_CAREER_CHECK else ''}
       
     </div>
     <div class="hero-visual" aria-hidden="true">
@@ -533,7 +567,6 @@ def build_home():
     <div class="marquee-track"><ul>{marquee}</ul><ul aria-hidden="true">{marquee}</ul></div>
   </div>
 </section>
-
 <section class="section help">
   <div class="wrap">
     <div class="section-head" data-reveal>
@@ -1160,7 +1193,7 @@ def page_text(fname):
     return s.strip()
 
 def build_llms_full():
-    order = ['index', 'about', 'omgarg', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'testimonials', 'exam-calendar', 'courses'] \
+    order = ['index', 'about', 'omgarg', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'testimonials', 'exam-calendar'] + (['career-check'] if SHOW_CAREER_CHECK else []) + ['courses'] \
             + [x['slug'] for x in COURSES] + [x['slug'] for x in POSTS] + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'contact']
     out = ['# MyUniMentor: full site content', '', '> Plain-text copy of myunimentor.in for AI assistants and search engines. Source: https://myunimentor.in/', '']
     for o in order:
@@ -1169,8 +1202,10 @@ def build_llms_full():
             out += [f'\n\n---\n# Page: https://myunimentor.in/{"" if o == "index" else o}\n', page_text(f)]
     open(os.path.join(ROOT, 'llms-full.txt'), 'w', encoding='utf-8').write('\n'.join(out) + '\n')
 
+CC_LLMS_LINE = '- [Free career check for Class 9–12](https://myunimentor.in/career-check): questions adapt to the student\'s stream and answers\n' if SHOW_CAREER_CHECK else ''
+
 def build_seo_files():
-    urls = ['', 'about', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'omgarg', 'blog', 'contact', 'exam-calendar', 'testimonials', 'career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'courses'] + [x['slug'] for x in POSTS] + [x['slug'] for x in COURSES]
+    urls = ['', 'about', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'omgarg', 'blog', 'contact', 'exam-calendar', 'testimonials'] + (['career-check'] if SHOW_CAREER_CHECK else []) + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'courses'] + [x['slug'] for x in POSTS] + [x['slug'] for x in COURSES]
     open(os.path.join(ROOT, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         ''.join(f'  <url><loc>https://myunimentor.in/{u}</loc></url>\n' for u in urls) + '</urlset>\n')
     open(os.path.join(ROOT, 'robots.txt'), 'w').write("User-agent: *\nAllow: /\n\n# Search engines and AI assistants are welcome to read and cite this site\n" +
@@ -1217,7 +1252,7 @@ def build_seo_files():
 - [Our network](https://myunimentor.in/network)
 - [Om Garg, Founder](https://myunimentor.in/omgarg)
 - [Entrance exam calendar 2027](https://myunimentor.in/exam-calendar)
-- [Course guides](https://myunimentor.in/courses)
+{CC_LLMS_LINE}- [Course guides](https://myunimentor.in/courses)
 - [Blog](https://myunimentor.in/blog)
 
 ## Guides and articles
@@ -1294,31 +1329,36 @@ def career_teaser():
     return '''<section class="section check-teaser">
   <div class="wrap teaser-card" data-reveal>
     <div class="teaser-copy">
-      <h2>Confused after Class 10 or 12? Start with a 3-minute career check.</h2>
-      <p>Answer 12 quick questions about your stream, interests and priorities, and see the career paths, courses and entrance exams that fit you. Then talk it through with a counsellor — free.</p>
+      <h2>Not sure which career fits you? Take the 4-minute career check.</h2>
+      <p>The questions change with your stream and your answers, so a Commerce student and a PCB student get different questions. You see the career paths, courses and entrance exams that fit you, and a counsellor talks it through with you — free.</p>
       <a href="career-check.html" class="btn btn-cyan btn-lg">Take the free career check</a>
-      
     </div>
     <ol class="teaser-steps" aria-hidden="true">
-      <li><span>1</span>Your class and stream</li><li><span>2</span>Subjects and interests</li><li><span>3</span>Priorities, budget and location</li><li class="res"><span>✓</span>Your best-fit career paths</li>
+      <li><span>1</span>Your class and stream</li><li><span>2</span>Activities picked for your stream</li><li><span>3</span>A closer look at your top areas</li><li class="res"><span>✓</span>Your best-fit career paths</li>
     </ol>
   </div>
 </section>'''
 
 def build_career_check():
     faq_html, faq_schema = faq_block([
-        ("Is the MyUniMentor career check free?", "Yes. It is free, takes about 3 minutes, and you do not need to share your phone number to see your results."),
-        ("How does the career check work?", "You answer 12 questions about your class, stream, favourite subjects, interests, priorities, budget and where you want to study. We match your answers to eight career areas and show the best fits, with courses and entrance exams for your stream."),
-        ("Is this a psychometric test?", "No. It is a quick guidance tool to help you start exploring. For a detailed plan, book a free one-on-one session with a MyUniMentor counsellor.")], "About the career check")
-    body = page_hero("Free career check", "12 questions, about 3 minutes. Find the career paths, courses and entrance exams that fit your stream, interests and priorities — then plan the details with a counsellor.", "Career check") + f'''
+        ("Is the MyUniMentor career check free?", "Yes. It is free and takes about four minutes. You share your name and phone number before you see your result, and a MyUniMentor counsellor calls you to talk it through."),
+        ("Who is it for?", "Students in Class 9, 10, 11 and 12. Class 9 and 10 students also see which stream fits each career path."),
+        ("How is it different from other career tests?", "The questions change with your stream and your answers. Commerce, PCM, PCB, PCMB and Humanities students each get their own set of activities, and the check then asks follow-up questions only about your top areas."),
+        ("Is this a psychometric test?", "No. It is a short guidance tool based on your interests, stream and plans. For a detailed plan, a counsellor looks at your marks, strengths and options with you.")], "About the career check")
+    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('cal','exam-calendar.html'),('net','network.html#universities'),('cuet','cuet-guide-class-12.html'),('stream','stream-after-class-10.html'),
+        ('btech','btech-cse-after-12th.html'),('bca','bca-after-12th.html'),('branches','engineering-branches-explained.html'),('bdes','bdes-after-12th.html'),('pcb','careers-after-pcb-beyond-mbbs.html'),
+        ('bcom','bcom-hons-after-12th.html'),('bba','bba-after-12th.html'),('law','law-after-12th.html'),('logo','assets/img/logo-horizontal-dark.webp')])
+    body = page_hero("Free career check", "For Class 9–12. About four minutes. The questions change with your stream and your answers, then show the career paths, courses and entrance exams that fit you.", "Career check") + f'''
 <section class="section quiz-section">
   <div class="wrap">
-    <div class="quiz" id="quiz" data-reveal>
+    <div class="cc" id="cc">
       <noscript><p>The career check needs JavaScript. You can also <a href="contact.html">book a free counselling session</a>.</p></noscript>
     </div>
+    <nav class="cc-links" hidden aria-hidden="true">{links}</nav>
   </div>
 </section>
-{faq_html}'''
+{faq_html}
+<script src="assets/js/check.min.js?v={VER}" defer></script>'''
     page('career-check.html', 'Free Career Check', 'Free career check', 'Resources', body,
          crumbs_schema([("Home", ""), ("Career check", "career-check")]) + faq_schema)
 

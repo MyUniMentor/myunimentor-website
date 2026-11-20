@@ -19,7 +19,7 @@ python3 build.py          # must end with "built 29 universities, 12 schools" (n
 ## House rules (do not break)
 - English only, plain and specific. Facts only from official or primary sources checked in the same run. No fees, salary figures or rankings unless taken from an official source and dated.
 - Never mention "up to 15 universities", "North India", "2026–27", or "T&C apply". Expansion plans are always "we plan to…".
-- Never show or link the hidden pages: career check, Class 12 guide, privacy, terms (switches `SHOW_*` in build.py stay False).
+- Never show or link the hidden pages: Class 12 guide, privacy, terms (`SHOW_GUIDE` and `SHOW_LEGAL` in build.py stay False). The career check is live (`SHOW_CAREER_CHECK = True`); its questions and course facts live in `assets/js/check.js` — no fees, salaries or rankings there either.
 - Never invent testimonials, LORs, numbers, partners or quotes. Never credit Om Garg as author of anything except articles on this site.
 - Keep internal links pointing to existing pages; prefer linking new articles to the exam calendar, course guides and /contact.
 
