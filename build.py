@@ -892,7 +892,11 @@ def build_summit():
         subs.append({"@type": "Event", "name": f"School Career Guidance Summit at {' and '.join(names)}", "startDate": f"{d0}T{s['summit']['start']}:00+05:30", "endDate": f"{d0}T{s['summit']['end']}:00+05:30",
                      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode", "eventStatus": "https://schema.org/EventScheduled",
                      "location": {"@type": "Place", "name": names[0], "address": {"@type": "PostalAddress", "addressLocality": s['city'], "addressCountry": "IN"}},
-                     "organizer": {"@id": "https://myunimentor.in/#org"}})
+                     "description": f"An in-school career fair at {' and '.join(names)}, {s['city']}. Partner universities set up stalls on the school campus and Class 11–12 students meet their delegates one-to-one. Free for students.",
+                     "image": ev["image"],
+                     "organizer": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"},
+                     "performer": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"},
+                     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR", "availability": "https://schema.org/InStock", "url": "https://myunimentor.in/career-summit", "validFrom": f"{d0}T00:00:00+05:30"}})
     ev["subEvent"] = subs
     body = page_hero("School Career Guidance Summit", "The first edition ran in October 2026 across 12 schools. An in-school career fair. Universities set up stalls on the school campus and Class 11–12 students meet them, ask questions and compare options — without leaving the school campus.", "Career Summit",
         '<div class="jump"><a href="#schools-list"><strong>12</strong><span>Schools</span></a><a href="#how"><strong>2,000+</strong><span>Students reached</span></a><a href="#next"><strong>2027</strong><span>Planned: Garhwal region</span></a></div>') + f'''
@@ -1373,7 +1377,7 @@ def build_404():
 EXAMS = D('exams.json')
 CITIES = D('cities.json')
 TESTIMONIALS = D('testimonials.json')
-CHECKED = '21 November 2026'
+CHECKED = '19 November 2026'
 
 def build_exam_calendar():
     from datetime import date
@@ -1387,13 +1391,12 @@ def build_exam_calendar():
                  f'<p class="ex-for">{e(x["for"])}</p><p class="ex-when"><strong>{e(x["label"])}</strong><span class="ex-count"></span></p>'
                  f'<p class="ex-note">{e(x["note"])}</p><a class="ex-link" href="{x["site"]}" target="_blank" rel="noopener">Official website</a></div></li>')
     faq_html, faq_schema = faq_block([
-        ("When is JEE Main 2027?", "JEE Main 2027 Session 1 is scheduled for 20–24 and 28 January 2027. The last date to apply is 22 November 2026 (with late fee until 26 November). Session 2 is scheduled for 2–7 April 2027. Read our <a href=\"jee-main-2027-session-1-guide.html\">JEE Main Session 1 guide</a>."),
+        ("When is JEE Main 2027?", "JEE Main 2027 Session 1 is scheduled for 22–24 and 28–30 January 2027, with 31 January as a buffer date. Session 2 is expected in April 2027."),
         ("When is JEE Advanced 2027?", "JEE Advanced 2027 will be held on 23 May 2027, organised by IIT Delhi. Only the top JEE Main candidates are eligible to appear."),
         ("When is NEET UG 2027?", "NTA has not announced the NEET UG 2027 date yet. NEET is usually held on the first Sunday of May."),
         ("When is CUET UG 2027?", "CUET UG 2027 has not been announced yet. It is expected in May 2027, and registration is usually open in January–February. Read our <a href=\"cuet-guide-class-12.html\">CUET guide</a>."),
         ("When is CLAT 2027?", "CLAT 2027 is on 6 December 2026. Applications closed on 31 October 2026. See our <a href=\"law-after-12th.html\">law after 12th guide</a>."),
-        ("When are the design entrance exams (NID DAT, NIFT, UCEED) for 2027?", "NID DAT 2027 Prelims is on 20 December 2026 (last date to apply: 30 November 2026). NIFT 2027 is on 10 January 2027 (tentative; applications extended to 24 November 2026) and UCEED 2027 is on 17 January 2027. See our <a href=\"bdes-after-12th.html\">B.Des guide</a>."),
-        ("When is the CHRIST University entrance test for 2027?", "The CHRIST University online entrance test for UG 2027 admissions is on 5 December 2026. The last date to apply for entrance-test programmes is 25 November 2026 (5 pm), and skill assessment and interviews run from 11 to 13 December 2026."),
+        ("When are the design entrance exams (NID DAT, NIFT, UCEED) for 2027?", "NID DAT 2027 Prelims is on 20 December 2026 (last date to apply: 30 November 2026). NIFT 2027 is on 10 January 2027 (tentative) and UCEED 2027 is on 17 January 2027. See our <a href=\"bdes-after-12th.html\">B.Des guide</a>."),
         ("When is IPMAT 2027?", "IPMAT Indore 2027 is on 24 April 2027. Registration dates are awaited. It is the entrance exam for the five-year integrated management programme at IIM Indore."),
         ("Which entrance exams can Commerce and Humanities students take?", "CUET UG (for central and many other universities), CLAT and AILET (law), IPMAT and JIPMAT (integrated management), and NID DAT, NIFT and UCEED (design) are all open to Commerce and Humanities students. JEE and NEET need Science subjects."),
         ("Can PCB students take JEE, or PCM students take NEET?", "B.Tech admissions through JEE generally need Physics, Chemistry and Maths in Class 12, so PCB students usually focus on NEET, CUET and other exams. NEET needs Biology, so PCM students are not eligible. PCMB students can take both."),
