@@ -17,6 +17,7 @@ python3 build.py          # must end with "built 29 universities, 12 schools" (n
 - `content_courses.py`, `data/*.json` — courses, schools, universities, testimonials, photos.
 
 ## House rules (do not break)
+- Every change must be SEO and AI-search friendly (titles, descriptions, structured data, llms files) and must never slow the site down or break a page. Load extra scripts only when needed (see how `tour.min.js` loads after the page), and keep Lighthouse at its current scores.
 - English only, plain and specific. Facts only from official or primary sources checked in the same run. No fees, salary figures or rankings unless taken from an official source and dated.
 - Never mention "up to 15 universities", "North India", "2026–27", or "T&C apply". Expansion plans are always "we plan to…".
 - Never show or link the hidden pages: Class 12 guide, privacy, terms (`SHOW_GUIDE` and `SHOW_LEGAL` in build.py stay False). The career check is live (`SHOW_CAREER_CHECK = True`); its questions and course facts live in `assets/js/check.js` — no fees, salaries or rankings there either.

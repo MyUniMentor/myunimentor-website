@@ -336,3 +336,16 @@ function autoplay(el, tick, ms = 3800) {
     m.style.setProperty('--my', (e.clientY - r.top) + 'px');
   });
 })();
+
+/* Welcome tour: loaded only after the page has finished loading, and only when needed */
+(function () {
+  const me = document.querySelector('script[src*="main.min.js"]'); if (!me) return;
+  const src = me.src.replace('main.min.js', 'tour.min.js');
+  let asked = false;
+  const load = () => { if (asked) return; asked = true; const s = document.createElement('script'); s.src = src; s.async = true; document.body.appendChild(s); };
+  document.querySelectorAll('.tour-open').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); if (window.MUMTour) window.MUMTour.open(); else { window.__mumTourOpen = true; load(); } }));
+  let seen = null; try { seen = localStorage.getItem('mum-tour'); } catch (e) { seen = 'x'; }
+  if (seen || /(^|\/)(contact|career-check)(\.html)?$/.test(location.pathname.replace(/\/$/, ''))) return;
+  const later = () => ('requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 3000 }) : setTimeout(load, 1500));
+  if (document.readyState === 'complete') later(); else addEventListener('load', later);
+})();

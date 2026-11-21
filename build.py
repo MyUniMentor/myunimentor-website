@@ -109,7 +109,7 @@ FOOTER = '''<footer class="site-footer">
       </div>
     </div>
   </div>
-  <div class="wrap foot-base"><p>© 2026 MyUniMentor Edtech LLP. Built in Dehradun, for every student.</p><p>Dehradun, Uttarakhand, India</p></div>
+  <div class="wrap foot-base"><p>© 2026 MyUniMentor Edtech LLP. Built in Dehradun, for every student.</p><p><button type="button" class="tour-open">Quick tour of this site</button> · Dehradun, Uttarakhand, India</p></div>
   <div class="foot-mark" aria-hidden="true"><span data-t="MyUniMentor">MyUniMentor</span></div>
 </footer>
 <nav class="mbar" aria-label="Quick actions"><a href="tel:+917417557070"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>Call</a><a href="https://wa.me/917417557070" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6a10.6 10.6 0 0 1-5.4-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.6 10.6 0 1 1 16 26.6z"/></svg>WhatsApp</a><a href="contact.html" class="mbar-cta">Free session</a></nav>
@@ -204,7 +204,9 @@ META = {
 
 import hashlib, rcssmin, rjsmin
 _css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read(); _cjs = open(os.path.join(ROOT, 'assets/js/check.js')).read()
-VER = hashlib.md5((_css + _js + _cjs).encode()).hexdigest()[:8]
+_tjs = open(os.path.join(ROOT, 'assets/js/tour.js')).read()
+VER = hashlib.md5((_css + _js + _cjs + _tjs).encode()).hexdigest()[:8]
+open(os.path.join(ROOT, 'assets/js/tour.min.js'), 'w').write('\n'.join(l.strip() for l in _tjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 # rjsmin squeezes spaces inside template strings, so check.js is only trimmed
 open(os.path.join(ROOT, 'assets/js/check.min.js'), 'w').write('\n'.join(l.strip() for l in _cjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/css/style.min.css'), 'w').write(rcssmin.cssmin(_css))
