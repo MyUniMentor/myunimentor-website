@@ -12,6 +12,7 @@ python3 build.py          # must end with "built 29 universities, 12 schools" (n
 
 ## Where content lives
 - `data/exams.json` — exam calendar. Fields: exam, for, date (YYYY-MM-DD), label (as shown), status (`confirmed` | `tentative` | `expected`), streams, note, site (official URL).
+  Also keep these fields when editing: `id` (stable slug without the year, never change it), `auto` (streams that get this exam by default), and optional `deadline` (YYYY-MM-DD) + `deadline_label` for the registration deadline. Give new exams an `id` and `auto` too.
 - `build.py` → `CHECKED = '...'` — the "last checked" date shown on the exam calendar. Update it every time you check.
 - `content_blog.py` → `POSTS` — blog articles (slug, tag, title ≤60 chars, h1, desc ≤160 chars, read, lede, body HTML, faq, related). New posts get added to the sitemap and llms files automatically.
 - `content_courses.py`, `data/*.json` — courses, schools, universities, testimonials, photos.

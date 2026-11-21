@@ -41,6 +41,12 @@ def rays_svg(n=23, color='%2311BDDE'):
 SHOW_CAREER_CHECK = True   # adaptive career check, live since 20 Nov 2026
 SHOW_GUIDE = False          # flip to True when the Class 12 guide is ready
 SHOW_LEGAL = False          # flip to True after the lawyer reviews Privacy Policy and Terms
+SHOW_ACCOUNTS = os.environ.get('SHOW_ACC') == '1'   # student and parent accounts: preview only until launch
+# Public Firebase web config (safe to publish) and the Apps Script URL that sends login codes.
+ACCOUNT = {'authUrl': '', 'firebase': {
+    'apiKey': 'AIzaSyAI8nojG3Q_4VlkKqN2B2nH1UlJZFkG_Go', 'authDomain': 'myunimentor-web.firebaseapp.com', 'projectId': 'myunimentor-web',
+    'storageBucket': 'myunimentor-web.firebasestorage.app', 'messagingSenderId': '817646080151', 'appId': '1:817646080151:web:343bcb2c1b62d9a2d699d2'}}
+NOINDEX = {'account.html'}
 
 NAV = [
     ('Home', 'index.html', None),
@@ -82,7 +88,7 @@ def header(active):
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav id="nav" class="nav" aria-label="Main">
       <ul class="nav-list">{''.join(items)}</ul>
-      <a href="contact.html" class="btn btn-small">Book free counselling</a>
+      {'<a href="account.html" class="nav-account">Log in</a>' if SHOW_ACCOUNTS else ''}<a href="contact.html" class="btn btn-small">Book free counselling</a>
     </nav>
   </div>
 </header>'''
@@ -204,8 +210,9 @@ META = {
 
 import hashlib, rcssmin, rjsmin
 _css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read(); _cjs = open(os.path.join(ROOT, 'assets/js/check.js')).read()
-_tjs = open(os.path.join(ROOT, 'assets/js/tour.js')).read()
-VER = hashlib.md5((_css + _js + _cjs + _tjs).encode()).hexdigest()[:8]
+_tjs = open(os.path.join(ROOT, 'assets/js/tour.js')).read(); _ajs = open(os.path.join(ROOT, 'assets/js/account.js')).read()
+VER = hashlib.md5((_css + _js + _cjs + _tjs + _ajs).encode()).hexdigest()[:8]
+open(os.path.join(ROOT, 'assets/js/account.min.js'), 'w').write('\n'.join(l.strip() for l in _ajs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/js/tour.min.js'), 'w').write('\n'.join(l.strip() for l in _tjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 # rjsmin squeezes spaces inside template strings, so check.js is only trimmed
 open(os.path.join(ROOT, 'assets/js/check.min.js'), 'w').write('\n'.join(l.strip() for l in _cjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
@@ -235,7 +242,7 @@ def page(fname, title, desc, active, body, schema=''):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title>
-<meta name="description" content="{e(desc)}">
+<meta name="description" content="{e(desc)}">{'<meta name="robots" content="noindex, nofollow">' if fname in NOINDEX else ''}
 <link rel="canonical" href="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
 <meta property="og:type" content="website"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
 <meta property="og:image" content="https://myunimentor.in/assets/img/og-image.jpg"><meta property="og:image:secure_url" content="https://myunimentor.in/assets/img/og-image.jpg">
@@ -1368,6 +1375,22 @@ def build_career_check():
     page('career-check.html', 'Free Career Check', 'Free career check', 'Resources', body,
          crumbs_schema([("Home", ""), ("Career check", "career-check")]) + faq_schema)
 
+def build_account():
+    public = [{k: x.get(k) for k in ('id', 'exam', 'for', 'date', 'label', 'status', 'note', 'site', 'streams', 'auto', 'deadline', 'deadline_label') if x.get(k) is not None} for x in EXAMS]
+    os.makedirs(os.path.join(ROOT, 'assets/data'), exist_ok=True)
+    json.dump(public, open(os.path.join(ROOT, 'assets/data/exams.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
+    if not SHOW_ACCOUNTS:
+        return
+    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('cal', 'exam-calendar.html'), ('check', 'career-check.html'), ('courses', 'courses.html'), ('exams', f'assets/data/exams.json?v={VER}')])
+    body = page_hero("Your MyUniMentor account", "Follow the entrance exams for your stream, get date changes and deadline reminders by email, save guides and book counselling. Free for students and parents.", "Account") + f'''
+<section class="section acct-section"><div class="wrap">
+  <div id="acct" class="acct is-loading" aria-live="polite"><div class="acct-card"><p class="acct-sub">Loading…</p></div></div>
+  <nav class="acct-links" hidden aria-hidden="true">{links}</nav>
+</div></section>
+<script>window.MUM_ACCOUNT={json.dumps(ACCOUNT)};</script>
+<script type="module" src="assets/js/account.min.js?v={VER}"></script>'''
+    page('account.html', 'Your account', 'Log in to follow entrance exams and get updates by email.', 'Account', body)
+
 def build_404():
     body = f'''<section class="page-hero nf" style="--rays:url(&quot;{rays_svg(19)}&quot;)"><div class="wrap">
   <p class="nf-code">404</p><h1>This page took a wrong turn.</h1>
@@ -1538,5 +1561,5 @@ def build_guide_page():
          crumbs_schema([("Home", ""), ("Free guide", "free-guide")]))
 
 if __name__ == '__main__':
-    build_home(); build_network(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
+    build_home(); build_network(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_account(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
     print('built', len(UNIS), 'universities,', len(SCHOOLS), 'schools')

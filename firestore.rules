@@ -1,0 +1,37 @@
+rules_version = '2';
+// MyUniMentor accounts. Paste into Firebase console → Databases & Storage → Firestore → Rules, then Publish.
+// The email-code login adds two claims to every user: em (their verified email) and admin (true for MyUniMentor staff).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.admin == true; }
+    function myEmail() { return request.auth.token.em; }
+    function isParentOf(uid) { return signedIn() && request.auth.uid in get(/databases/$(database)/documents/users/$(uid)).data.parents; }
+
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin() || request.auth.uid in resource.data.parents);
+      allow create: if signedIn() && request.auth.uid == uid && request.resource.data.email == myEmail()
+                    && request.resource.data.role in ['student', 'parent'];
+      allow update: if isAdmin() || (signedIn() && request.auth.uid == uid
+                    && request.resource.data.email == resource.data.email && request.resource.data.role == resource.data.role);
+      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+    }
+    match /links/{id} {
+      allow read: if signedIn() && (resource.data.parentUid == request.auth.uid || resource.data.childEmail == myEmail() || isAdmin());
+      allow create: if signedIn() && request.resource.data.parentUid == request.auth.uid
+                    && request.resource.data.parentEmail == myEmail() && request.resource.data.status == 'pending';
+      allow update: if signedIn() && resource.data.childEmail == myEmail() && request.resource.data.childUid == request.auth.uid
+                    && request.resource.data.parentUid == resource.data.parentUid && request.resource.data.status in ['accepted', 'declined'];
+      allow delete: if signedIn() && (resource.data.parentUid == request.auth.uid || isAdmin());
+    }
+    match /requests/{id} {
+      allow read: if signedIn() && (request.auth.uid in resource.data.viewers || isAdmin());
+      allow create: if signedIn() && request.resource.data.by == request.auth.uid && request.resource.data.status == 'requested'
+                    && request.auth.uid in request.resource.data.viewers
+                    && (request.resource.data.uid == request.auth.uid || isParentOf(request.resource.data.uid));
+      allow update, delete: if isAdmin();
+    }
+    match /announcements/{id} { allow read, write: if isAdmin(); }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

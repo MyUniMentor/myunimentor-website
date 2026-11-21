@@ -349,3 +349,20 @@ function autoplay(el, tick, ms = 3800) {
   const later = () => ('requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 3000 }) : setTimeout(load, 1500));
   if (document.readyState === 'complete') later(); else addEventListener('load', later);
 })();
+
+/* Save for later: stored on this device; copied into the account when the student logs in */
+(function () {
+  const acc = document.querySelector('.nav-account'), art = document.querySelector('article.article'), hero = document.querySelector('.page-hero .wrap');
+  if (!acc || !art || !hero) return;
+  const slug = location.pathname.replace(/\/$/, '').split('/').pop().replace('.html', ''), title = (hero.querySelector('h1') || {}).textContent || document.title;
+  const get = () => { try { return JSON.parse(localStorage.getItem('mum-saved') || '[]'); } catch (e) { return []; } };
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'save-btn';
+  const paint = () => { const on = get().some(x => x.slug === slug); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); b.innerHTML = on ? 'Saved <span>· see it in <a href="' + acc.getAttribute('href') + '">your account</a></span>' : 'Save for later'; };
+  b.addEventListener('click', e => {
+    if (e.target.closest('a')) return;
+    let s = get(); s = s.some(x => x.slug === slug) ? s.filter(x => x.slug !== slug) : s.concat({ slug, title: title.trim(), url: location.pathname });
+    try { localStorage.setItem('mum-saved', JSON.stringify(s.slice(-60))); } catch (x) {}
+    paint();
+  });
+  paint(); hero.appendChild(b);
+})();
