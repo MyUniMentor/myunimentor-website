@@ -1,5 +1,20 @@
 [
  {
+  "exam": "CHRIST University Entrance Test 2027",
+  "for": "UG programmes at CHRIST (Deemed to be University)",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2026-12-05",
+  "label": "5 Dec 2026",
+  "status": "confirmed",
+  "note": "Online test. Apply by 25 Nov 2026 (5 pm) for entrance-test programmes. Skill assessment and interviews: 11–13 Dec 2026.",
+  "site": "https://christuniversity.in/admission/ugpg-selection-process-dates-2027"
+ },
+ {
   "exam": "CLAT 2027",
   "for": "Law (BA LLB, BBA LLB) at National Law Universities",
   "streams": [
@@ -41,7 +56,7 @@
   "date": "2027-01-10",
   "label": "10 Jan 2027",
   "status": "tentative",
-  "note": "Marked tentative by NTA. Regular-fee deadline was 16 Nov 2026.",
+  "note": "Marked tentative by NTA. Applications extended to 24 Nov 2026; with late fee 25–29 Nov 2026.",
   "site": "https://exams.nta.nic.in/niftee"
  },
  {
@@ -65,10 +80,10 @@
   "streams": [
    "pcm"
   ],
-  "date": "2027-01-22",
-  "label": "22–24 & 28–30 Jan 2027",
+  "date": "2027-01-20",
+  "label": "20–24 & 28 Jan 2027",
   "status": "confirmed",
-  "note": "31 Jan 2027 is a buffer date. Session 2 is expected in April 2027.",
+  "note": "Apply by 22 Nov 2026 (with late fee until 26 Nov). Session 2 is scheduled for 2–7 April 2027.",
   "site": "https://jeemain.nta.nic.in"
  },
  {
