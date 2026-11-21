@@ -1047,7 +1047,7 @@ def build_profile():
               "hasCredential": [{"@type": "EducationalOccupationalCredential", "name": "Certification in applied AI", "recognizedBy": {"@type": "Organization", "name": x}} for x in ("Vanderbilt University", "IBM", "Lund University")],
               "knowsAbout": ["Career counselling", "University admissions in India", "Choosing a stream after Class 10", "Entrance exams (CUET, JEE, NEET, CLAT)", "Career guidance seminars"],
               "sameAs": ["https://www.linkedin.com/in/omgarg/", "https://www.instagram.com/theomgarg", "https://www.linkedin.com/company/myunimentor/", "https://www.instagram.com/myunimentor.in/"]}
-    ld = {"@context": "https://schema.org", "@type": "ProfilePage", "url": "https://myunimentor.in/omgarg", "name": "Om Garg", "dateModified": "2026-11-20", "mainEntity": person}
+    ld = {"@context": "https://schema.org", "@type": "ProfilePage", "url": "https://myunimentor.in/omgarg", "name": "Om Garg", "dateModified": "2026-11-21T13:30:00+05:30", "mainEntity": person}
     sessions = [("9 Oct 2026", "Brownwood Public School, Saharanpur", "First MyUniMentor career seminar"), ("Oct 2026", "12 schools, Dehradun and Saharanpur", "School Career Guidance Summit, first edition")]
     sess = ''.join(f'<li data-reveal style="--d:{i}"><span class="when">{a}</span><strong>{b_}</strong><span class="what">{c}</span></li>' for i, (a, b_, c) in enumerate(sessions))
     topics = ["Choosing the right stream after Class 10", "Courses and careers after Class 12", "Entrance exams and how to plan for them", "How to choose the right university", "Sessions for parents on supporting their child's choice"]
