@@ -366,3 +366,9 @@ function autoplay(el, tick, ms = 3800) {
   });
   paint(); hero.appendChild(b);
 })();
+
+/* Header: show "My account" once someone has logged in on this device */
+(function () {
+  const a = document.querySelector('.nav-account'); if (!a) return;
+  try { if (localStorage.getItem('mum-acct')) a.textContent = 'My account'; } catch (e) {}
+})();

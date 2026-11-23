@@ -31,6 +31,12 @@ service cloud.firestore {
                     && (request.resource.data.uid == request.auth.uid || isParentOf(request.resource.data.uid));
       allow update, delete: if isAdmin();
     }
+    // One account per WhatsApp number. Created once with the profile; nobody can read or take someone else's.
+    match /phones/{n} {
+      allow create: if signedIn() && n.matches('^[6-9][0-9]{9}$') && request.resource.data.uid == request.auth.uid;
+      allow get: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+    }
     match /announcements/{id} { allow read, write: if isAdmin(); }
     match /{document=**} { allow read, write: if false; }
   }

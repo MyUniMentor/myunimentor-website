@@ -5,27 +5,48 @@ const CFG = window.MUM_ACCOUNT || {};
 const FB_VER = '12.11.0';
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const $ = s => ROOT.querySelector(s);
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const STREAMS = { pcm: 'Science (PCM)', pcb: 'Science (PCB)', pcmb: 'Science (PCMB)', comm: 'Commerce with Maths', com: 'Commerce without Maths', hum: 'Humanities (Arts)', und: 'Not decided yet' };
 const STREAM_KEYS = { pcm: ['pcm'], pcb: ['pcb'], pcmb: ['pcm', 'pcb'], comm: ['com'], com: ['com'], hum: ['hum'], und: [] };
 const CLASSES = ['Class 9', 'Class 10', 'Class 11', 'Class 12', 'Gap year / dropper'];
 const TARGETS = ['Engineering', 'Medicine', 'Design', 'Law', 'Management (BBA/IPM)', 'Commerce / CA', 'Science and research', 'Psychology', 'Media and journalism', 'Humanities', 'Hotel management', 'Defence', 'Not sure yet'];
+const SLOTS = ['Any time', 'Weekday mornings', 'Weekday evenings', 'Weekends'];
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const link = k => { const a = document.querySelector('.acct-links a[data-k="' + k + '"]'); return a ? a.getAttribute('href') : '#'; };
 let EXAMS = [], fb = null, me = null, profile = null;
+
+/* ---------- icons (inline, tiny) ---------- */
+const I = {
+  cal: '<path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/>',
+  bell: '<path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  book: '<path d="M6 3h12v18l-6-4-6 4z"/>',
+  chat: '<path d="M4 5h16v11H9l-5 4z"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  family: '<circle cx="8" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M2.5 20c.8-3.5 3-5.5 5.5-5.5s4.7 2 5.5 5.5M13.5 20c.5-2.6 1.9-4 3.5-4s3 1.4 3.5 4"/>',
+  mail: '<path d="M3 6h18v12H3zM3 7l9 6 9-6"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>'
+};
+const ic = (k, cls) => `<svg class="ic${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" aria-hidden="true">${I[k]}</svg>`;
 
 /* ---------- small helpers ---------- */
 const days = iso => Math.ceil((new Date(iso + 'T00:00:00+05:30') - Date.now()) / 864e5);
 const dayText = n => n < 0 ? 'Done' : n === 0 ? 'Today' : n === 1 ? 'Tomorrow' : n + ' days';
-const autoExams = (stream, cls) => {
-  const ks = STREAM_KEYS[stream] || [];
-  return EXAMS.filter(e => (e.auto || []).some(s => ks.includes(s))).map(e => e.id);
-};
+const autoExams = stream => { const ks = STREAM_KEYS[stream] || []; return EXAMS.filter(e => (e.auto || []).some(s => ks.includes(s))).map(e => e.id); };
 const gcal = e => {
   const d = e.date.replace(/-/g, ''), next = new Date(e.date + 'T00:00:00Z'); next.setUTCDate(next.getUTCDate() + 1);
   const d2 = next.toISOString().slice(0, 10).replace(/-/g, '');
   return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(e.exam) + '&dates=' + d + '/' + d2 +
     '&details=' + encodeURIComponent((e.note || '') + '\nOfficial site: ' + e.site + '\nFrom myunimentor.in');
 };
+const fmt = t => t && t.toDate ? t.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+const initials = n => String(n || '?').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
 function busy(btn, on, label) { if (!btn) return; btn.disabled = on; if (label) btn.textContent = label; }
+function remember(on) {
+  try { on ? localStorage.setItem('mum-acct', '1') : localStorage.removeItem('mum-acct'); } catch (e) {}
+  const a = document.querySelector('.nav-account'); if (a) a.textContent = on ? 'My account' : 'Log in';
+}
 async function api(action, body) {
   const r = await fetch(CFG.authUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action }, body)) });
   return r.json();
@@ -41,21 +62,38 @@ async function loadFb() {
   return fb;
 }
 
-/* ---------- views ---------- */
-function shell(html) { ROOT.innerHTML = html; ROOT.classList.remove('is-loading'); }
+/* ---------- sign-in screens ---------- */
+function shell(html) { ROOT.innerHTML = html; ROOT.classList.remove('is-loading'); window.scrollTo({ top: 0 }); }
+function authShell(step, inner) {
+  const steps = ['Email', 'Code', 'Profile'].map((s, i) => `<li class="${i < step ? 'done' : i === step ? 'now' : ''}"><span>${i < step ? ic('check') : i + 1}</span>${s}</li>`).join('');
+  return `<div class="acct-auth">
+    <aside class="acct-side">
+      <p class="acct-side-k">Free for students and parents</p>
+      <h2>Your exams, deadlines and plan in one place</h2>
+      <ul class="acct-perks">
+        <li>${ic('cal')}<div><b>Exams for your stream</b><span>Picked for you, with live countdowns</span></div></li>
+        <li>${ic('bell')}<div><b>Email alerts</b><span>When a date changes, and 7 days and 1 day before deadlines</span></div></li>
+        <li>${ic('compass')}<div><b>Your career check and saved guides</b><span>Come back to them anytime</span></div></li>
+        <li>${ic('family')}<div><b>Parents can follow along</b><span>Link a parent so they get the same alerts</span></div></li>
+      </ul>
+    </aside>
+    <div class="acct-main-pane"><ol class="acct-steps" aria-label="Sign-up steps">${steps}</ol>${inner}</div>
+  </div>`;
+}
 function viewLogin(msg) {
-  shell(`<div class="acct-card acct-login"><h2>Log in or sign up</h2>
-    <p class="acct-sub">Enter your email. We’ll send you a 6-digit code — no password needed.</p>
+  remember(false);
+  shell(authShell(0, `<h2 class="acct-title">Log in or sign up</h2>
+    <p class="acct-sub">Enter your email and we’ll send you a 6-digit code. No password needed.</p>
     ${msg ? `<p class="acct-note">${esc(msg)}</p>` : ''}
-    <form class="acct-form" novalidate><label>Email address<input type="email" name="email" autocomplete="email" inputmode="email" required></label>
-    <p class="acct-err" hidden></p><button class="btn btn-cyan btn-lg" type="submit">Send my code</button></form>
-    <p class="acct-fine">Students and parents can both create an account. By continuing you agree to receive emails about your account and the exams you follow. You can turn updates off anytime.</p></div>`);
+    <form class="acct-form" novalidate><label>Email address<input type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></label>
+    <p class="acct-err" hidden></p><button class="btn btn-cyan btn-lg acct-wide" type="submit">Send my code</button></form>
+    <p class="acct-fine">By continuing you agree to get emails about your account and the exams you follow. You can turn them off anytime.</p>`));
   const f = $('form'), err = $('.acct-err');
   f.email.focus();
   f.addEventListener('submit', async e => {
     e.preventDefault(); err.hidden = true;
     const email = f.email.value.trim().toLowerCase();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = 'Enter a valid email address.'; err.hidden = false; return; }
+    if (!EMAIL_RE.test(email)) { err.textContent = 'Enter a valid email address.'; err.hidden = false; return; }
     const b = f.querySelector('button'); busy(b, true, 'Sending…');
     try {
       const r = await api('send_code', { email });
@@ -65,11 +103,11 @@ function viewLogin(msg) {
   });
 }
 function viewCode(email) {
-  shell(`<div class="acct-card acct-login"><h2>Check your email</h2>
+  shell(authShell(1, `<h2 class="acct-title">Check your email</h2>
     <p class="acct-sub">We sent a 6-digit code to <strong>${esc(email)}</strong>. It works for 10 minutes. Check spam or promotions if you don’t see it.</p>
-    <form class="acct-form" novalidate><label>6-digit code<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" required class="acct-code"></label>
-    <p class="acct-err" hidden></p><button class="btn btn-cyan btn-lg" type="submit">Verify and continue</button></form>
-    <div class="acct-row"><button type="button" class="acct-link acct-resend" disabled>Resend code in <span>30</span>s</button><button type="button" class="acct-link acct-change">Use a different email</button></div></div>`);
+    <form class="acct-form" novalidate><label>6-digit code<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" required class="acct-code" placeholder="••••••"></label>
+    <p class="acct-err" hidden></p><button class="btn btn-cyan btn-lg acct-wide" type="submit">Verify and continue</button></form>
+    <div class="acct-row"><button type="button" class="acct-link acct-resend" disabled>Resend code in <span>30</span>s</button><button type="button" class="acct-link acct-change">Use a different email</button></div>`));
   const f = $('form'), err = $('.acct-err'), rs = $('.acct-resend');
   f.code.focus();
   let t = 30; const tick = setInterval(() => { t--; if (t <= 0) { clearInterval(tick); rs.disabled = false; rs.textContent = 'Resend code'; } else rs.querySelector('span').textContent = t; }, 1000);
@@ -89,26 +127,25 @@ function viewCode(email) {
     } catch (x) { err.textContent = x.message; err.hidden = false; busy(b, false, 'Verify and continue'); f.code.select(); }
   });
 }
-
 function viewSetup(email) {
-  const opt = (arr, cur) => arr.map(v => `<option${v === cur ? ' selected' : ''}>${esc(v)}</option>`).join('');
-  shell(`<div class="acct-card acct-setup"><h2>Set up your account</h2><p class="acct-sub">Signed in as <strong>${esc(email)}</strong>.</p>
+  const opt = arr => arr.map(v => `<option>${esc(v)}</option>`).join('');
+  shell(authShell(2, `<h2 class="acct-title">Set up your profile</h2><p class="acct-sub">Signed in as <strong>${esc(email)}</strong></p>
     <form class="acct-form" novalidate>
     <fieldset class="acct-role"><legend>I am a</legend>
-      <label><input type="radio" name="role" value="student" checked><span><strong>Student</strong><small>Class 9–12 or gap year</small></span></label>
-      <label><input type="radio" name="role" value="parent"><span><strong>Parent</strong><small>of a student</small></span></label></fieldset>
+      <label><input type="radio" name="role" value="student" checked><span>${ic('user')}<b>Student</b><small>Class 9–12 or gap year</small></span></label>
+      <label><input type="radio" name="role" value="parent"><span>${ic('family')}<b>Parent</b><small>Following my child’s plan</small></span></label></fieldset>
     <div class="acct-grid">
       <label>Your full name<input name="name" autocomplete="name" required></label>
-      <label>WhatsApp number<span class="acct-ph"><span>+91</span><input name="whatsapp" inputmode="numeric" maxlength="10" autocomplete="tel-national"></span></label>
+      <label>WhatsApp number<span class="acct-ph"><span>+91</span><input name="whatsapp" inputmode="numeric" maxlength="10" autocomplete="tel-national" required></span></label>
       <label class="s-only">Class<select name="cls" required><option value="">Choose…</option>${opt(CLASSES)}</select></label>
       <label class="s-only">Stream<select name="stream" required><option value="">Choose…</option>${Object.entries(STREAMS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></label>
       <label>City<input name="city" autocomplete="address-level2" required></label>
-      <label class="s-only">School<input name="school" autocomplete="organization"></label>
-      <label class="p-only" hidden>Your child’s email <span class="opt">(optional — to link their account)</span><input type="email" name="child" inputmode="email"></label>
+      <label class="s-only"><span>School <span class="opt">(optional)</span></span><input name="school" autocomplete="organization"></label>
+      <label class="p-only acct-span" hidden>Your child’s email<input type="email" name="child" inputmode="email" placeholder="The email your child uses for MyUniMentor"><small class="acct-hint">Your child gets a request on their dashboard. Once they accept, you’ll see their exams and get the same alerts. If they haven’t signed up yet, the request waits for them.</small></label>
     </div>
     <fieldset class="acct-targets s-only"><legend>Courses you’re interested in <span class="opt">(pick any)</span></legend>
       <div class="acct-chips">${TARGETS.map(t => `<label><input type="checkbox" name="targets" value="${esc(t)}"><span>${esc(t)}</span></label>`).join('')}</div></fieldset>
-    <p class="acct-err" hidden></p><button class="btn btn-cyan btn-lg" type="submit">Create my account</button></form></div>`);
+    <p class="acct-err" hidden></p><button class="btn btn-cyan btn-lg acct-wide" type="submit">Create my account</button></form>`));
   const f = $('form'), err = $('.acct-err');
   const sync = () => { const p = f.role.value === 'parent'; ROOT.querySelectorAll('.s-only').forEach(x => x.hidden = p); ROOT.querySelectorAll('.p-only').forEach(x => x.hidden = !p); };
   f.querySelectorAll('[name=role]').forEach(r => r.addEventListener('change', sync));
@@ -117,17 +154,22 @@ function viewSetup(email) {
     const role = f.role.value, name = f.name.value.trim(), wa = f.whatsapp.value.replace(/\D/g, '');
     const fail = m => { err.textContent = m; err.hidden = false; };
     if (name.length < 2) return fail('Enter your name.');
-    if (wa && !/^[6-9]\d{9}$/.test(wa)) return fail('Enter a 10-digit WhatsApp number, or leave it empty.');
+    if (!/^[6-9]\d{9}$/.test(wa)) return fail('Enter your 10-digit WhatsApp number.');
     if (!f.city.value.trim()) return fail('Enter your city.');
     if (role === 'student' && (!f.cls.value || !f.stream.value)) return fail('Choose your class and stream.');
     const child = (f.child.value || '').trim().toLowerCase();
-    if (role === 'parent' && child && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(child)) return fail('Check your child’s email address.');
+    if (role === 'parent') {
+      if (!EMAIL_RE.test(child)) return fail('Enter your child’s email address so we can link your accounts.');
+      if (child === email) return fail('This is your own email. Enter the email your child uses.');
+    }
     const b = f.querySelector('button'); busy(b, true, 'Creating…');
     const doc = { email, role, name, whatsapp: wa, city: f.city.value.trim(), created: fb.F.serverTimestamp(), notify: { instant: true, reminders: true, digest: true }, parents: [], parentEmails: [], saved: [] };
-    if (role === 'student') Object.assign(doc, { cls: f.cls.value, stream: f.stream.value, school: f.school.value.trim(), targets: [...f.querySelectorAll('[name=targets]:checked')].map(x => x.value), exams: autoExams(f.stream.value, f.cls.value) });
+    if (role === 'student') Object.assign(doc, { cls: f.cls.value, stream: f.stream.value, school: f.school.value.trim(), targets: [...f.querySelectorAll('[name=targets]:checked')].map(x => x.value), exams: autoExams(f.stream.value) });
     try {
+      if (!(await claimPhone(wa))) { busy(b, false, 'Create my account'); return fail('This WhatsApp number is already used by another MyUniMentor account.'); }
       await fb.F.setDoc(fb.F.doc(fb.db, 'users', me.uid), doc);
-      if (role === 'parent' && child) await requestLink(child);
+      profile = Object.assign({ uid: me.uid }, doc);
+      if (role === 'parent') await requestLink(child);
       await start();
     } catch (x) { fail('Could not save your profile. Check your connection and try again.'); busy(b, false, 'Create my account'); }
   });
@@ -141,88 +183,133 @@ async function mergeLocal() {
     const add = saved.filter(s => !(profile.saved || []).some(x => x.slug === s.slug));
     if (add.length) { up.saved = (profile.saved || []).concat(add).slice(-60); }
     const chk = JSON.parse(localStorage.getItem('mum-check-last') || 'null');
-    if (chk && (!profile.check || chk.at > (profile.check.at || 0))) up.check = chk;
+    if (chk && profile.role === 'student' && (!profile.check || chk.at > (profile.check.at || 0))) up.check = chk;
   } catch (e) {}
   if (Object.keys(up).length) { await F.updateDoc(ref, up); Object.assign(profile, up); }
 }
 async function viewDash() {
+  remember(true);
   const isStudent = profile.role === 'student';
-  let child = null, childReqs = [];
-  if (!isStudent) child = await loadChild();
+  const child = isStudent ? null : await loadChild();
+  const myLinks = isStudent ? [] : await loadMyLinks();
   const subject = isStudent ? profile : child;
   const reqs = await loadRequests(isStudent ? me.uid : (child && child.uid));
   const pending = isStudent ? await loadPendingLinks() : [];
-  const first = esc(profile.name.split(' ')[0]);
   shell(`<div class="acct-dash">
-    <div class="acct-hello"><div><p class="acct-k">${isStudent ? 'Student' : 'Parent'} account</p><h2>Hi ${first}</h2>
-      <p class="acct-sub">${isStudent ? `${esc(profile.cls)} · ${esc(STREAMS[profile.stream] || '')}` : child ? `Following ${esc(child.name)}’s plan` : 'Link your child’s account to see their plan'}</p></div>
-      <button type="button" class="btn btn-outline acct-logout">Log out</button></div>
-    ${pending.map(p => `<div class="acct-banner"><p><strong>${esc(p.parentName)}</strong> (${esc(p.parentEmail)}) wants to follow your plan and get your exam emails.</p><div><button class="btn btn-cyan acct-accept" data-id="${p.id}">Accept</button><button class="btn btn-outline acct-decline" data-id="${p.id}">Decline</button></div></div>`).join('')}
-    ${!isStudent && !child ? linkBox() : ''}
-    ${subject ? examsBox(subject, isStudent) + checkBox(subject, isStudent) + savedBox(subject, isStudent) : ''}
-    ${subject ? sessionBox(reqs, isStudent || !!child) : ''}
-    ${prefsBox()}
+    ${helloBox(isStudent, child, subject, reqs)}
+    ${pending.map(p => `<div class="acct-banner">${ic('family')}<p><strong>${esc(p.parentName || 'A parent')}</strong> (${esc(p.parentEmail)}) wants to follow your plan and get your exam emails.</p><div class="acct-banner-btns"><button class="btn btn-cyan btn-small acct-accept" data-id="${p.id}">Accept</button><button class="btn btn-outline btn-small acct-decline" data-id="${p.id}">Decline</button></div><p class="acct-err" hidden></p></div>`).join('')}
+    <div class="acct-cols">
+      <div class="acct-col">
+        ${!isStudent && !child ? linkBox(myLinks) : ''}
+        ${subject ? examsBox(subject, isStudent) : ''}
+        ${subject ? sessionBox(reqs) : ''}
+      </div>
+      <div class="acct-col">
+        ${subject ? checkBox(subject, isStudent) : ''}
+        ${savedBox(profile)}
+        ${!isStudent && child ? familyBox(child) : ''}
+        ${isStudent && (profile.parentEmails || []).length ? familyBox(null) : ''}
+        ${prefsBox(isStudent)}
+      </div>
+    </div>
   </div>`);
   wireDash(isStudent, child);
+}
+function helloBox(isStudent, child, subject, reqs) {
+  const meta = isStudent ? [profile.cls, STREAMS[profile.stream], profile.city].filter(Boolean)
+    : [child ? 'Following ' + child.name.split(' ')[0] + '’s plan' : 'Not linked to your child yet', profile.city].filter(Boolean);
+  const upcoming = subject ? EXAMS.filter(e => (subject.exams || []).includes(e.id) && days(e.date) >= 0).sort((a, b) => a.date.localeCompare(b.date)) : [];
+  const next = upcoming[0], early = subject && (subject.cls === 'Class 9' || subject.cls === 'Class 10');
+  const stat = (k, v, s) => `<div class="acct-stat"><span>${k}</span><b>${v}</b>${s ? `<small>${s}</small>` : ''}</div>`;
+  const stats = subject ? stat('Next exam', next ? (early ? 'Later' : dayText(days(next.date))) : '—', next ? esc(next.exam) : 'None followed yet')
+    + stat('Exams followed', (subject.exams || []).length, 'Alerts on for these')
+    + stat('Career check', subject.check && subject.check.top ? 'Done' : 'Not yet', subject.check && subject.check.top ? esc(subject.check.top[0]) : 'Takes about 4 minutes')
+    + stat('Counselling', reqs.length ? reqs.length : 'Free', reqs.length ? 'Requests so far' : 'Ask for a session below') : '';
+  return `<section class="acct-hello">
+    <div class="acct-hello-top"><div class="acct-avatar" aria-hidden="true">${esc(initials(profile.name))}</div>
+      <div class="acct-hello-txt"><p class="acct-k">${isStudent ? 'Student account' : 'Parent account'}</p><h2>Hi ${esc(profile.name.split(' ')[0])}</h2>
+      <p class="acct-meta">${meta.map(esc).join('<i></i>')}</p></div>
+      <button type="button" class="btn btn-outline-light btn-small acct-logout">Log out</button></div>
+    ${stats ? `<div class="acct-stats">${stats}</div>` : ''}
+  </section>`;
+}
+function dateTile(e) {
+  const m = MON[+e.date.slice(5, 7) - 1], hasDay = /^\d/.test(e.label || '');
+  return `<div class="acct-tile${hasDay ? '' : ' month'}">${hasDay ? `<b>${+e.date.slice(8, 10)}</b><span>${m}</span>` : `<b>${m}</b><span>${e.date.slice(0, 4)}</span>`}</div>`;
 }
 function examsBox(p, mine) {
   const followed = EXAMS.filter(e => (p.exams || []).includes(e.id)).sort((a, b) => a.date.localeCompare(b.date));
   const early = p.cls === 'Class 9' || p.cls === 'Class 10';
+  const st = { confirmed: 'Confirmed', tentative: 'Tentative', expected: 'Expected' };
   const rows = followed.map(e => {
     const n = days(e.date), dn = e.deadline ? days(e.deadline) : null;
-    return `<li class="acct-exam${n < 0 ? ' past' : ''}"><div class="acct-ex-top"><strong>${esc(e.exam)}</strong><span class="acct-days ${n >= 0 && n <= 30 ? 'soon' : ''}">${early ? 'Later' : dayText(n)}</span></div>
-      <p>${esc(e.label)} · <span class="st-${e.status}">${e.status === 'confirmed' ? 'Confirmed' : e.status === 'tentative' ? 'Tentative' : 'Expected'}</span>${dn != null && dn >= 0 ? ` · <b class="acct-dl">${esc(e.deadline_label)} (${dayText(dn)} left)</b>` : ''}</p>
-      <div class="acct-ex-links"><a href="${esc(e.site)}" target="_blank" rel="noopener">Official site</a>${n >= 0 ? `<a href="${gcal(e)}" target="_blank" rel="noopener">Add to Google Calendar</a>` : ''}</div></li>`;
+    return `<li class="acct-exam${n < 0 ? ' past' : ''}">${dateTile(e)}
+      <div class="acct-ex-body"><strong>${esc(e.exam)}</strong>
+        <p><span class="st st-${e.status}">${st[e.status] || ''}</span>${esc(e.label)}</p>
+        ${dn != null && dn >= 0 ? `<p class="acct-dl">${ic('bell')}${esc(e.deadline_label)} · ${dayText(dn)} left</p>` : ''}
+        <div class="acct-ex-links"><a href="${esc(e.site)}" target="_blank" rel="noopener">Official site</a>${n >= 0 ? `<a href="${gcal(e)}" target="_blank" rel="noopener">Add to Google Calendar</a>` : ''}</div></div>
+      <div class="acct-count${n >= 0 && n <= 30 ? ' soon' : ''}">${early || n < 0 ? `<b>${early ? 'Later' : 'Done'}</b>` : n <= 1 ? `<b>${dayText(n)}</b>` : `<b>${n}</b><span>days</span>`}</div></li>`;
   }).join('');
-  return `<section class="acct-box acct-exams"><div class="acct-box-head"><h3>${mine ? 'My exams' : 'Their exams'}</h3>${mine ? '<button type="button" class="acct-link acct-edit-ex">Change exams</button>' : ''}</div>
+  return `<section class="acct-box acct-exams"><div class="acct-box-head">${ic('cal', 'ic-head')}<h3>${mine ? 'My exams' : 'Their exams'}</h3>${mine ? '<button type="button" class="acct-chip-btn acct-edit-ex">Change exams</button>' : ''}</div>
     ${early ? '<p class="acct-note">You’re in Class 9 or 10, so these exams come later. We’ll send stream-choice guidance now and exam alerts when it’s time.</p>' : ''}
-    ${rows ? `<ul class="acct-ex-list">${rows}</ul>` : '<p class="acct-muted">No exams followed yet.</p>'}
-    ${mine ? `<form class="acct-ex-edit" hidden><p class="acct-muted">Tick the exams you want alerts for.</p><div class="acct-chips">${EXAMS.map(e => `<label><input type="checkbox" value="${e.id}"${(p.exams || []).includes(e.id) ? ' checked' : ''}><span>${esc(e.exam)}</span></label>`).join('')}</div><button class="btn btn-cyan" type="submit">Save exams</button></form>` : ''}
-    <p class="acct-foot"><a href="${link('cal')}">See the full exam calendar</a></p></section>`;
+    ${rows ? `<ul class="acct-ex-list">${rows}</ul>` : '<p class="acct-muted">No exams followed yet. Tap “Change exams” to pick some.</p>'}
+    ${mine ? `<form class="acct-ex-edit" hidden><p class="acct-muted">Tick the exams you want alerts for.</p><div class="acct-chips">${EXAMS.map(e => `<label><input type="checkbox" value="${e.id}"${(p.exams || []).includes(e.id) ? ' checked' : ''}><span>${esc(e.exam)}</span></label>`).join('')}</div><div class="acct-actions"><button class="btn btn-cyan btn-small" type="submit">Save exams</button></div></form>` : ''}
+    <p class="acct-foot"><a href="${link('cal')}">See the full exam calendar ${ic('arrow')}</a></p></section>`;
 }
 function checkBox(p, mine) {
   const c = p.check;
-  return `<section class="acct-box"><div class="acct-box-head"><h3>Career check</h3></div>
-    ${c && c.top ? `<p class="acct-muted">Taken ${esc(new Date(c.at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }))}</p><ol class="acct-top">${c.top.map(t => `<li>${esc(t)}</li>`).join('')}</ol>` : `<p class="acct-muted">${mine ? 'You haven’t taken it yet.' : 'Not taken yet.'}</p>`}
-    <a class="btn ${c ? 'btn-outline' : 'btn-cyan'}" href="${link('check')}">${c ? 'Retake the career check' : 'Take the free career check'}</a></section>`;
+  return `<section class="acct-box"><div class="acct-box-head">${ic('compass', 'ic-head')}<h3>Career check</h3></div>
+    ${c && c.top ? `<p class="acct-muted">Taken ${esc(new Date(c.at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }))}. Top matches:</p><ol class="acct-top">${c.top.map(t => `<li>${esc(t)}</li>`).join('')}</ol>`
+      : `<p class="acct-muted">${mine ? 'Find the course areas that fit you. 10 quick questions, about 4 minutes.' : 'Not taken yet. Ask your child to take it.'}</p>`}
+    ${mine || c ? `<a class="btn ${c ? 'btn-outline' : 'btn-cyan'} btn-small" href="${link('check')}">${c ? 'Retake the career check' : 'Take the free career check'}</a>` : ''}</section>`;
 }
-function savedBox(p, mine) {
+function savedBox(p) {
   const s = (p.saved || []).slice().reverse();
-  return `<section class="acct-box"><div class="acct-box-head"><h3>Saved guides</h3></div>
-    ${s.length ? `<ul class="acct-saved">${s.map(x => `<li><a href="${esc(x.url)}">${esc(x.title)}</a>${mine ? `<button type="button" class="acct-x" data-slug="${esc(x.slug)}" aria-label="Remove ${esc(x.title)}">×</button>` : ''}</li>`).join('')}</ul>`
+  return `<section class="acct-box"><div class="acct-box-head">${ic('book', 'ic-head')}<h3>Saved guides</h3></div>
+    ${s.length ? `<ul class="acct-saved">${s.map(x => `<li><a href="${esc(x.url)}">${esc(x.title)}</a><button type="button" class="acct-x" data-slug="${esc(x.slug)}" aria-label="Remove ${esc(x.title)}">×</button></li>`).join('')}</ul>`
       : `<p class="acct-muted">Tap “Save for later” on any course guide or article to keep it here.</p>`}
-    <p class="acct-foot"><a href="${link('courses')}">Browse course guides</a></p></section>`;
+    <p class="acct-foot"><a href="${link('courses')}">Browse course guides ${ic('arrow')}</a></p></section>`;
 }
-function sessionBox(reqs, can) {
+function sessionBox(reqs) {
   const st = { requested: 'Requested', booked: 'Booked', done: 'Completed', cancelled: 'Cancelled' };
-  return `<section class="acct-box acct-sessions"><div class="acct-box-head"><h3>Counselling</h3></div>
-    ${reqs.length ? `<ul class="acct-req">${reqs.map(r => `<li><div><strong>${st[r.status] || r.status}</strong>${r.when ? ` · ${esc(r.when)}` : ''}<span class="acct-muted"> · asked ${esc(fmt(r.created))}</span></div>${r.topic ? `<p>${esc(r.topic)}</p>` : ''}${r.notes ? `<div class="acct-notes"><b>Notes from your counsellor</b><p>${esc(r.notes).replace(/\n/g, '<br>')}</p></div>` : ''}</li>`).join('')}</ul>` : '<p class="acct-muted">No sessions yet. Your first session is free.</p>'}
-    ${can ? `<form class="acct-req-form"><label>What would you like to talk about?<textarea name="topic" rows="3" maxlength="600" placeholder="e.g. Choosing between B.Tech CSE and BCA, or which colleges to apply to"></textarea></label>
-      <label>Best time to call<select name="slot"><option>Any time</option><option>Weekday mornings</option><option>Weekday evenings</option><option>Weekends</option></select></label>
-      <p class="acct-err" hidden></p><button class="btn btn-cyan" type="submit">Request a free session</button></form>` : ''}</section>`;
+  return `<section class="acct-box acct-sessions"><div class="acct-box-head">${ic('chat', 'ic-head')}<h3>Counselling</h3></div>
+    ${reqs.length ? `<ul class="acct-req">${reqs.map(r => `<li><div class="acct-req-top"><span class="acct-pill p-${esc(r.status)}">${st[r.status] || esc(r.status)}</span>${r.when ? `<b>${esc(r.when)}</b>` : ''}<small>Asked ${esc(fmt(r.created))}</small></div>${r.topic ? `<p>${esc(r.topic)}</p>` : ''}${r.notes ? `<div class="acct-notes"><b>Notes from your counsellor</b><p>${esc(r.notes).replace(/\n/g, '<br>')}</p></div>` : ''}</li>`).join('')}</ul>`
+      : '<p class="acct-muted">Talk one-on-one with a counsellor. Your first session is free.</p>'}
+    <form class="acct-form acct-req-form" novalidate><label>What would you like to talk about?<textarea name="topic" rows="3" maxlength="600" placeholder="For example: B.Tech CSE or BCA, or which colleges to apply to"></textarea></label>
+      <fieldset class="acct-slots"><legend>Best time to call</legend><div class="acct-chips">${SLOTS.map((s, i) => `<label><input type="radio" name="slot" value="${s}"${i ? '' : ' checked'}><span>${s}</span></label>`).join('')}</div></fieldset>
+      <p class="acct-err" hidden></p><div class="acct-actions"><button class="btn btn-cyan" type="submit">Request a free session</button></div></form></section>`;
 }
-function prefsBox() {
+function familyBox(child) {
+  const body = child ? `<p class="acct-muted">You’re linked to <strong>${esc(child.name)}</strong> (${esc(child.email)}). You get the same exam alerts.</p>`
+    : `<p class="acct-muted">Linked parents: ${(profile.parentEmails || []).map(esc).join(', ')}. They see your exams and get the same alerts.</p>`;
+  return `<section class="acct-box"><div class="acct-box-head">${ic('family', 'ic-head')}<h3>Family</h3></div>${body}</section>`;
+}
+function prefsBox(isStudent) {
   const n = profile.notify || {};
-  const row = (k, t, s) => `<label class="acct-toggle"><input type="checkbox" data-k="${k}"${n[k] !== false ? ' checked' : ''}><span><strong>${t}</strong><small>${s}</small></span></label>`;
-  return `<section class="acct-box acct-prefs" id="prefs"><div class="acct-box-head"><h3>Email settings</h3></div>
-    ${row('instant', 'Exam date changes', 'Instant email when a date or status changes for an exam you follow')}
+  const row = (k, t, s) => `<label class="acct-switch"><span><strong>${t}</strong><small>${s}</small></span><input type="checkbox" role="switch" data-k="${k}"${n[k] !== false ? ' checked' : ''}><i aria-hidden="true"></i></label>`;
+  return `<section class="acct-box acct-prefs" id="prefs"><div class="acct-box-head">${ic('mail', 'ic-head')}<h3>Email settings</h3></div>
+    <p class="acct-muted">Sent to ${esc(profile.email)}${isStudent ? '' : ' for the exams your child follows'}.</p>
+    ${row('instant', 'Exam date changes', 'The moment a date or status changes')}
     ${row('reminders', 'Deadline reminders', '7 days and 1 day before registration closes')}
-    ${row('digest', 'Sunday summary', 'One weekly email with your countdowns and new guides')}
-    <p class="acct-foot"><button type="button" class="acct-link acct-delete">Delete my account</button></p></section>`;
+    ${row('digest', 'Sunday summary', 'Your countdowns and new guides, once a week')}
+    <p class="acct-saved-msg" hidden>Saved</p>
+    <p class="acct-foot acct-danger"><button type="button" class="acct-link acct-delete">Delete my account</button></p></section>`;
 }
-function linkBox() {
-  return `<section class="acct-box acct-linkbox"><div class="acct-box-head"><h3>Link your child’s account</h3></div>
-    <p class="acct-muted">Enter the email your child used to sign up. They’ll see a request on their dashboard; once they accept, you’ll see their exams, career check and counselling here.</p>
-    <form class="acct-link-form acct-inline"><input type="email" name="child" placeholder="child@example.com" required aria-label="Child's email"><button class="btn btn-cyan" type="submit">Send request</button></form>
-    <p class="acct-err" hidden></p></section>`;
+function linkBox(myLinks) {
+  const waiting = myLinks.filter(l => l.status === 'pending'), declined = myLinks.filter(l => l.status === 'declined');
+  return `<section class="acct-box acct-linkbox"><div class="acct-box-head">${ic('family', 'ic-head')}<h3>Link your child’s account</h3></div>
+    ${waiting.map(l => `<div class="acct-wait"><span class="acct-pill p-requested">Waiting</span><p>Request sent to <strong>${esc(l.childEmail)}</strong>. Ask your child to log in at myunimentor.in/account and tap <b>Accept</b>. If they haven’t signed up yet, they’ll see it after they do.</p><button type="button" class="acct-link acct-cancel" data-id="${esc(l.id)}">Cancel request</button></div>`).join('')}
+    ${declined.map(l => `<p class="acct-note">${esc(l.childEmail)} declined the request. Check the email with your child and send it again.</p>`).join('')}
+    ${waiting.length ? '' : `<p class="acct-muted">Enter the email your child uses for MyUniMentor. Once they accept, you’ll see their exams, career check and counselling here, and get the same alerts.</p>
+    <form class="acct-inline acct-link-form" novalidate><input type="email" name="child" placeholder="Your child’s email" required aria-label="Your child’s email"><button class="btn btn-cyan" type="submit">Send request</button></form>
+    <p class="acct-err" hidden></p>`}</section>`;
 }
-const fmt = t => t && t.toDate ? t.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
 
 function wireDash(isStudent, child) {
   const F = fb.F, ref = F.doc(fb.db, 'users', me.uid);
-  $('.acct-logout').addEventListener('click', () => fb.A.signOut(fb.auth));
+  $('.acct-logout').addEventListener('click', () => { remember(false); fb.A.signOut(fb.auth); });
   const ed = $('.acct-edit-ex'), form = $('.acct-ex-edit');
-  if (ed) ed.addEventListener('click', () => { form.hidden = !form.hidden; });
+  if (ed) ed.addEventListener('click', () => { form.hidden = !form.hidden; ed.textContent = form.hidden ? 'Change exams' : 'Close'; });
   if (form) form.addEventListener('submit', async e => {
     e.preventDefault(); const ids = [...form.querySelectorAll('input:checked')].map(x => x.value);
     await F.updateDoc(ref, { exams: ids }); profile.exams = ids; viewDash();
@@ -233,64 +320,98 @@ function wireDash(isStudent, child) {
     try { localStorage.setItem('mum-saved', JSON.stringify(JSON.parse(localStorage.getItem('mum-saved') || '[]').filter(s => s.slug !== b.dataset.slug))); } catch (e) {}
     viewDash();
   }));
-  ROOT.querySelectorAll('.acct-toggle input').forEach(i => i.addEventListener('change', async () => {
+  const savedMsg = $('.acct-saved-msg');
+  ROOT.querySelectorAll('.acct-switch input').forEach(i => i.addEventListener('change', async () => {
     const n = Object.assign({}, profile.notify, { [i.dataset.k]: i.checked }); await F.updateDoc(ref, { notify: n }); profile.notify = n;
+    savedMsg.hidden = false; clearTimeout(savedMsg._t); savedMsg._t = setTimeout(() => { savedMsg.hidden = true; }, 1800);
   }));
   const rf = $('.acct-req-form');
   if (rf) rf.addEventListener('submit', async e => {
-    e.preventDefault(); const b = rf.querySelector('button'); busy(b, true, 'Sending…');
+    e.preventDefault(); const b = rf.querySelector('button'), er = rf.querySelector('.acct-err'); er.hidden = true;
+    if (rf.topic.value.trim().length < 5) { er.textContent = 'Tell us in a line what you’d like to talk about.'; er.hidden = false; return; }
+    busy(b, true, 'Sending…');
     const target = isStudent ? profile : child;
     try {
       const sid = target.uid || me.uid, viewers = [...new Set([sid, me.uid].concat(target.parents || []))];
       await F.addDoc(F.collection(fb.db, 'requests'), { uid: sid, viewers, by: me.uid, byName: profile.name, studentName: target.name, email: target.email, phone: target.whatsapp || profile.whatsapp || '',
         cls: target.cls || '', stream: target.stream || '', topic: rf.topic.value.trim(), slot: rf.slot.value, status: 'requested', created: F.serverTimestamp() });
       viewDash();
-    } catch (x) { const er = rf.querySelector('.acct-err'); er.textContent = 'Could not send the request. Try again.'; er.hidden = false; busy(b, false, 'Request a free session'); }
+    } catch (x) { er.textContent = 'Could not send the request. Try again.'; er.hidden = false; busy(b, false, 'Request a free session'); }
   });
   ROOT.querySelectorAll('.acct-accept, .acct-decline').forEach(b => b.addEventListener('click', async () => {
-    const id = b.dataset.id, ok = b.classList.contains('acct-accept'), lref = F.doc(fb.db, 'links', id);
-    const l = (await F.getDoc(lref)).data();
-    await F.updateDoc(lref, { status: ok ? 'accepted' : 'declined', childUid: me.uid, childName: profile.name });
-    if (ok) { await F.updateDoc(ref, { parents: F.arrayUnion(l.parentUid), parentEmails: F.arrayUnion(l.parentEmail) }); }
-    profile = (await F.getDoc(ref)).data(); viewDash();
+    const id = b.dataset.id, ok = b.classList.contains('acct-accept'), lref = F.doc(fb.db, 'links', id), box = b.closest('.acct-banner'), er = box.querySelector('.acct-err');
+    try {
+      const l = (await F.getDoc(lref)).data();
+      if (ok && l.parentEmail === profile.email) { er.textContent = 'This request is from your own email.'; er.hidden = false; return; }
+      await F.updateDoc(lref, { status: ok ? 'accepted' : 'declined', childUid: me.uid, childName: profile.name });
+      if (ok) { await F.updateDoc(ref, { parents: F.arrayUnion(l.parentUid), parentEmails: F.arrayUnion(l.parentEmail) }); }
+      profile = Object.assign((await F.getDoc(ref)).data() || {}, { uid: me.uid }); viewDash();
+    } catch (x) { er.textContent = 'Could not update. Refresh and try again.'; er.hidden = false; }
+  }));
+  ROOT.querySelectorAll('.acct-cancel').forEach(b => b.addEventListener('click', async () => {
+    busy(b, true, 'Cancelling…');
+    try { await F.deleteDoc(F.doc(fb.db, 'links', b.dataset.id)); viewDash(); } catch (x) { busy(b, false, 'Cancel request'); }
   }));
   const lf = $('.acct-link-form');
   if (lf) lf.addEventListener('submit', async e => {
-    e.preventDefault(); const c = lf.child.value.trim().toLowerCase(), er = ROOT.querySelector('.acct-linkbox .acct-err');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c)) { er.textContent = 'Check the email address.'; er.hidden = false; return; }
-    await requestLink(c); lf.innerHTML = '<p class="acct-note">Request sent. Ask your child to log in and accept it.</p>';
+    e.preventDefault(); const c = lf.child.value.trim().toLowerCase(), er = ROOT.querySelector('.acct-linkbox .acct-err'); er.hidden = true;
+    if (!EMAIL_RE.test(c)) { er.textContent = 'Check the email address.'; er.hidden = false; return; }
+    if (c === profile.email) { er.textContent = 'This is your own email. Enter the email your child uses.'; er.hidden = false; return; }
+    const b = lf.querySelector('button'); busy(b, true, 'Sending…');
+    try { await requestLink(c); viewDash(); }
+    catch (x) { er.textContent = 'Could not send the request. Refresh and try again.'; er.hidden = false; busy(b, false, 'Send request'); }
   });
   $('.acct-delete').addEventListener('click', async () => {
     if (!confirm('Delete your account and stop all emails? This cannot be undone.')) return;
-    await F.deleteDoc(ref); await fb.A.signOut(fb.auth);
+    try { if (profile.whatsapp) await F.deleteDoc(F.doc(fb.db, 'phones', profile.whatsapp)); } catch (x) {}
+    try { await F.deleteDoc(ref); } catch (x) {}
+    remember(false); await fb.A.signOut(fb.auth);
   });
 }
 
 /* ---------- data ---------- */
+// Each WhatsApp number can belong to one account only. phones/{number} is created once; the rules refuse it if someone else holds it.
+async function claimPhone(wa) {
+  const F = fb.F, ref = F.doc(fb.db, 'phones', wa);
+  try { await F.setDoc(ref, { uid: me.uid, created: F.serverTimestamp() }); return true; }
+  catch (e) { try { const d = await F.getDoc(ref); return d.exists() && d.data().uid === me.uid; } catch (x) { return false; } }
+}
+const linkId = childEmail => me.uid + '_' + childEmail.replace(/[^a-z0-9]/g, '_');
 async function requestLink(childEmail) {
-  const F = fb.F;
-  await F.setDoc(F.doc(fb.db, 'links', me.uid + '_' + childEmail.replace(/[^a-z0-9]/g, '_')), { parentUid: me.uid, parentName: profile ? profile.name : '', parentEmail: me.email, childEmail, status: 'pending', created: F.serverTimestamp() });
+  const F = fb.F, ref = F.doc(fb.db, 'links', linkId(childEmail));
+  const old = await F.getDoc(ref).catch(() => null);
+  if (old && old.exists()) {
+    if (old.data().status === 'pending') return;      // already waiting
+    await F.deleteDoc(ref);                            // declined or accepted earlier: start again
+  }
+  await F.setDoc(ref, { parentUid: me.uid, parentName: profile ? profile.name : '', parentEmail: me.email, childEmail, status: 'pending', created: F.serverTimestamp() });
 }
 let loadPendingLinks = async function () {
   const F = fb.F; try {
     const q = F.query(F.collection(fb.db, 'links'), F.where('childEmail', '==', me.email), F.where('status', '==', 'pending'));
     return (await F.getDocs(q)).docs.map(d => Object.assign({ id: d.id }, d.data()));
   } catch (e) { return []; }
-}
-async function loadChild() {
+};
+let loadMyLinks = async function () {
+  const F = fb.F; try {
+    const q = F.query(F.collection(fb.db, 'links'), F.where('parentUid', '==', me.uid));
+    return (await F.getDocs(q)).docs.map(d => Object.assign({ id: d.id }, d.data()));
+  } catch (e) { return []; }
+};
+let loadChild = async function () {
   const F = fb.F; try {
     const q = F.query(F.collection(fb.db, 'links'), F.where('parentUid', '==', me.uid), F.where('status', '==', 'accepted'));
     const l = (await F.getDocs(q)).docs[0]; if (!l) return null;
     const uid = l.data().childUid, c = (await F.getDoc(F.doc(fb.db, 'users', uid))).data();
     return c ? Object.assign({ uid }, c) : null;
   } catch (e) { return null; }
-}
+};
 let loadRequests = async function (uid) {
   if (!uid) return []; const F = fb.F; try {
     const q = F.query(F.collection(fb.db, 'requests'), F.where('viewers', 'array-contains', me.uid));
     return (await F.getDocs(q)).docs.map(d => d.data()).filter(r => r.uid === uid).sort((a, b) => (b.created && b.created.seconds || 0) - (a.created && a.created.seconds || 0));
   } catch (e) { return []; }
-}
+};
 async function start() {
   const F = fb.F, snap = await F.getDoc(F.doc(fb.db, 'users', me.uid));
   if (!snap.exists()) return viewSetup(me.email);
@@ -312,19 +433,28 @@ async function start() {
   });
 })();
 
-/* ---------- preview with sample data (myunimentor.in/account#demo) ---------- */
+/* ---------- preview with sample data (account#demo, ?step=login|code|setup, ?role=parent|parent-wait) ---------- */
 function demo() {
   const noop = async () => {};
-  fb = { A: { signOut: noop }, auth: {}, db: {}, F: { doc: () => ({}), collection: () => ({}), updateDoc: noop, setDoc: noop, addDoc: noop, deleteDoc: noop, getDoc: async () => ({ data: () => ({}) }), serverTimestamp: () => null, arrayUnion: x => [x] } };
+  fb = { A: { signOut: noop }, auth: {}, db: {}, F: { doc: () => ({}), collection: () => ({}), updateDoc: noop, setDoc: noop, addDoc: noop, deleteDoc: noop, getDoc: async () => ({ data: () => ({}), exists: () => false }), serverTimestamp: () => null, arrayUnion: x => [x] } };
   me = { uid: 'demo', email: 'riya@example.com' };
-  const step = new URLSearchParams(location.search).get('step');
+  const qs = new URLSearchParams(location.search), step = qs.get('step'), role = qs.get('role');
   if (step === 'login') return viewLogin();
   if (step === 'code') return viewCode(me.email);
   if (step === 'setup') return viewSetup(me.email);
-  profile = { uid: 'demo', role: 'student', name: 'Riya Sharma', email: me.email, cls: 'Class 12', stream: 'pcm', city: 'Dehradun', exams: autoExams('pcm').concat(['nid-dat-prelims']),
-    notify: { instant: true, reminders: true, digest: false }, saved: [{ slug: 'btech-cse-after-12th', title: 'B.Tech CSE after 12th', url: link('courses') }],
+  const riya = { uid: 'demo', role: 'student', name: 'Riya Sharma', email: me.email, cls: 'Class 12', stream: 'pcm', city: 'Dehradun', whatsapp: '9876543210', exams: autoExams('pcm').concat(['nid-dat-prelims']),
+    notify: { instant: true, reminders: true, digest: false }, saved: [{ slug: 'btech-cse-after-12th', title: 'B.Tech CSE after 12th', url: link('courses') }], parents: [], parentEmails: [],
     check: { at: Date.now() - 864e5 * 3, top: ['Software, AI and computing', 'Maths, statistics and analytics', 'Core engineering'] } };
   loadRequests = async () => [{ status: 'booked', when: 'Sat 28 Nov, 5 pm', topic: 'B.Tech CSE vs BCA, and which colleges to apply to', created: { toDate: () => new Date(Date.now() - 864e5) }, notes: '' }];
+  if (role === 'parent' || role === 'parent-wait') {
+    me = { uid: 'demo-p', email: 'anil@example.com' };
+    profile = { uid: 'demo-p', role: 'parent', name: 'Anil Sharma', email: me.email, city: 'Dehradun', notify: { instant: true, reminders: true, digest: true }, saved: [] };
+    loadChild = async () => role === 'parent' ? riya : null;
+    loadMyLinks = async () => role === 'parent-wait' ? [{ id: 'l1', childEmail: 'riya@example.com', status: 'pending' }] : [];
+    if (role === 'parent-wait') loadRequests = async () => [];
+    return viewDash();
+  }
+  profile = riya;
   loadPendingLinks = async () => [{ id: 'x', parentName: 'Anil Sharma', parentEmail: 'anil@example.com' }];
   viewDash();
 }
