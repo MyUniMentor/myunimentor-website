@@ -2,14 +2,15 @@
 
   python3 tools/notify.py changes     after a push: exam changes -> instant alerts; new guides -> draft announcements
   python3 tools/notify.py scheduled   every hour: queued mail, approved announcements; once a day (from 8 am IST)
-                                      deadline reminders (7 days and 1 day before); Sundays the weekly summary
+                                      deadline reminders (3 days and 1 day before); Sundays the weekly summary
+                                      from 7 pm IST: an all-the-best note the night before an exam
 
 Secrets (GitHub -> Settings -> Secrets and variables -> Actions):
   FIREBASE_SA   the whole service-account JSON (a separate key from the one in Apps Script)
   BREVO_KEY     Brevo API key
 Optional: DRY_RUN=1 prints instead of sending; TEST_TO=you@x.in sends every email to that address only.
 """
-import datetime, html, json, os, subprocess, sys, urllib.request
+import datetime, html, json, os, re, subprocess, sys, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
@@ -154,6 +155,22 @@ class Mailer:
 
 
 # ---------------------------------------------------------------- who gets what
+# ---------------------------------------------------------------- school year (same rules as the dashboard)
+# The class moves up every 1 April. After Class 12 (or a gap year) alerts continue until 31 July for that
+# year's entrance exams, then stop for the student and their parents.
+ORDER = ['Class 9', 'Class 10', 'Class 11', 'Class 12']
+def session_of(d): return d.year if d.month >= 4 else d.year - 1
+def school_active(u):
+    if u.get('role') != 'student': return True
+    created = u.get('created')
+    try: created = created.date() if hasattr(created, 'date') else None
+    except Exception: created = None
+    base = u.get('clsSession') if u.get('clsSession') is not None else session_of(created or TODAY)
+    cls = u.get('cls')
+    left = 1 if cls == 'Gap year / dropper' else (4 - ORDER.index(cls)) if cls in ORDER else 99
+    if session_of(TODAY) - base < left: return True
+    return TODAY <= datetime.date(base + left, 7, 31)
+
 def on(u, pref): return (u.get('notify') or {}).get(pref, True) is not False
 
 def recipients(users, exam_ids, pref):
@@ -161,7 +178,7 @@ def recipients(users, exam_ids, pref):
     by_uid = {u['uid']: u for u in users}
     out = {}
     for s in users:
-        if s.get('role') != 'student': continue
+        if s.get('role') != 'student' or not school_active(s): continue
         hit = set(s.get('exams') or []) & set(exam_ids)
         if not hit: continue
         if on(s, pref) and s.get('email'):
@@ -212,14 +229,14 @@ def send_changes(db, mailer, users, changes):
         mailer.send(email, subj, shell(pre, inner), text, 'exam-change')
 
 
-# ---------------------------------------------------------------- 2. deadline reminders (7 days and 1 day before)
+# ---------------------------------------------------------------- 2. deadline reminders (3 days and 1 day before)
 def send_reminders(db, mailer, users, exams):
-    due = {x['id']: x for x in exams if x.get('id') and x.get('deadline') and days_to(x['deadline']) in (7, 1)}
+    due = {x['id']: x for x in exams if x.get('id') and x.get('deadline') and days_to(x['deadline']) in (3, 1)}
     if not due: print('no deadlines 7 or 1 day away'); return
     for email, r in recipients(users, list(due), 'reminders').items():
         items = sorted((due[i] for i in r['exams']), key=lambda x: x['deadline'])
         n = min(days_to(x['deadline']) for x in items)
-        when = 'tomorrow' if n == 1 else 'in 7 days'
+        when = 'tomorrow' if n == 1 else f'in {n} days'
         name = items[0]['exam'] if len(items) == 1 else f'{len(items)} exams'
         who = f'{e(r["child"])} has' if r['child'] else 'You have'
         inner = kicker('Deadline reminder') + h1(f'Registration closes {when}') + para(f'Hi {e(first(r["name"]))}, {who} {"a deadline" if len(items) == 1 else "deadlines"} coming up. Apply on the official site before it closes.')
@@ -230,15 +247,38 @@ def send_reminders(db, mailer, users, exams):
         mailer.send(email, subj, shell(pre, inner), text, 'reminder')
 
 
+# ---------------------------------------------------------------- 3b. all the best, the evening before an exam (exact dates only)
+def send_wishes(db, mailer, users, exams):
+    due = {x['id']: x for x in exams if x.get('id') and (x.get('label') or '')[:1].isdigit() and days_to(x['date']) == 1}
+    if not due: print('no exams tomorrow'); return
+    for email, r in recipients(users, list(due), 'reminders').items():
+        items = [due[i] for i in r['exams']]
+        names = ' and '.join(x['exam'] for x in items)
+        kid = first(r['child']) if r['child'] else None
+        window = any(not re.fullmatch(r'\d{1,2} \w{3} \d{4}', x.get('label', '')) for x in items)
+        inner = kicker('All the best') + h1(f'All the best to {kid} for tomorrow!' if kid else f'All the best for tomorrow, {first(r["name"])}!')
+        inner += para(f'{e(kid) + "’s" if kid else "Your"} {e(names)} {"window starts" if window else "is"} tomorrow. '
+                      + ('Each student’s own date and shift are on the admit card. ' if window else '') + 'You’ve prepared for this. Go in calm and give it your best.', 16, C['ink'])
+        tips = ['Keep the admit card and a valid photo ID ready tonight.', 'Check the reporting time and the list of allowed items on the admit card.',
+                'Plan the route and leave early.', 'Sleep on time. A rested mind does better than a last-minute revision.']
+        inner += f'<p style="margin:6px 0 10px;font-size:15px;font-weight:700;color:{C["ink"]}">{"Tonight’s checklist for " + e(kid) if kid else "Before you sleep tonight"}</p>' + ''.join(
+            f'<p style="margin:0 0 8px;font-size:15px;line-height:22px;color:{C["muted"]}">&#10003;&nbsp; {t}</p>' for t in tips)
+        inner += ''.join(exam_card(x) for x in items) + para(('Rooting for ' + e(kid) if kid else 'Rooting for you') + ',<br><b style="color:#0E2540">Team MyUniMentor</b>', 15)
+        subj = f'All the best to {kid} for {items[0]["exam"]} tomorrow' if kid and len(items) == 1 else f'All the best for {items[0]["exam"]} tomorrow!' if len(items) == 1 else f'All the best for tomorrow, {first(r["name"])}!'
+        pre = 'Admit card, photo ID, reporting time, an early night. You’ve got this.'
+        text = f'All the best for {names} tomorrow! Keep the admit card and photo ID ready, check the reporting time, leave early and sleep on time. - Team MyUniMentor'
+        mailer.send(email, subj, shell(pre, inner), text, 'good-luck')
+
+
 # ---------------------------------------------------------------- 3. Sunday summary
 def send_digest(db, mailer, users, exams, new_guides):
     by_id = {x['id']: x for x in exams if x.get('id')}
     by_uid = {u['uid']: u for u in users}
     for u in users:
-        if not u.get('email') or not on(u, 'digest'): continue
+        if not u.get('email') or not on(u, 'digest') or not school_active(u): continue
         subject = u
         if u.get('role') == 'parent':
-            kids = [s for s in users if s.get('role') == 'student' and u['uid'] in (s.get('parents') or [])]
+            kids = [s for s in users if s.get('role') == 'student' and u['uid'] in (s.get('parents') or []) and school_active(s)]
             if not kids: continue
             subject = kids[0]
         ex = sorted((by_id[i] for i in subject.get('exams') or [] if i in by_id and days_to(by_id[i]['date']) >= 0), key=lambda x: x['date'])
@@ -275,6 +315,7 @@ def audience(users, a):
         if role != 'all' and u['role'] != role: continue
         if not any(on(u, k) for k in ('instant', 'reminders', 'digest')): continue     # turned every email off
         look = [u] if u['role'] == 'student' else by_parent.get(u['uid'], [])
+        if look and not any(school_active(s) for s in look): continue
         if streams and not any(s.get('stream') in streams for s in look): continue
         if classes and not any(s.get('cls') in classes for s in look): continue
         out.append(u)
@@ -344,6 +385,10 @@ def main(mode, db=None):
                 send_reminders(db, mailer, users, exams)
                 if TODAY.weekday() == 6 or not WRITE: send_digest(db, mailer, users, exams, new_guides)
                 if WRITE: db.set('stats', 'jobs-' + TODAY.isoformat(), {'daily': True})
+            jobs = db.get('stats', 'jobs-' + TODAY.isoformat()) or {}
+            if (NOW.hour >= 19 and not jobs.get('wish')) or not WRITE:
+                send_wishes(db, mailer, users, exams)
+                if WRITE: db.set('stats', 'jobs-' + TODAY.isoformat(), {'wish': True})
     finally:
         mailer.close()
 

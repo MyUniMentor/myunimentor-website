@@ -1834,3 +1834,9 @@ html.mt-on .wa, html.mt-on .mbar { visibility: hidden; }
 .adm-req blockquote::before, .adm-req blockquote::after { content: none; }
 .adm-req blockquote small { font-size: .85rem; }
 .adm-req select { appearance: none; -webkit-appearance: none; padding-right: 2.4rem; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2344566F' stroke-width='1.8'/%3E%3C/svg%3E") right .9rem center/12px no-repeat; }
+.acct-year { background: #E9F8FC; border-color: #BFE6F1; }
+.acct-year > .ic { background: #CDEFF8; color: var(--teal); }
+.acct-yr-form { display: flex; gap: .5rem; flex-basis: 100%; }
+.acct-yr-form[hidden] { display: none; }
+.acct-yr-form select { font: inherit; padding: .55rem .8rem; border-radius: 10px; border: 1.5px solid #CFDDE6; background: #fff; }
+.adm-off { display: inline !important; color: #B42318 !important; font-weight: 700; }

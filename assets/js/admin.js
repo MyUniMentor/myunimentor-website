@@ -12,6 +12,18 @@ const RSTAT = { requested: 'Requested', booked: 'Booked', done: 'Completed', can
 const toDate = t => t && t.toDate ? t.toDate() : t && t.seconds ? new Date(t.seconds * 1000) : t ? new Date(t) : null;
 const fmt = (t, time) => { const d = toDate(t); return d ? d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + (time ? ', ' + d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' }) : '') : '—'; };
 const ago = t => { const d = toDate(t); return d ? (Date.now() - d) / 864e5 : 1e9; };
+/* ---------- school year: the class moves up every 1 April; after Class 12, alerts run till 31 July for that year's entrance exams, then stop ---------- */
+const ORDER = ['Class 9', 'Class 10', 'Class 11', 'Class 12'];
+const sessionOf = d => d.getMonth() >= 3 ? d.getFullYear() : d.getFullYear() - 1;
+const tsDate = t => t && t.toDate ? t.toDate() : t && t.seconds ? new Date(t.seconds * 1000) : t ? new Date(t) : null;
+function school(p, now) {
+  now = now || new Date();
+  const cur = sessionOf(now), base = p.clsSession != null ? p.clsSession : sessionOf(tsDate(p.created) || now), yrs = Math.max(0, cur - base);
+  const left = p.cls === 'Gap year / dropper' ? 1 : ORDER.includes(p.cls) ? 4 - ORDER.indexOf(p.cls) : 99;
+  if (yrs < left) return { cls: p.cls === 'Gap year / dropper' ? p.cls : ORDER[ORDER.indexOf(p.cls) + yrs] || p.cls, done: false, active: true, moved: yrs > 0, cur };
+  const until = new Date(base + left, 6, 31, 23, 59);
+  return { cls: 'Finished Class 12', done: true, active: now <= until, until, moved: true, cur };
+}
 let fb = null, S = { users: [], requests: [], ann: [], archive: [], links: [], sentToday: 0, exams: [] }, TAB = 'overview', Q = '', ROLE = 'all', RFILTER = 'open';
 
 async function loadFb() {
@@ -60,12 +72,12 @@ function overview() {
   return `<div class="adm-tiles">${tile('Students', st.length, `${st.filter(u => ago(u.created) < 7).length} joined this week`)}${tile('Parents', pa.length, `${S.links.filter(l => l.status === 'accepted').length} linked to a child`)}
     ${tile('Open counselling', S.requests.filter(r => r.status === 'requested').length, `${S.requests.filter(r => r.status === 'booked').length} booked`)}${tile('Emails today', S.sentToday, 'of about 300 a day on Brevo free')}</div>
     <div class="adm-grid">
-      <section class="acct-box"><h3>Students by class</h3>${bars(CLASSES.map(c => [c, st.filter(u => u.cls === c).length]).filter(r => r[1]))}</section>
+      <section class="acct-box"><h3>Students by class</h3>${bars(CLASSES.concat('Finished Class 12').map(c => [c, st.filter(u => school(u).cls === c).length]).filter(r => r[1]))}</section>
       <section class="acct-box"><h3>Students by stream</h3>${bars(count(st, u => STREAMS[u.stream]))}</section>
       <section class="acct-box"><h3>Most followed exams</h3>${bars(count(st, u => (u.exams || []).map(exName)).slice(0, 8))}</section>
       <section class="acct-box"><h3>Courses they’re interested in</h3>${bars(count(st, u => u.targets).slice(0, 8))}</section>
       <section class="acct-box"><h3>Top cities</h3>${bars(count(S.users, u => (u.city || '').trim().replace(/\b\w/g, c => c.toUpperCase())).slice(0, 8))}</section>
-      <section class="acct-box"><h3>Latest sign-ups</h3><ul class="adm-mini">${S.users.slice(0, 6).map(u => `<li><b>${esc(u.name)}</b><span>${u.role === 'parent' ? 'Parent' : esc(u.cls || '')} · ${fmt(u.created)}</span></li>`).join('') || '<li>None yet.</li>'}</ul></section>
+      <section class="acct-box"><h3>Latest sign-ups</h3><ul class="adm-mini">${S.users.slice(0, 6).map(u => `<li><b>${esc(u.name)}</b><span>${u.role === 'parent' ? 'Parent' : esc(school(u).cls || '')} · ${fmt(u.created)}</span></li>`).join('') || '<li>None yet.</li>'}</ul></section>
     </div>`;
 }
 
@@ -84,7 +96,7 @@ function people() {
     ${rows.map(u => { const kids = S.users.filter(s => (s.parents || []).includes(u.uid)).map(s => s.name);
       return `<tr><td><b>${esc(u.name)}</b><small class="adm-role-pill r-${esc(u.role)}">${u.role === 'parent' ? 'Parent' : 'Student'}</small></td><td><a href="mailto:${esc(u.email)}">${esc(u.email)}</a></td>
       <td>${u.whatsapp ? `<a href="https://wa.me/91${esc(u.whatsapp)}" target="_blank" rel="noopener">+91 ${esc(u.whatsapp)}</a>` : '—'}</td>
-      <td>${u.role === 'student' ? `${esc(u.cls)}<small>${esc(STREAMS[u.stream] || '')}</small>` : '—'}</td><td>${esc(u.city)}${u.school ? `<small>${esc(u.school)}</small>` : ''}</td>
+      <td>${u.role === 'student' ? `${esc(school(u).cls)}${school(u).done && !school(u).active ? ' <small class="adm-off">Alerts stopped</small>' : ''}<small>${esc(STREAMS[u.stream] || '')}</small>` : '—'}</td><td>${esc(u.city)}${u.school ? `<small>${esc(u.school)}</small>` : ''}</td>
       <td>${u.role === 'student' ? ((u.parentEmails || []).map(esc).join('<br>') || '—') : (kids.map(esc).join('<br>') || '<small>Not linked</small>')}</td><td>${fmt(u.created)}</td>
       <td><button type="button" class="acct-link adm-del" data-uid="${esc(u.uid)}">Delete</button></td></tr>`; }).join('') || '<tr><td colspan="8">No one matches.</td></tr>'}
     </tbody></table></div>`;
@@ -147,7 +159,8 @@ function audience(a) {
     if (!['instant', 'reminders', 'digest'].some(k => on(u, k))) return false;
     const look = u.role === 'student' ? [u] : S.users.filter(s => (s.parents || []).includes(u.uid));
     if (streams.length && !look.some(s => streams.includes(s.stream))) return false;
-    if (classes.length && !look.some(s => classes.includes(s.cls))) return false;
+    if (look.length && !look.some(s => school(s).active)) return false;
+    if (classes.length && !look.some(s => classes.includes(school(s).cls))) return false;
     return true;
   });
 }
