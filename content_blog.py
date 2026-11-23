@@ -401,6 +401,7 @@ POSTS = [
 },
 {
  "slug": "entrance-exam-deadlines-december-2026",
+        "date": "2026-11-23",
  "tag": "Entrance exams",
  "title": "Entrance Exam Deadlines: Nov–Dec 2026 | MyUniMentor",
  "h1": "Entrance exam deadlines from late November to January",

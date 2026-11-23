@@ -1840,3 +1840,13 @@ html.mt-on .wa, html.mt-on .mbar { visibility: hidden; }
 .acct-yr-form[hidden] { display: none; }
 .acct-yr-form select { font: inherit; padding: .55rem .8rem; border-radius: 10px; border: 1.5px solid #CFDDE6; background: #fff; }
 .adm-off { display: inline !important; color: #B42318 !important; font-weight: 700; }
+/* ===== v23: audit fixes ===== */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.cc { min-height: 30rem; }
+@media (min-width: 761px) { .cc { min-height: 33rem; } }
+html.cc-printing .cc { min-height: 0; }
+.cc-guides { padding-top: 0; }
+.cc-links ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; }
+.cc-links a { display: inline-block; padding: .6rem 1rem; border-radius: 99px; background: #fff; border: 1.5px solid var(--line); color: var(--ink); font-weight: 600; text-decoration: none; }
+.cc-links a:hover { border-color: var(--teal); color: var(--teal); }
+html.cc-printing .cc-guides { display: none !important; }

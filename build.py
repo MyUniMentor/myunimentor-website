@@ -97,7 +97,7 @@ def header(active):
 FOOTER = '''<footer class="site-footer">
   <div class="wrap footer-grid">
     <div>
-      <img src="assets/img/logo-horizontal-light.webp" alt="MyUniMentor" width="191" height="52">
+      <img src="assets/img/logo-horizontal-light.webp" alt="MyUniMentor" width="191" height="52" loading="lazy" decoding="async">
       <p class="foot-tag">Right Guidance. Right Fit. Right University.</p>
       <p class="foot-legal">MyUniMentor Edtech LLP<br>Dehradun, Uttarakhand 248001</p>
     </div>
@@ -261,7 +261,6 @@ def page(fname, title, desc, active, body, schema=''):
 <link rel="preload" href="assets/fonts/figtree-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/style.min.css?v={VER}">
 <script type="speculationrules">{{"prefetch":[{{"where":{{"and":[{{"href_matches":"/*"}},{{"not":{{"href_matches":"/assets/*"}}}}]}},"eagerness":"moderate"}}]}}</script>
-{schema}
 </head>
 <body>
 <script>document.documentElement.className="js"</script>
@@ -272,11 +271,13 @@ def page(fname, title, desc, active, body, schema=''):
 {body}
 </main>
 {FOOTER}
+{schema}
 </body>
 </html>
 '''
     open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER))))
 
+WEBSITE_SCHEMA = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "@id": "https://myunimentor.in/#website", "name": "MyUniMentor", "alternateName": ["My Uni Mentor", "myunimentor.in"], "url": "https://myunimentor.in/", "inLanguage": "en-IN", "publisher": {"@id": "https://myunimentor.in/#org"}}) + '</script>'
 ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for Class 11–12 students in India, based in Dehradun, Uttarakhand.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
 
 ICONS = {
@@ -319,7 +320,7 @@ def cta(title, sub, btn='Book a free session', href='contact.html'):
   </div>
 </section>'''
 
-STUDENT_FORM = '''<form id="f-student" role="tabpanel" aria-labelledby="t-f1" class="lead-form" data-form="counselling">
+STUDENT_FORM = '''<form id="f-student" aria-labelledby="t-f1" class="lead-form" data-form="counselling">
   <div class="field"><label for="s-name">Student's name</label><input id="s-name" name="name" required autocomplete="name"></div>
   <div class="row">
     <div class="field"><label for="s-phone">Phone (WhatsApp)</label><input id="s-phone" name="phone" type="tel" inputmode="tel" pattern="[0-9+ ]{10,14}" required autocomplete="tel"></div>
@@ -335,7 +336,7 @@ STUDENT_FORM = '''<form id="f-student" role="tabpanel" aria-labelledby="t-f1" cl
   <p class="form-status" role="status" aria-live="polite"></p>
 </form>'''
 
-PARTNER_FORM = '''<form id="f-partner" role="tabpanel" aria-labelledby="t-f2" class="lead-form" data-form="partnership" hidden>
+PARTNER_FORM = '''<form id="f-partner" aria-labelledby="t-f2" class="lead-form" data-form="partnership" hidden>
   <div class="row">
     <div class="field"><label for="p-name">Your name</label><input id="p-name" name="name" required autocomplete="name"></div>
     <div class="field"><label for="p-role">Your role</label><input id="p-role" name="role" placeholder="Principal, Admissions Head…" required></div>
@@ -402,8 +403,9 @@ PRESS = [
     ("subah-suchna-alpine", "Subah Suchna", "Oct 2026", "Career fair at Alpine Public School, Saharanpur"),
     ("saral-express-brownwood", "Saral Express", "Oct 2026", "Career fair at Brownwood Public School, Saharanpur")]
 
+PRESS_SIZE = {"bharat-vichar-11oct-stmarys-alpine": (560, 410), "bharat-vichar-14oct-pinehall": (514, 560), "bharat-vichar-15oct-olympus": (560, 308), "bhartendu-olympus": (560, 547), "saral-express-brownwood": (560, 387), "subah-suchna-alpine": (560, 379)}
 def press_section(title="In the news", sub="Local press coverage of the School Career Guidance Summit, October 2026. Tap a clipping to read it."):
-    li = ''.join(f'<li class="press-item"><button class="photo press-clip" data-src="assets/press/{k}.webp" data-cap="{e(paper)}, {e(date)}: {e(head)}" aria-label="Read the {e(paper)} article: {e(head)}"><img src="assets/press/{k}-sm.webp" alt="{e(paper)} clipping: {e(head)}" loading="lazy"></button>'
+    li = ''.join(f'<li class="press-item"><button class="photo press-clip" data-src="assets/press/{k}.webp" data-cap="{e(paper)}, {e(date)}: {e(head)}" aria-label="Read the {e(paper)} article: {e(head)}"><img src="assets/press/{k}-sm.webp" width="{PRESS_SIZE.get(k, (560, 400))[0]}" height="{PRESS_SIZE.get(k, (560, 400))[1]}" alt="{e(paper)} clipping: {e(head)}" loading="lazy"></button>'
                  f'<p class="press-meta"><strong>{e(paper)}</strong><span>{e(date)}</span></p><p class="press-head">{e(head)}</p></li>' for k, paper, date, head in PRESS)
     return f"""<section class="section press" id="press"><div class="wrap"><div class="section-head" data-reveal><h2>{title}</h2><p>{sub}</p></div><ul class="press-list" data-hs>{li}</ul></div></section>"""
 
@@ -435,13 +437,13 @@ def reel_cards(names=None):
     pool = sorted(pool, key=lambda s: (not s.get('reel'), s['name'].lower()))
     for i, s in enumerate(pool):
         has = bool(s.get('reel'))
-        out.append(f'<li data-reveal style="--d:{i % 4}"><button class="reel{"" if has else " soon"}" data-reel="{e(s.get("reel", ""))}" aria-label="{"Play" if has else "Coming soon:"} Career Summit highlights from {e(s["name"])}"{"" if has else " disabled"}>'
+        out.append(f'<li data-reveal style="--d:{i % 4}"><button class="reel{"" if has else " soon"}" data-reel="{e(s.get("reel", ""))}" {"" if has else " disabled"}><span class="sr-only">{"Play" if has else "Coming soon:"} Career Summit highlights from </span>'
                    f'<span class="reel-thumb">{logo("schools", s, "logo logo-round")}{"<span class=" + chr(34) + "play" + chr(34) + " aria-hidden=" + chr(34) + "true" + chr(34) + "></span>" if has else "<span class=" + chr(34) + "soon-tag" + chr(34) + ">Video coming soon</span>"}</span>'
                    f'<span class="reel-name">{e(s["name"])}</span><span class="reel-city">{e(s["city"])}</span></button></li>')
     return ''.join(out)
 
 def overall_reel():
-    return f'''<button class="reel-feature" data-reel="{MEDIA['summit_overall']}" aria-label="Play the full School Career Guidance Summit film">
+    return f'''<button class="reel-feature" data-reel="{MEDIA['summit_overall']}">
   <span class="rf-play" aria-hidden="true"></span><span class="rf-copy"><strong>Watch the full Summit</strong><span>Clips from every school, in one film</span></span>
 </button>'''
 
@@ -672,7 +674,7 @@ def build_home():
 {cta("Not sure which course or university is right for you?", "Talk to a counsellor. 1-on-1 counselling is free for students.")}'''
     page('index.html', 'MyUniMentor | Career Counselling & University Admissions Guidance in Dehradun',
          'MyUniMentor offers free 1-on-1 career counselling for Class 11–12 students, free career seminars for schools in Dehradun and Saharanpur, and the School Career Guidance Summit with 29 partner universities.',
-         'Home', body, ORG_SCHEMA + faq_schema)
+         'Home', body, ORG_SCHEMA + WEBSITE_SCHEMA + faq_schema)
 STATE = {'Ambala': 'Haryana', 'Chandigarh': 'Chandigarh', 'Dehradun': 'Uttarakhand', 'Greater Noida': 'Uttar Pradesh', 'Landran': 'Punjab',
          'Mohali': 'Punjab', 'Panipat': 'Haryana', 'Pune': 'Maharashtra', 'Phagwara': 'Punjab', 'Roorkee': 'Uttarakhand', 'Solan': 'Himachal Pradesh',
          'Sonipat': 'Haryana', 'Saharanpur': 'Uttar Pradesh', 'Haridwar': 'Uttarakhand'}
@@ -754,7 +756,10 @@ def build_network():
 </section>'''
     page('network.html', 'Our Network — Partner Schools & Universities | MyUniMentor',
          'MyUniMentor partners with 12 schools in Dehradun and Saharanpur and 29 universities across India, including UPES, Graphic Era, Chandigarh University, LPU and Tulas University.',
-         'Our network', body)
+         'Our network', body, crumbs_schema([("Home", ""), ("Our network", "network")]) + '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "CollectionPage", "url": "https://myunimentor.in/network", "name": "MyUniMentor partner schools and universities",
+         "about": {"@id": "https://myunimentor.in/#org"}, "hasPart": [
+             {"@type": "ItemList", "name": "Partner schools", "numberOfItems": len(SCHOOLS), "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": {"@type": "School", "name": x["name"], "address": {"@type": "PostalAddress", "addressLocality": x["city"], "addressCountry": "IN"}}} for i, x in enumerate(SCHOOLS)]},
+             {"@type": "ItemList", "name": "Partner universities", "numberOfItems": len(UNIS), "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": {"@type": "CollegeOrUniversity", "name": x["name"], "address": {"@type": "PostalAddress", "addressLocality": x["city"], "addressCountry": "IN"}}} for i, x in enumerate(UNIS)]}]}, ensure_ascii=False) + '</script>')
 
 
 def timeline():
@@ -821,7 +826,7 @@ def build_about():
 </section>
 {cta("Need guidance for yourself or your child?", "Talk to a MyUniMentor counsellor. Your first one-on-one session is free.")}'''
     page('about.html', 'About MyUniMentor: Career Guidance for Every Student', 'MyUniMentor was founded in 2026 in Dehradun by Om Garg with one mission: honest, expert career guidance for every student in India.', 'About', body,
-         crumbs_schema([("Home", ""), ("About", "about")]))
+         crumbs_schema([("Home", ""), ("About", "about")]) + '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "AboutPage", "url": "https://myunimentor.in/about", "name": "About MyUniMentor", "about": {"@id": "https://myunimentor.in/#org"}, "isPartOf": {"@id": "https://myunimentor.in/#website"}}) + '</script>')
 
 def steps(items):
     return '<ol class="steps">' + ''.join(f'<li data-reveal style="--d:{i}"><span class="step-n">{i + 1}</span><h3>{a}</h3><p>{b}</p></li>' for i, (a, b) in enumerate(items)) + '</ol>'
@@ -932,7 +937,9 @@ def build_summit():
          'Career Summit', body, crumbs_schema([("Home", ""), ("Career Summit", "career-summit")]) + f'<script type="application/ld+json">{json.dumps(ev)}</script>')
 
 def build_contact():
-    lb = {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "MyUniMentor", "telephone": "+91-7417557070", "email": "info@myunimentor.in", "url": "https://myunimentor.in/",
+    lb = {"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://myunimentor.in/#local", "name": "MyUniMentor", "telephone": "+91-7417557070", "email": "info@myunimentor.in", "url": "https://myunimentor.in/",
+          "image": "https://myunimentor.in/assets/img/og-image.jpg", "logo": "https://myunimentor.in/assets/img/logo-dark.png", "parentOrganization": {"@id": "https://myunimentor.in/#org"},
+          "areaServed": ["Dehradun", "Saharanpur", "India"], "contactPoint": {"@type": "ContactPoint", "telephone": "+91-7417557070", "contactType": "customer service", "areaServed": "IN", "availableLanguage": ["English", "Hindi"]},
           "address": {"@type": "PostalAddress", "addressLocality": "Dehradun", "addressRegion": "Uttarakhand", "postalCode": "248001", "addressCountry": "IN"}}
     body = page_hero("Talk to us", "Book a free counselling session*, invite us to your school, or ask about partnering. Our team will call you back.", "Contact") + f'''
 <section class="section"><div class="wrap contact-grid">
@@ -950,6 +957,15 @@ def build_contact():
 from content_blog import POSTS
 from content_courses import COURSES
 PUB = "2026-11-20"
+try: LASTMOD = json.load(open(os.path.join(ROOT, 'data/lastmod.json')))
+except Exception: LASTMOD = {}
+def pub_mod(slug, published=None):
+    """(datePublished, dateModified): a post's own `date`, and the day its content last really changed (from data/lastmod.json)."""
+    pub = published or PUB
+    return pub, max(pub, LASTMOD.get(slug, {}).get('date', pub))
+def nice_date(iso):
+    import datetime as _d
+    d = _d.date.fromisoformat(iso); return f"{d.day} {d.strftime('%b %Y')}"
 def label_tables(html):
     def fix(m):
         t = m.group(0); heads = re.findall(r'<th>(.*?)</th>', t.split('</thead>')[0])
@@ -981,21 +997,22 @@ def article_aside(extra_links):
 def build_blog():
     cards = ''.join(post_card(p_, i) for i, p_ in enumerate(POSTS))
     body = page_hero("Guides and articles", "Clear, practical guides on streams, courses, entrance exams and universities, written for Class 11–12 students and parents.", "Blog") + f'''
-<section class="section"><div class="wrap"><ul class="posts" data-hs="m">{cards}</ul></div></section>
+<section class="section"><div class="wrap"><h2 class="sr-only">All articles</h2><ul class="posts" data-hs="m">{cards}</ul></div></section>
 <section class="section tint"><div class="wrap"><div class="section-head row-head" data-reveal><div><h2>Course guides</h2><p>What you study, who it suits, entrance exams and careers.</p></div><a class="btn btn-outline" href="courses.html">All course guides</a></div><ul class="courses" data-hs="m">{''.join(course_card(c, i) for i, c in enumerate(COURSES))}</ul></div></section>
 {cta("Have a question you want answered?", "Ask a counsellor directly. 1-on-1 counselling is free for students.")}'''
     blog_ld = {"@context": "https://schema.org", "@type": "Blog", "name": "MyUniMentor Blog", "url": "https://myunimentor.in/blog",
-               "blogPost": [{"@type": "BlogPosting", "headline": x['h1'], "url": f"https://myunimentor.in/{x['slug']}", "datePublished": PUB} for x in POSTS]}
+               "blogPost": [{"@type": "BlogPosting", "headline": x['h1'], "url": f"https://myunimentor.in/{x['slug']}", "datePublished": x.get('date', PUB)} for x in POSTS]}
     page('blog.html', 'Career Guidance Blog: Streams, Courses, Exams and Universities | MyUniMentor', 'Guides for Class 11–12 students and parents on choosing streams, courses, entrance exams like CUET and CLAT, and universities in India.', 'Resources', body,
          crumbs_schema([("Home", ""), ("Blog", "blog")]) + f'<script type="application/ld+json">{json.dumps(blog_ld)}</script>')
     for p_ in POSTS:
         faq_html, faq_schema = faq_block(p_['faq'], 'Questions students ask')
         rel = [POST_BY[r] for r in p_['related'] if r in POST_BY]
-        meta = f'<p class="art-meta"><span>By <a href="omgarg.html">Om Garg</a>, Founder, MyUniMentor</span><span aria-hidden="true">·</span>Updated 20 Nov 2026<span aria-hidden="true">·</span>{p_["read"]} min read</p>'
-        art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": p_['h1'], "description": p_['desc'], "datePublished": PUB, "dateModified": PUB,
+        dpub, dmod = pub_mod(p_['slug'], p_.get('date'))
+        meta = f'<p class="art-meta"><span>By <a href="omgarg.html">Om Garg</a>, Founder, MyUniMentor</span><span aria-hidden="true">·</span>Updated {nice_date(dmod)}<span aria-hidden="true">·</span>{p_["read"]} min read</p>'
+        art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": p_['h1'], "description": p_['desc'], "datePublished": dpub, "dateModified": dmod,
                   "image": "https://myunimentor.in/assets/img/og-image.jpg", "mainEntityOfPage": f"https://myunimentor.in/{p_['slug']}",
                   "author": {"@type": "Person", "name": "Om Garg", "url": "https://myunimentor.in/omgarg", "jobTitle": "Founder, MyUniMentor"},
-                  "publisher": {"@type": "Organization", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-512.png"}}}
+                  "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-512.png"}}}
         body = page_hero(p_['h1'], e(p_['lede']), "Blog", meta) + f'''
 <section class="section article-section"><div class="wrap art-grid">
   <article class="article">{p_['body']}</article>
@@ -1014,16 +1031,17 @@ def build_courses():
 <section class="section tint"><div class="wrap"><div class="section-head" data-reveal><h2>Guides to help you choose</h2></div><ul class="posts" data-hs="m">{''.join(post_card(x, i) for i, x in enumerate(POSTS[:3]))}</ul></div></section>
 {cta("Not sure which course fits you?", "Talk to a counsellor. Your first 1-on-1 session is free.")}'''
     page('courses.html', 'Course Guides After Class 12 | MyUniMentor', 'Course guides for Class 12 students: BBA, B.Tech CSE, Law (BA LLB), B.Des, B.Com (Hons) and BCA. Eligibility, entrance exams, subjects and careers.', 'Resources', body,
-         crumbs_schema([("Home", ""), ("Course guides", "courses")]))
+         crumbs_schema([("Home", ""), ("Course guides", "courses")]) + '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "ItemList", "name": "Course guides after Class 12", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"https://myunimentor.in/{x['slug']}", "name": f"{x['name']} after 12th"} for i, x in enumerate(COURSES)]}) + '</script>')
     for c in COURSES:
         faq_html, faq_schema = faq_block(c['faq'], f"{c['name']}: common questions")
         facts = ''.join(f'<div><dt>{k}</dt><dd>{e(v)}</dd></div>' for k, v in c['facts'])
         rel = [POST_BY[r] for r in c['related'] if r in POST_BY]
         others = [x for x in COURSES if x['slug'] != c['slug']][:3]
         li = lambda xs: ''.join(f'<li>{e(x)}</li>' for x in xs)
-        art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": f"{c['name']} after 12th: {c['full']}", "description": c['desc'], "datePublished": PUB, "dateModified": PUB,
+        dpub, dmod = pub_mod(c['slug'], c.get('date'))
+        art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": f"{c['name']} after 12th: {c['full']}", "description": c['desc'], "datePublished": dpub, "dateModified": dmod,
                   "image": "https://myunimentor.in/assets/img/og-image.jpg", "mainEntityOfPage": f"https://myunimentor.in/{c['slug']}",
-                  "author": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"}, "publisher": {"@type": "Organization", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-512.png"}}}
+                  "author": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"}, "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-512.png"}}}
         body = page_hero(f"{c['name']} after 12th", e(c['intro']), "Course guides", f'<dl class="course-facts">{facts}</dl>') + f'''
 <section class="section article-section"><div class="wrap art-grid">
   <article class="article">
@@ -1073,8 +1091,8 @@ def build_profile():
     body = f'''
 <section class="profile-hero pf2" style="--rays:url(&quot;{rays_svg(19)}&quot;)">
   <div class="wrap profile-grid">
-    <figure class="profile-photo" data-reveal>
-      <img src="assets/img/om-garg.webp" alt="Om Garg, Founder of MyUniMentor" width="960" height="1200" fetchpriority="high">
+    <figure class="profile-photo">
+      <img src="assets/img/om-garg.webp" srcset="/assets/img/om-garg-sm.webp 480w, /assets/img/om-garg-md.webp 720w, /assets/img/om-garg.webp 960w" sizes="(max-width: 700px) 92vw, 440px" alt="Om Garg, Founder of MyUniMentor" width="960" height="1200" fetchpriority="high">
       <figcaption class="pf-badge"><span class="live-dot"></span>Founder, MyUniMentor</figcaption>
     </figure>
     <div>
@@ -1222,8 +1240,23 @@ CC_LLMS_LINE = '- [Free career check for Class 9–12](https://myunimentor.in/ca
 
 def build_seo_files():
     urls = ['', 'about', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'omgarg', 'blog', 'contact', 'exam-calendar', 'testimonials'] + (['career-check'] if SHOW_CAREER_CHECK else []) + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'courses'] + [x['slug'] for x in POSTS] + [x['slug'] for x in COURSES]
+    # lastmod: the date a page's content last really changed (asset version strings ignored), kept in data/lastmod.json
+    import datetime as _dt
+    today = (_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=5, minutes=30)).date().isoformat()
+    mpath = os.path.join(ROOT, 'data/lastmod.json')
+    try: known = json.load(open(mpath))
+    except Exception: known = {}
+    for u in urls:
+        f = os.path.join(ROOT, (u or 'index') + '.html')
+        if not os.path.exists(f): continue
+        txt = re.sub(r'\?v=[0-9a-f]+', '', open(f, encoding='utf-8').read())
+        m = re.search(r'(?s)<main.*?</main>', txt); txt = m.group(0) if m else txt          # only the page's own content counts
+        txt = re.sub(r'"dateModified": ?"[^"]*"|Updated \d{1,2} \w{3} \d{4}', '', txt)   # the date itself is not a content change
+        h = hashlib.md5(txt.encode()).hexdigest()
+        if known.get(u, {}).get('hash') != h: known[u] = {'hash': h, 'date': today}
+    json.dump({u: known[u] for u in urls if u in known}, open(mpath, 'w'), indent=1, sort_keys=True)
     open(os.path.join(ROOT, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-        ''.join(f'  <url><loc>https://myunimentor.in/{u}</loc></url>\n' for u in urls) + '</urlset>\n')
+        ''.join(f'  <url><loc>https://myunimentor.in/{u}</loc>' + (f'<lastmod>{known[u]["date"]}</lastmod>' if u in known else '') + '</url>\n' for u in urls) + '</urlset>\n')
     open(os.path.join(ROOT, 'robots.txt'), 'w').write("User-agent: *\nAllow: /\n\n# Search engines and AI assistants are welcome to read and cite this site\n" +
         ''.join(f"User-agent: {x}\nAllow: /\n" for x in AI_BOTS) + "\nSitemap: https://myunimentor.in/sitemap.xml\n# Plain-text summaries for AI: https://myunimentor.in/llms.txt and https://myunimentor.in/llms-full.txt\n")
     unis = '\n'.join(f'- {u["name"]}{" (" + u["short"] + ")" if u.get("short") else ""}, {u["city"]}' for u in UNIS)
@@ -1355,13 +1388,16 @@ def career_teaser():
   </div>
 </section>'''
 
+CC_LINK_TEXT = {'cal': 'Entrance exam calendar', 'net': 'Partner universities', 'cuet': 'CUET UG guide', 'stream': 'Choosing a stream after Class 10', 'btech': 'B.Tech CSE after 12th',
+                'bca': 'BCA after 12th', 'branches': 'Engineering branches explained', 'bdes': 'B.Des after 12th', 'pcb': 'Careers after PCB beyond MBBS', 'bcom': 'B.Com (Hons) after 12th',
+                'bba': 'BBA after 12th', 'law': 'Law after 12th', 'logo': 'MyUniMentor logo'}
 def build_career_check():
     faq_html, faq_schema = faq_block([
         ("Is the MyUniMentor career check free?", "Yes. It is free and takes about four minutes. You share your name and phone number before you see your result, and a MyUniMentor counsellor calls you to talk it through."),
         ("Who is it for?", "Students in Class 9, 10, 11 and 12. Class 9 and 10 students also see which stream fits each career path."),
         ("How is it different from other career tests?", "The questions change with your stream and your answers. Commerce, PCM, PCB, PCMB and Humanities students each get their own set of activities, and the check then asks follow-up questions only about your top areas."),
         ("Is this a psychometric test?", "No. It is a short guidance tool based on your interests, stream and plans. For a detailed plan, a counsellor looks at your marks, strengths and options with you.")], "About the career check")
-    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('cal','exam-calendar.html'),('net','network.html#universities'),('cuet','cuet-guide-class-12.html'),('stream','stream-after-class-10.html'),
+    links = ''.join((f'<li hidden><a data-k="{k}" href="{h}" tabindex="-1">{e(CC_LINK_TEXT.get(k, k))}</a></li>' if k == 'logo' else f'<li><a data-k="{k}" href="{h}">{e(CC_LINK_TEXT.get(k, k))}</a></li>') for k, h in [('cal','exam-calendar.html'),('net','network.html#universities'),('cuet','cuet-guide-class-12.html'),('stream','stream-after-class-10.html'),
         ('btech','btech-cse-after-12th.html'),('bca','bca-after-12th.html'),('branches','engineering-branches-explained.html'),('bdes','bdes-after-12th.html'),('pcb','careers-after-pcb-beyond-mbbs.html'),
         ('bcom','bcom-hons-after-12th.html'),('bba','bba-after-12th.html'),('law','law-after-12th.html'),('logo','assets/img/logo-horizontal-dark.webp')])
     body = page_hero("Free career check", "For Class 9–12. About four minutes. The questions change with your stream and your answers, then show the career paths, courses and entrance exams that fit you.", "Career check") + f'''
@@ -1370,9 +1406,10 @@ def build_career_check():
     <div class="cc" id="cc">
       <noscript><p>The career check needs JavaScript. You can also <a href="contact.html">book a free counselling session</a>.</p></noscript>
     </div>
-    <nav class="cc-links" hidden aria-hidden="true">{links}</nav>
   </div>
 </section>
+<section class="section cc-guides"><div class="wrap"><div class="section-head"><h2>Guides that go with your result</h2><p>Free guides on courses, streams and entrance exams, written for Class 9–12 students and parents.</p></div>
+  <nav class="cc-links" aria-label="Course and exam guides"><ul>{links}</ul></nav></div></section>
 {faq_html}
 <script src="assets/js/check.min.js?v={VER}" defer></script>'''
     page('career-check.html', 'Free Career Check', 'Free career check', 'Resources', body,
@@ -1450,6 +1487,7 @@ def build_exam_calendar():
     body = page_hero("Entrance exam calendar 2027", f"Key dates for JEE, NEET, CUET, CLAT, NID, NIFT, UCEED and IPMAT, in one place. Last checked on {CHECKED}. Always confirm on the official website before you apply.", "Exam calendar") + f'''
 <section class="section">
   <div class="wrap">
+    <h2 class="sr-only">All entrance exams by date</h2>
     <div class="cal-tools" data-reveal>
       <div class="filters" role="group" aria-label="Filter exams by stream"><button class="fbtn" aria-pressed="true" data-stream="all">All exams</button><button class="fbtn" aria-pressed="false" data-stream="pcm">PCM</button><button class="fbtn" aria-pressed="false" data-stream="pcb">PCB</button><button class="fbtn" aria-pressed="false" data-stream="com">Commerce</button><button class="fbtn" aria-pressed="false" data-stream="hum">Humanities</button></div>
       <p class="legend"><span class="dotc confirmed"></span>Date announced <span class="dotc expected"></span>Expected, not announced yet</p>
@@ -1459,6 +1497,8 @@ def build_exam_calendar():
     <p class="tc">Dates are compiled from official announcements and may change. MyUniMentor is not responsible for changes made by the conducting bodies.</p>
   </div>
 </section>
+<section class="section tint"><div class="wrap"><div class="section-head row-head" data-reveal><div><h2>Guides for these exams</h2><p>Step-by-step guides to the entrance exams on this calendar.</p></div><a class="btn btn-outline" href="blog.html">All guides</a></div>
+  <ul class="posts" data-hs="m">{''.join(post_card(x, i) for i, x in enumerate([q for q in POSTS if q['tag'] == 'Entrance exams'][::-1][:3]))}</ul></div></section>
 {faq_html}
 {cta("Not sure which exams you should take?", "A counsellor will build your exam plan with you. 1-on-1 counselling is free for students.")}'''
     page('exam-calendar.html', 'Entrance Exam Calendar 2027 — JEE, NEET, CUET, CLAT Dates | MyUniMentor',
@@ -1513,9 +1553,9 @@ def build_cities():
              '', body, crumbs_schema([("Home", ""), (f"Career counselling in {name}", f"career-counselling-{c['slug']}")]) + faq_schema + f'<script type="application/ld+json">{json.dumps(svc)}</script>')
 
 def tc(i, t):
-    ph = (f'<figure class="t-photo"><img src="assets/img/testimonials/{t["photo"]}" alt="{e(t["name"])}" width="{t.get("pw", 520)}" height="{t.get("ph", 650)}" loading="lazy"></figure>'
+    ph = (f'<figure class="t-photo"><img src="assets/img/testimonials/{t["photo"]}" alt="{e(t["name"])}" width="{t.get("pw", 520)}" height="{t.get("ph", 650)}"{' loading="lazy"' if i > 1 else ' fetchpriority="high"' if i == 0 else ''}></figure>'
           if t.get('photo') else f'<span class="t-init" aria-hidden="true">{e(initials(t["name"]))}</span>')
-    return (f'<li class="tcard{" has-photo" if t.get("photo") else ""}" data-reveal style="--d:{i % 2}">{ph}<div class="t-body">'
+    return (f'<li class="tcard{" has-photo" if t.get("photo") else ""}"{" data-reveal" if i > 1 else ""} style="--d:{i % 2}">{ph}<div class="t-body">'
             f'<blockquote>“{e(t["quote"])}”</blockquote><div class="t-who"><strong>{e(t["name"])}</strong>'
             f'<small>{e(t.get("role", ""))}</small>{"<small class=" + chr(34) + "t-org" + chr(34) + ">" + e(t["org"]) + "</small>" if t.get("org") else ""}</div></div></li>')
 

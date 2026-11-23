@@ -1,0 +1,12 @@
+# GitHub Pages: publish only the website. Build scripts, notes and raw data stay in the repo but are not served.
+exclude:
+  - CLAUDE.md
+  - README.md
+  - build.py
+  - content_blog.py
+  - content_courses.py
+  - data
+  - tools
+  - src
+  - firestore.rules
+  - __pycache__
