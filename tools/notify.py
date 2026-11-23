@@ -19,6 +19,7 @@ NOW = datetime.datetime.now(IST)
 TODAY = NOW.date()
 DRY = os.environ.get('DRY_RUN') == '1'
 TEST_TO = os.environ.get('TEST_TO', '').strip().lower()
+WRITE = not (DRY or TEST_TO)       # test runs change nothing in the database
 DAILY_LIMIT = int(os.environ.get('DAILY_LIMIT', '230'))   # Brevo free = 300/day, shared with login codes
 FROM = {'name': 'MyUniMentor', 'email': 'updates@myunimentor.in'}
 REPLY_TO = {'name': 'MyUniMentor', 'email': 'info@myunimentor.in'}
@@ -121,8 +122,10 @@ class Mailer:
         self.db, self.day = db, TODAY.isoformat()
         self.count = (db.get('stats', 'mail-' + self.day) or {}).get('sent', 0)
         self.sent = self.queued = 0
-    def room(self): return self.count < DAILY_LIMIT
+        self.blocked = False
+    def room(self): return not self.blocked and self.count < DAILY_LIMIT
     def send(self, to, subject, html_, text, tag, queue_ok=True):
+        queue_ok = queue_ok and WRITE
         if not self.room():
             if queue_ok:
                 self.db.add('mailqueue', {'to': to, 'subject': subject, 'html': html_, 'text': text, 'tag': tag, 'created': self.db.now()}); self.queued += 1
@@ -138,14 +141,15 @@ class Mailer:
             try:
                 urllib.request.urlopen(req, timeout=30).read()
             except Exception as x:
-                print(f'  ! Brevo refused {tag} to {to}: {x}')
+                detail = x.read().decode(errors='replace')[:300] if hasattr(x, 'read') else ''
+                print(f'  ! Brevo refused {tag} to {to}: {x} {detail}')
                 if queue_ok: self.db.add('mailqueue', {'to': to, 'subject': subject, 'html': html_, 'text': text, 'tag': tag, 'created': self.db.now()}); self.queued += 1
-                self.count = DAILY_LIMIT        # stop for today; the rest waits
+                self.blocked = True             # stop this run; the rest waits for the next one
                 return False
         self.count += 1; self.sent += 1
         return True
     def close(self):
-        self.db.set('stats', 'mail-' + self.day, {'sent': self.count, 'day': self.day})
+        if WRITE: self.db.set('stats', 'mail-' + self.day, {'sent': self.count, 'day': self.day})
         print(f'sent {self.sent}, queued {self.queued}, total today {self.count}/{DAILY_LIMIT}')
 
 
@@ -285,6 +289,7 @@ def send_announcements(db, mailer, users):
                 break                                    # out of room today: carry on next run
             done.add(u['email'])
         finished = all(u['email'] in done for u in people)
+        if not WRITE: continue
         db.set('announcements', a['id'], {'sentTo': sorted(done), 'sentCount': len(done), 'status': 'sent' if finished else 'approved',
                                           **({'sentAt': db.now()} if finished else {})})
         print(f'announcement {a["id"]}: {len(done)}/{len(people)}')
@@ -295,7 +300,7 @@ def track_guides(db):
     posts, meta = load_posts(), db.get('meta', 'guides') or {}
     seen = meta.get('seen') or {}
     fresh = [p for p in posts if p['slug'] not in seen]
-    if fresh:
+    if fresh and WRITE:
         for p in fresh: seen[p['slug']] = TODAY.isoformat()
         db.set('meta', 'guides', {'seen': seen})
         if meta:   # the very first run only records what exists
@@ -312,7 +317,7 @@ def drain_queue(db, mailer):
     for m in db.ordered('mailqueue', 200):
         if not mailer.room(): break
         if mailer.send(m['to'], m['subject'], m['html'], m.get('text', ''), m.get('tag', 'queued'), queue_ok=False):
-            db.delete('mailqueue', m['id'])
+            if WRITE: db.delete('mailqueue', m['id'])
 
 
 def main(mode, db=None):
@@ -329,11 +334,11 @@ def main(mode, db=None):
             drain_queue(db, mailer)
             send_announcements(db, mailer, users)
             jobs = db.get('stats', 'jobs-' + TODAY.isoformat()) or {}
-            if NOW.hour >= 8 and not jobs.get('daily'):
+            if (NOW.hour >= 8 and not jobs.get('daily')) or not WRITE:
                 new_guides = track_guides(db)
                 send_reminders(db, mailer, users, exams)
-                if TODAY.weekday() == 6: send_digest(db, mailer, users, exams, new_guides)
-                db.set('stats', 'jobs-' + TODAY.isoformat(), {'daily': True})
+                if TODAY.weekday() == 6 or not WRITE: send_digest(db, mailer, users, exams, new_guides)
+                if WRITE: db.set('stats', 'jobs-' + TODAY.isoformat(), {'daily': True})
     finally:
         mailer.close()
 
