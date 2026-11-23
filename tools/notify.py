@@ -208,7 +208,8 @@ def send_changes(db, mailer, users, changes):
         inner += para('Always check the official site before you apply.', 13) + button('See all your exams', SITE + '/account')
         subj = f'Update: {title} has changed' if len(items) == 1 else f'Updates to {len(items)} of your exams'
         text = f'Hi {first(r["name"])}, ' + '; '.join(f'{x["exam"]}: ' + ', '.join(f'{l} {a} -> {b}' for l, a, b in rows) for x, rows in items) + f'. See {SITE}/account'
-        mailer.send(email, subj, shell(subj, inner), text, 'exam-change')
+        pre = '; '.join(f'{x["exam"]}: ' + ', '.join(f'{l.lower()} now {b}' for l, a, b in rows) for x, rows in items)
+        mailer.send(email, subj, shell(pre, inner), text, 'exam-change')
 
 
 # ---------------------------------------------------------------- 2. deadline reminders (7 days and 1 day before)
@@ -225,7 +226,8 @@ def send_reminders(db, mailer, users, exams):
         inner += ''.join(exam_card(x, deadline_line(x)) for x in items) + button('See all your exams', SITE + '/account')
         subj = f'{name}: registration closes {when}'
         text = f'Hi {first(r["name"])}, ' + '; '.join(f'{x["exam"]}: {x.get("deadline_label")}' for x in items) + f'. Official sites and your exams: {SITE}/account'
-        mailer.send(email, subj, shell(subj, inner), text, 'reminder')
+        pre = ' · '.join(f'{x["exam"]}: {x.get("deadline_label")}' for x in items)
+        mailer.send(email, subj, shell(pre, inner), text, 'reminder')
 
 
 # ---------------------------------------------------------------- 3. Sunday summary
@@ -254,7 +256,9 @@ def send_digest(db, mailer, users, exams, new_guides):
         inner += button('Open your dashboard', SITE + '/account')
         subj = f'Your week ahead: {ex[0]["exam"]} in {day_text(days_to(ex[0]["date"]))}' if ex else 'New guides on MyUniMentor this week'
         text = 'Countdown: ' + '; '.join(f'{x["exam"]} {x.get("label")}' for x in ex[:6]) + f'. {SITE}/account'
-        mailer.send(u['email'], subj, shell(subj, inner), text, 'digest')
+        bits = [f'{len(soon)} deadline{"s" if len(soon) != 1 else ""} in the next 3 weeks' if soon else 'No deadlines in the next 3 weeks', f'{len(ex)} exam{"s" if len(ex) != 1 else ""} on the countdown' if ex else '']
+        if new_guides: bits.append(f'{len(new_guides)} new guide{"s" if len(new_guides) != 1 else ""}')
+        mailer.send(u['email'], subj, shell(' · '.join(b for b in bits if b), inner), text, 'digest')
 
 
 # ---------------------------------------------------------------- 4. announcements (written or approved by an admin in /admin)
@@ -285,7 +289,8 @@ def send_announcements(db, mailer, users):
             if u['email'] in done: continue
             inner = kicker('From MyUniMentor') + h1(a.get('subject', '')) + para(f'Hi {e(first(u.get("name")))},') + paras
             if a.get('cta_url'): inner += button(a.get('cta_label') or 'Find out more', a['cta_url'])
-            if not mailer.send(u['email'], a['subject'], shell(a['subject'], inner), (a.get('body') or '') + ' ' + (a.get('cta_url') or ''), 'announcement', queue_ok=False):
+            pre = (a.get('body') or '').split('\n')[0][:140]
+            if not mailer.send(u['email'], a['subject'], shell(pre, inner), (a.get('body') or '') + ' ' + (a.get('cta_url') or ''), 'announcement', queue_ok=False):
                 break                                    # out of room today: carry on next run
             done.add(u['email'])
         finished = all(u['email'] in done for u in people)
