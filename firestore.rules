@@ -38,7 +38,7 @@ service cloud.firestore {
       allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
     }
     match /announcements/{id} { allow read, write: if isAdmin(); }
-    match /archive/{id} { allow read: if isAdmin(); }
+    match /archive/{id} { allow read, create: if isAdmin(); }
     match /stats/{id} { allow read: if isAdmin(); }
     match /{document=**} { allow read, write: if false; }
   }

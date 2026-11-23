@@ -1768,3 +1768,69 @@ html.mt-on .wa, html.mt-on .mbar { visibility: hidden; }
 .acct-del-btns { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .btn-danger { background: #B42318; border-color: #B42318; color: #fff; }
 .btn-danger:hover { background: #912018; border-color: #912018; color: #fff; }
+/* ===== v22: admin panel (/admin, staff only) ===== */
+#adm { max-width: 1240px; }
+.adm-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.adm-top h2 { margin: 0; font-size: clamp(1.7rem, 1.3rem + 1.2vw, 2.3rem); }
+.adm-top-btns { display: flex; gap: .5rem; }
+.adm-tabs { display: flex; gap: .3rem; flex-wrap: wrap; padding: .35rem; border-radius: 16px; background: #fff; border: 1px solid #E1EBF2; margin-bottom: 1.25rem; }
+.adm-tabs button { border: 0; background: transparent; padding: .6rem 1rem; border-radius: 12px; font: 700 .95rem var(--f-body); color: var(--ink-2); cursor: pointer; display: inline-flex; gap: .45rem; align-items: center; }
+.adm-tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+.adm-tabs i { font-style: normal; font-size: .78rem; padding: .05rem .45rem; border-radius: 99px; background: #EEF3F7; color: var(--ink-2); }
+.adm-tabs i.hot { background: var(--sun); color: #5A3A00; }
+.adm-tabs button[aria-selected="true"] i { background: rgba(255,255,255,.18); color: #fff; }
+.adm-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+@media (max-width: 800px) { .adm-tiles { grid-template-columns: 1fr 1fr; } }
+.adm-tile { padding: 1.1rem 1.2rem; border-radius: 20px; background: linear-gradient(150deg, var(--night), var(--ink)); color: #fff; }
+.adm-tile span { font-size: .85rem; color: rgba(255,255,255,.72); font-weight: 600; }
+.adm-tile b { display: block; font: 800 2.1rem/1.15 var(--f-display); margin: .2rem 0; }
+.adm-tile small { color: var(--cyan-hi); font-size: .83rem; }
+.adm-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.adm-grid h3, .adm-ann-form h3 { margin: 0 0 1rem; font-size: 1.1rem; }
+.adm-bars { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.adm-bars li { display: grid; grid-template-columns: minmax(0, 9rem) 1fr 2.2rem; gap: .6rem; align-items: center; font-size: .9rem; }
+.adm-bars span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adm-bars b { height: 10px; border-radius: 99px; background: #EDF3F7; overflow: hidden; }
+.adm-bars b i { display: block; height: 100%; width: var(--w); border-radius: 99px; background: linear-gradient(90deg, var(--teal), var(--cyan)); }
+.adm-bars em { font-style: normal; font-weight: 800; text-align: right; }
+.adm-mini { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.adm-mini li { display: flex; justify-content: space-between; gap: .6rem; font-size: .92rem; padding-bottom: .5rem; border-bottom: 1px solid #EDF3F7; }
+.adm-mini span { color: var(--ink-2); }
+.adm-bar { display: flex; flex-wrap: wrap; gap: .7rem; align-items: center; margin-bottom: .8rem; }
+.adm-bar .acct-muted { margin: 0; flex: 1 1 280px; }
+.adm-bar input, .adm-bar select { font: inherit; padding: .65rem .9rem; border-radius: 12px; border: 1.5px solid #CFDDE6; background: #fff; color: var(--ink); }
+.adm-search { flex: 1 1 320px; }
+.adm-table-wrap { overflow-x: auto; background: #fff; border: 1px solid #E1EBF2; border-radius: 18px; }
+.adm-table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 900px; }
+.adm-table th { text-align: left; padding: .8rem 1rem; background: #F5F9FB; color: var(--ink-2); font-weight: 700; font-size: .83rem; border-bottom: 1px solid #E1EBF2; }
+.adm-table td { padding: .8rem 1rem; border-bottom: 1px solid #EDF3F7; vertical-align: top; }
+.adm-table tr:last-child td { border-bottom: 0; }
+.adm-table small { display: block; color: var(--ink-2); font-size: .8rem; margin-top: .15rem; }
+.adm-table a { color: var(--teal); font-weight: 600; }
+.adm-role-pill { display: inline-block !important; margin: .25rem 0 0 !important; padding: .05rem .5rem; border-radius: 99px; font-weight: 700; font-size: .74rem !important; background: #DDF4F9; color: #075E70 !important; }
+.adm-role-pill.r-parent { background: #FFF1CC; color: #7A4B00 !important; }
+.adm-del { color: #B42318; font-size: .86rem; }
+.adm-reqs, .adm-anns { display: grid; gap: 1rem; }
+.adm-req-head { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: flex-start; }
+.adm-req-head b { font-size: 1.08rem; margin-right: .5rem; }
+.adm-req-head .acct-pill { margin-right: .35rem; }
+.adm-req-head .acct-muted { margin: .3rem 0 0; }
+.adm-contact { display: flex; gap: .4rem; flex-wrap: wrap; }
+.adm-req blockquote { margin: 1rem 0; padding: .8rem 1rem; border-radius: 12px; background: #F5F9FB; border-left: 3px solid var(--cyan); }
+.adm-req blockquote small { display: block; margin-top: .35rem; color: var(--ink-2); }
+.adm-req-edit { display: grid; gap: .8rem; grid-template-columns: 1fr 1fr; margin-bottom: .8rem; }
+.adm-req-edit .adm-wide { grid-column: 1 / -1; }
+@media (max-width: 640px) { .adm-req-edit { grid-template-columns: 1fr; } }
+.adm-req label { display: grid; gap: .35rem; font-weight: 700; font-size: .9rem; }
+.adm-req input, .adm-req select, .adm-req textarea { font: inherit; font-weight: 500; padding: .7rem .9rem; border-radius: 12px; border: 1.5px solid #CFDDE6; background: #fff; color: var(--ink); }
+.adm-saved { color: var(--teal); font-weight: 700; margin-right: .8rem; align-self: center; }
+.adm-ann-form { margin-bottom: 1rem; }
+.adm-ann-body { margin-top: .8rem; padding: .9rem 1rem; border-radius: 12px; background: #F5F9FB; font-size: .95rem; }
+.adm-ann-body p { margin: .5rem 0 0; } .adm-ann-body a { color: var(--teal); font-weight: 700; }
+.adm-ann-btns { gap: .8rem; align-items: center; margin-top: 1rem; }
+.adm-count { margin: 0; font-weight: 700; color: var(--teal); font-size: .92rem; }
+.adm-top .acct-k { margin: 0 0 .2rem; color: var(--teal); font-weight: 700; font-size: .9rem; }
+.adm-req blockquote { font: 500 1rem/1.55 var(--f-body); color: var(--ink); quotes: none; }
+.adm-req blockquote::before, .adm-req blockquote::after { content: none; }
+.adm-req blockquote small { font-size: .85rem; }
+.adm-req select { appearance: none; -webkit-appearance: none; padding-right: 2.4rem; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2344566F' stroke-width='1.8'/%3E%3C/svg%3E") right .9rem center/12px no-repeat; }

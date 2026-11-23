@@ -47,7 +47,7 @@ ACCOUNT_TEST = False   # True builds /account even when SHOW_ACCOUNTS is off (hi
 ACCOUNT = {'authUrl': 'https://script.google.com/macros/s/AKfycbzKTnZKtIM1WRjTqRlmwSk7ZIHSqvNP3pi4nhvsLKx3mP7x7zVyR7kWnPshJho_RV1mpw/exec', 'firebase': {
     'apiKey': 'AIzaSyAI8nojG3Q_4VlkKqN2B2nH1UlJZFkG_Go', 'authDomain': 'myunimentor-web.firebaseapp.com', 'projectId': 'myunimentor-web',
     'storageBucket': 'myunimentor-web.firebasestorage.app', 'messagingSenderId': '817646080151', 'appId': '1:817646080151:web:343bcb2c1b62d9a2d699d2'}}
-NOINDEX = {'account.html'}
+NOINDEX = {'account.html', 'admin.html'}
 
 NAV = [
     ('Home', 'index.html', None),
@@ -212,8 +212,10 @@ META = {
 import hashlib, rcssmin, rjsmin
 _css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read(); _cjs = open(os.path.join(ROOT, 'assets/js/check.js')).read()
 _tjs = open(os.path.join(ROOT, 'assets/js/tour.js')).read(); _ajs = open(os.path.join(ROOT, 'assets/js/account.js')).read()
-VER = hashlib.md5((_css + _js + _cjs + _tjs + _ajs).encode()).hexdigest()[:8]
+_djs = open(os.path.join(ROOT, 'assets/js/admin.js')).read()
+VER = hashlib.md5((_css + _js + _cjs + _tjs + _ajs + _djs).encode()).hexdigest()[:8]
 open(os.path.join(ROOT, 'assets/js/account.min.js'), 'w').write('\n'.join(l.strip() for l in _ajs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
+open(os.path.join(ROOT, 'assets/js/admin.min.js'), 'w').write('\n'.join(l.strip() for l in _djs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/js/tour.min.js'), 'w').write('\n'.join(l.strip() for l in _tjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 # rjsmin squeezes spaces inside template strings, so check.js is only trimmed
 open(os.path.join(ROOT, 'assets/js/check.min.js'), 'w').write('\n'.join(l.strip() for l in _cjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
@@ -1393,6 +1395,21 @@ def build_account():
 <script type="module" src="assets/js/account.min.js?v={VER}"></script>'''
     page('account.html', 'Your account', 'Log in to follow entrance exams and get updates by email.', 'Account', body)
 
+def build_admin():
+    """Staff-only panel at /admin: never linked, noindex, data protected by Firestore rules (admin claim)."""
+    if not (SHOW_ACCOUNTS or ACCOUNT_TEST):
+        return
+    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('account', 'account.html'), ('exams', f'assets/data/exams.json?v={VER}')])
+    body = f'''
+<section class="acct-page"><div class="wrap">
+  <h1 class="acct-h1">MyUniMentor admin</h1>
+  <div id="adm" class="acct is-loading" aria-live="polite"><div class="acct-card"><p class="acct-sub">Loading…</p></div></div>
+  <nav class="acct-links" hidden aria-hidden="true">{links}</nav>
+</div></section>
+<script>window.MUM_ACCOUNT={json.dumps(ACCOUNT)};</script>
+<script type="module" src="assets/js/admin.min.js?v={VER}"></script>'''
+    page('admin.html', 'Admin', 'MyUniMentor staff panel.', 'Admin', body)
+
 def build_404():
     body = f'''<section class="page-hero nf" style="--rays:url(&quot;{rays_svg(19)}&quot;)"><div class="wrap">
   <p class="nf-code">404</p><h1>This page took a wrong turn.</h1>
@@ -1563,5 +1580,5 @@ def build_guide_page():
          crumbs_schema([("Home", ""), ("Free guide", "free-guide")]))
 
 if __name__ == '__main__':
-    build_home(); build_network(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_account(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
+    build_home(); build_network(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_account(); build_admin(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
     print('built', len(UNIS), 'universities,', len(SCHOOLS), 'schools')
