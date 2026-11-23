@@ -1747,3 +1747,24 @@ html.mt-on .wa, html.mt-on .mbar { visibility: hidden; }
 .acct-wait p { margin: 0; font-size: .95rem; }
 .acct-inline { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: .6rem; } .acct-inline input { flex: 1 1 240px; width: auto; }
 @media (prefers-reduced-motion: reduce) { .acct-switch i, .acct-switch i::after, .acct-role span, .acct-chips span { transition: none; } }
+/* header: keep every item on one line now that "Log in" sits in it */
+@media (min-width: 961px) {
+  .nav-list > li > a, .sub-toggle, .nav-account, .nav .btn-small { white-space: nowrap; }
+  .header-inner { gap: 1rem; }
+}
+@media (min-width: 961px) and (max-width: 1279px) {
+  .nav { gap: .7rem; }
+  .nav-list { gap: 0; }
+  .nav-list > li > a, .sub-toggle { padding: .5rem .5rem; font-size: .95rem; }
+  .nav .btn-small { padding: .55rem .85rem; font-size: .9rem; }
+  .brand img { width: 168px; height: auto; }
+}
+@media (min-width: 961px) and (max-width: 1159px) {
+  .nav-account { font-size: 0; padding: .55rem; gap: 0; }
+  .nav-account::before { width: 22px; height: 22px; }
+}
+.acct-del { margin-top: .6rem; padding: 1rem; border-radius: 14px; background: #FFF4F2; border: 1px solid #F6C7C1; }
+.acct-del > p { margin: 0 0 .8rem; font-size: .93rem; }
+.acct-del-btns { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.btn-danger { background: #B42318; border-color: #B42318; color: #fff; }
+.btn-danger:hover { background: #912018; border-color: #912018; color: #fff; }

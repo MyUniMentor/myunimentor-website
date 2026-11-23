@@ -89,7 +89,7 @@ def header(active):
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav id="nav" class="nav" aria-label="Main">
       <ul class="nav-list">{''.join(items)}</ul>
-      {'<a href="account.html" class="nav-account">Log in</a>' if SHOW_ACCOUNTS else ''}<a href="contact.html" class="btn btn-small">Book free counselling</a>
+      {'<a href="account.html" class="nav-account" aria-label="Log in or open your account">Log in</a>' if SHOW_ACCOUNTS else ''}<a href="contact.html" class="btn btn-small">Book free counselling</a>
     </nav>
   </div>
 </header>'''

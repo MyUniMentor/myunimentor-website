@@ -293,7 +293,10 @@ function prefsBox(isStudent) {
     ${row('reminders', 'Deadline reminders', '7 days and 1 day before registration closes')}
     ${row('digest', 'Sunday summary', 'Your countdowns and new guides, once a week')}
     <p class="acct-saved-msg" hidden>Saved</p>
-    <p class="acct-foot acct-danger"><button type="button" class="acct-link acct-delete">Delete my account</button></p></section>`;
+    <div class="acct-danger"><button type="button" class="acct-link acct-delete">Delete my account</button>
+      <div class="acct-del" hidden><p><strong>Delete your account?</strong> Your dashboard and all email alerts will stop. To confirm, we’ll email a code to <strong>${esc(profile.email)}</strong>.</p>
+        <form class="acct-form acct-del-form" novalidate><div class="acct-del-code" hidden><label>6-digit code<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class="acct-code"></label></div>
+        <p class="acct-err" hidden></p><div class="acct-del-btns"><button type="submit" class="btn btn-danger btn-small">Email me a code</button><button type="button" class="acct-link acct-del-cancel">Cancel</button></div></form></div></div></section>`;
 }
 function linkBox(myLinks) {
   const waiting = myLinks.filter(l => l.status === 'pending'), declined = myLinks.filter(l => l.status === 'declined');
@@ -335,6 +338,10 @@ function wireDash(isStudent, child) {
       const sid = target.uid || me.uid, viewers = [...new Set([sid, me.uid].concat(target.parents || []))];
       await F.addDoc(F.collection(fb.db, 'requests'), { uid: sid, viewers, by: me.uid, byName: profile.name, studentName: target.name, email: target.email, phone: target.whatsapp || profile.whatsapp || '',
         cls: target.cls || '', stream: target.stream || '', topic: rf.topic.value.trim(), slot: rf.slot.value, status: 'requested', created: F.serverTimestamp() });
+      // Same route as the contact form: a row in the "Counselling" tab of the leads Sheet and an email to the team
+      if (window.MUM_FORM_URL) fetch(window.MUM_FORM_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ form: 'counselling', name: target.name || '', phone: target.whatsapp || profile.whatsapp || '',
+        email: target.email || '', role: isStudent ? 'Student (account)' : 'Parent of ' + (target.name || '') + ' (account)', class: target.cls || '', stream: STREAMS[target.stream] || '', city: target.city || profile.city || '',
+        school: target.school || '', message: rf.topic.value.trim() + ' · Best time to call: ' + rf.slot.value, page: '/account' }) }).catch(() => {});
       viewDash();
     } catch (x) { er.textContent = 'Could not send the request. Try again.'; er.hidden = false; busy(b, false, 'Request a free session'); }
   });
@@ -361,11 +368,27 @@ function wireDash(isStudent, child) {
     try { await requestLink(c); viewDash(); }
     catch (x) { er.textContent = 'Could not send the request. Refresh and try again.'; er.hidden = false; busy(b, false, 'Send request'); }
   });
-  $('.acct-delete').addEventListener('click', async () => {
-    if (!confirm('Delete your account and stop all emails? This cannot be undone.')) return;
-    try { if (profile.whatsapp) await F.deleteDoc(F.doc(fb.db, 'phones', profile.whatsapp)); } catch (x) {}
-    try { await F.deleteDoc(ref); } catch (x) {}
-    remember(false); await fb.A.signOut(fb.auth);
+  const del = $('.acct-del'), df = $('.acct-del-form'), dcode = $('.acct-del-code'), derr = df.querySelector('.acct-err'), dbtn = df.querySelector('button[type=submit]');
+  $('.acct-delete').addEventListener('click', () => { del.hidden = false; $('.acct-delete').hidden = true; });
+  $('.acct-del-cancel').addEventListener('click', () => { del.hidden = true; $('.acct-delete').hidden = false; dcode.hidden = true; derr.hidden = true; busy(dbtn, false, 'Email me a code'); });
+  df.addEventListener('submit', async e => {
+    e.preventDefault(); derr.hidden = true;
+    try {
+      if (dcode.hidden) {
+        busy(dbtn, true, 'Sending…');
+        const r = await api('delete_code', { email: profile.email });
+        if (!r.ok) throw new Error(r.error || 'Could not send the code. Try again in a minute.');
+        dcode.hidden = false; df.code.focus(); busy(dbtn, false, 'Delete my account');
+      } else {
+        const code = df.code.value.replace(/\D/g, '');
+        if (code.length !== 6) throw new Error('Enter the 6-digit code from the email.');
+        busy(dbtn, true, 'Deleting…');
+        const r = await api('delete_confirm', { email: profile.email, code });
+        if (!r.ok) throw new Error(r.error || 'That code did not work.');
+        remember(false); await fb.A.signOut(fb.auth);
+        viewLogin('Your account has been deleted. You won’t get any more emails from us.');
+      }
+    } catch (x) { derr.textContent = x.message; derr.hidden = false; busy(dbtn, false, dcode.hidden ? 'Email me a code' : 'Delete my account'); }
   });
 }
 

@@ -14,7 +14,7 @@ service cloud.firestore {
                     && request.resource.data.role in ['student', 'parent'];
       allow update: if isAdmin() || (signedIn() && request.auth.uid == uid
                     && request.resource.data.email == resource.data.email && request.resource.data.role == resource.data.role);
-      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow delete: if isAdmin();   // students and parents delete with an emailed code; the server keeps a copy in archive
     }
     match /links/{id} {
       allow read: if signedIn() && (resource.data.parentUid == request.auth.uid || resource.data.childEmail == myEmail() || isAdmin());
@@ -38,6 +38,8 @@ service cloud.firestore {
       allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
     }
     match /announcements/{id} { allow read, write: if isAdmin(); }
+    match /archive/{id} { allow read: if isAdmin(); }
+    match /stats/{id} { allow read: if isAdmin(); }
     match /{document=**} { allow read, write: if false; }
   }
 }
