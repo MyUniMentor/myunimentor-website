@@ -399,4 +399,76 @@ POSTS = [
   ("Is there negative marking in JEE Main 2027?", "Yes. Each correct answer gets +4 and each wrong answer gets –1, in both the multiple-choice and the numerical sections. Unanswered questions get 0.")],
  "related": ["engineering-branches-explained", "questions-to-ask-a-university", "stream-after-class-10"]
 },
+{
+ "slug": "entrance-exam-deadlines-december-2026",
+ "tag": "Entrance exams",
+ "title": "Entrance Exam Deadlines: Nov–Dec 2026 | MyUniMentor",
+ "h1": "Entrance exam deadlines from late November to January",
+ "desc": "JEE Main, NIFT, NID, CHRIST and CLAT: every application, correction and exam date Class 12 students need from late November 2026 to January 2027.",
+ "read": 6,
+ "lede": "The next few weeks are the busiest stretch of the admission year. Several applications close, correction windows open and the first entrance exams begin, all while you revise for your boards. Here is every date in one place, taken from the official websites on 23 November 2026.",
+ "body": """
+<h2>Why these weeks matter</h2>
+<p>Most students miss a deadline not because they forgot the exam, but because they forgot a smaller step: the late-fee window, the correction window or the admit card. Each of these has its own date, and some of them are only a few days long. If you miss a correction window, for example, you may not get another chance to fix a mistake in your form.</p>
+<p>All dates below come from the official websites of each exam. Keep our <a href="exam-calendar.html">entrance exam calendar</a> open as well; we check it against the official sites regularly.</p>
+
+<h2>All the dates in one table</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Date</th><th>What happens</th><th>Exam</th></tr></thead>
+<tbody>
+<tr><td><strong>Until 24 Nov 2026</strong></td><td>Online application (regular)</td><td>NIFT Entrance Exam 2027</td></tr>
+<tr><td><strong>25 Nov 2026, 5 pm</strong></td><td>Last date to apply for entrance-test programmes</td><td>CHRIST University</td></tr>
+<tr><td><strong>23–26 Nov 2026</strong></td><td>Application with late fee (up to 11:50 pm)</td><td>JEE Main 2027 Session 1</td></tr>
+<tr><td><strong>25–29 Nov 2026</strong></td><td>Application with late fee</td><td>NIFT Entrance Exam 2027</td></tr>
+<tr><td><strong>27–29 Nov 2026</strong></td><td>Correction window (up to 11:50 pm)</td><td>JEE Main 2027 Session 1</td></tr>
+<tr><td><strong>30 Nov 2026, 11:59 pm</strong></td><td>Last date to apply for B.Des</td><td>NID DAT 2027</td></tr>
+<tr><td><strong>30 Nov–2 Dec 2026</strong></td><td>Correction window (no further chance after this)</td><td>NIFT Entrance Exam 2027</td></tr>
+<tr><td><strong>3 Dec 2026, 11 pm</strong></td><td>Entrance test admit card</td><td>CHRIST University</td></tr>
+<tr><td><strong>5 Dec 2026</strong></td><td>Online entrance test</td><td>CHRIST University</td></tr>
+<tr><td><strong>6 Dec 2026, 2–4 pm</strong></td><td>Exam</td><td>CLAT 2027</td></tr>
+<tr><td><strong>6 Dec 2026, 5 pm</strong></td><td>Last date to apply for non-entrance-test programmes</td><td>CHRIST University</td></tr>
+<tr><td><strong>11–13 Dec 2026</strong></td><td>Skill assessment, micro presentation and interview</td><td>CHRIST University</td></tr>
+<tr><td><strong>21 Dec 2026, 10 pm</strong></td><td>Final selection list</td><td>CHRIST University</td></tr>
+<tr><td><strong>30 Dec 2026</strong></td><td>Exam city announced</td><td>JEE Main 2027 Session 1</td></tr>
+<tr><td><strong>10 Jan 2027</strong></td><td>Exam (tentative, as per the NTA exam calendar)</td><td>NIFT Entrance Exam 2027</td></tr>
+<tr><td><strong>13 Jan 2027</strong></td><td>Admit card</td><td>JEE Main 2027 Session 1</td></tr>
+<tr><td><strong>17 Jan 2027, 9 am–12 noon</strong></td><td>Exam</td><td>UCEED 2027</td></tr>
+<tr><td><strong>20–24 and 28 Jan 2027</strong></td><td>Exam</td><td>JEE Main 2027 Session 1</td></tr>
+</tbody></table></div>
+
+<h2>JEE Main 2027 Session 1</h2>
+<p>The regular application closed on 22 November 2026. According to the NTA information bulletin on <a href="https://jeemain.nta.nic.in" target="_blank" rel="noopener">jeemain.nta.nic.in</a>, you can still apply with a late fee from 23 to 26 November 2026, up to 11:50 pm. The correction window runs from 27 to 29 November 2026. NTA will announce your exam city on 30 December 2026 and release admit cards on 13 January 2027.</p>
+<p>If you miss Session 1, there is still Session 2. The bulletin gives a tentative application window of 5 January to 3 February 2027 and exam dates of 2 to 7 April 2027. Our <a href="jee-main-2027-session-1-guide.html">JEE Main Session 1 guide</a> covers the paper pattern and a form checklist.</p>
+
+<h2>NIFT Entrance Exam 2027</h2>
+<p>NTA extended the NIFT application deadline in a notice dated 14 November 2026. The revised schedule on <a href="https://exams.nta.nic.in/niftee" target="_blank" rel="noopener">exams.nta.nic.in/niftee</a> is: online application until 24 November 2026, late fee from 25 to 29 November 2026, and corrections from 30 November to 2 December 2026. The notice says no further correction opportunity will be given after that. The NTA exam calendar lists the exam on 10 January 2027 and marks its dates as tentative.</p>
+
+<h2>NID DAT 2027 and UCEED 2027</h2>
+<p>For B.Des at the National Institute of Design, the last date to submit the online application is 30 November 2026, 11:59 pm, according to <a href="https://admissions.nid.edu" target="_blank" rel="noopener">admissions.nid.edu</a>. Check the same site for the Prelims date and your admit card after you apply.</p>
+<p>UCEED 2027 registration, including the late-fee window, closed on 10 November 2026. If you registered, the exam is on Sunday, 17 January 2027, from 9 am to 12 noon (<a href="https://www.uceed.iitb.ac.in" target="_blank" rel="noopener">uceed.iitb.ac.in</a>). Read our <a href="bdes-after-12th.html">B.Des guide</a> to compare design programmes.</p>
+
+<h2>CHRIST University and CLAT</h2>
+<p>CHRIST (Deemed to be University) runs its own selection process for UG 2027. Its official dates page lists 25 November 2026, 5 pm, as the last day to apply for entrance-test programmes. The online test is on 5 December 2026, the admit card comes out on 3 December, and skill assessment, micro presentation and interviews run from 11 to 13 December. The final selection list is published on 21 December 2026. Programmes without an entrance test accept applications until 6 December 2026.</p>
+<p>CLAT 2027 applications closed on 31 October 2026. The exam is on Sunday, 6 December 2026, from 2 pm to 4 pm, according to the <a href="https://consortiumofnlus.ac.in" target="_blank" rel="noopener">Consortium of NLUs</a>. See our <a href="law-after-12th.html">law after 12th guide</a> for what comes after CLAT.</p>
+
+<div class="callout"><strong>MyUniMentor tip</strong><p>Put every date from the table into your phone calendar today, with a reminder two days before. Treat correction windows as real deadlines: open your submitted form, check your name, date of birth, category and exam city, and fix mistakes while you still can. Do this for one exam at a time so nothing gets mixed up.</p></div>
+
+<h2>What has not been announced yet</h2>
+<p>As of 23 November 2026, NTA has not announced the dates for <strong>NEET UG 2027</strong> or <strong>CUET UG 2027</strong> on <a href="https://neet.nta.nic.in" target="_blank" rel="noopener">neet.nta.nic.in</a> and <a href="https://cuet.nta.nic.in" target="_blank" rel="noopener">cuet.nta.nic.in</a>. JEE Advanced 2027 is scheduled for 23 May 2027 (<a href="https://jeeadv.ac.in" target="_blank" rel="noopener">jeeadv.ac.in</a>). We add new dates to the <a href="exam-calendar.html">exam calendar</a> as soon as they are official. Our <a href="cuet-guide-class-12.html">CUET guide</a> explains how the exam works in the meantime.</p>
+
+<h2>Balancing forms and board preparation</h2>
+<ul>
+<li><strong>Batch the admin.</strong> Set aside one evening a week for forms, payments and downloads, and keep the rest of the week for study.</li>
+<li><strong>Keep one folder.</strong> Save every confirmation page, application number and password in one place, on paper and on your phone.</li>
+<li><strong>Don't apply for everything.</strong> Each exam needs preparation time. Pick the exams that match the courses you actually want.</li>
+</ul>
+<p>If you are not sure which of these exams are worth your time, <a href="contact.html">book a free counselling session</a> and a counsellor will build an exam plan with you. Dates can change, so always confirm on the official website before you act.</p>
+""",
+ "faq": [
+  ("Can I still apply for JEE Main 2027 Session 1?", "Yes, with a late fee, from 23 to 26 November 2026 up to 11:50 pm, according to the NTA bulletin. The correction window is 27 to 29 November 2026. Session 2 applications are tentatively open from 5 January to 3 February 2027."),
+  ("What is the last date for the NIFT 2027 application?", "The online application is open until 24 November 2026. NTA accepts applications with a late fee from 25 to 29 November 2026, and corrections are allowed from 30 November to 2 December 2026."),
+  ("When is the NID DAT 2027 application deadline?", "The last date to submit the online application for B.Des at NID is 30 November 2026, 11:59 pm, according to admissions.nid.edu."),
+  ("Have NEET UG 2027 and CUET UG 2027 dates been announced?", "Not yet. As of 23 November 2026, NTA had not published dates for either exam. We update our exam calendar as soon as they are official.")],
+ "related": ["jee-main-2027-session-1-guide", "cuet-guide-class-12", "questions-to-ask-a-university"]
+},
 ]
