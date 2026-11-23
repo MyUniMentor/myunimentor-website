@@ -1757,9 +1757,8 @@ html.mt-on .wa, html.mt-on .mbar { visibility: hidden; }
   .nav-list { gap: 0; }
   .nav-list > li > a, .sub-toggle { padding: .5rem .5rem; font-size: .95rem; }
   .nav .btn-small { padding: .55rem .85rem; font-size: .9rem; }
-  .brand img { width: 168px; height: auto; }
 }
-@media (min-width: 961px) and (max-width: 1159px) {
+@media (min-width: 961px) and (max-width: 1279px) {
   .nav-account { font-size: 0; padding: .55rem; gap: 0; }
   .nav-account::before { width: 22px; height: 22px; }
 }
@@ -1850,3 +1849,13 @@ html.cc-printing .cc { min-height: 0; }
 .cc-links a { display: inline-block; padding: .6rem 1rem; border-radius: 99px; background: #fff; border: 1.5px solid var(--line); color: var(--ink); font-weight: 600; text-decoration: none; }
 .cc-links a:hover { border-color: var(--teal); color: var(--teal); }
 html.cc-printing .cc-guides { display: none !important; }
+
+.brand img { flex: none; }
+.brand { flex: none; }
+@media (min-width: 1280px) { .nav { gap: 1.1rem; } .nav-list > li > a, .sub-toggle { padding: .55rem .6rem; } }
+@media (min-width: 961px) and (max-width: 1099px) {
+  .header-inner { gap: .6rem; }
+  .nav { gap: .4rem; }
+  .nav-list > li > a, .sub-toggle { padding: .45rem .38rem; font-size: .9rem; }
+  .nav .btn-small { padding: .5rem .7rem; font-size: .86rem; }
+}
