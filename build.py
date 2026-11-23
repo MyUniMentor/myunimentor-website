@@ -42,8 +42,9 @@ SHOW_CAREER_CHECK = True   # adaptive career check, live since 20 Nov 2026
 SHOW_GUIDE = False          # flip to True when the Class 12 guide is ready
 SHOW_LEGAL = False          # flip to True after the lawyer reviews Privacy Policy and Terms
 SHOW_ACCOUNTS = os.environ.get('SHOW_ACC') == '1'   # student and parent accounts: preview only until launch
+ACCOUNT_TEST = True   # builds /account as a hidden, unlinked, noindex page for testing before launch
 # Public Firebase web config (safe to publish) and the Apps Script URL that sends login codes.
-ACCOUNT = {'authUrl': '', 'firebase': {
+ACCOUNT = {'authUrl': 'https://script.google.com/macros/s/AKfycbzKTnZKtIM1WRjTqRlmwSk7ZIHSqvNP3pi4nhvsLKx3mP7x7zVyR7kWnPshJho_RV1mpw/exec', 'firebase': {
     'apiKey': 'AIzaSyAI8nojG3Q_4VlkKqN2B2nH1UlJZFkG_Go', 'authDomain': 'myunimentor-web.firebaseapp.com', 'projectId': 'myunimentor-web',
     'storageBucket': 'myunimentor-web.firebasestorage.app', 'messagingSenderId': '817646080151', 'appId': '1:817646080151:web:343bcb2c1b62d9a2d699d2'}}
 NOINDEX = {'account.html'}
@@ -251,7 +252,7 @@ def page(fname, title, desc, active, body, schema=''):
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:site_name" content="MyUniMentor"><meta property="og:locale" content="en_IN"><meta property="og:url" content="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="https://myunimentor.in/assets/img/og-image.jpg">
-<link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="144x144" href="assets/img/icon-144.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-192.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png"><link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#0E2540">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -1379,7 +1380,7 @@ def build_account():
     public = [{k: x.get(k) for k in ('id', 'exam', 'for', 'date', 'label', 'status', 'note', 'site', 'streams', 'auto', 'deadline', 'deadline_label') if x.get(k) is not None} for x in EXAMS]
     os.makedirs(os.path.join(ROOT, 'assets/data'), exist_ok=True)
     json.dump(public, open(os.path.join(ROOT, 'assets/data/exams.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
-    if not SHOW_ACCOUNTS:
+    if not (SHOW_ACCOUNTS or ACCOUNT_TEST):
         return
     links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('cal', 'exam-calendar.html'), ('check', 'career-check.html'), ('courses', 'courses.html'), ('exams', f'assets/data/exams.json?v={VER}')])
     body = page_hero("Your MyUniMentor account", "Follow the entrance exams for your stream, get date changes and deadline reminders by email, save guides and book counselling. Free for students and parents.", "Account") + f'''
