@@ -261,9 +261,9 @@ def page(fname, title, desc, active, body, schema=''):
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:site_name" content="MyUniMentor"><meta property="og:locale" content="en_IN"><meta property="og:url" content="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="https://myunimentor.in/assets/img/og-image.jpg">
-<link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="144x144" href="assets/img/icon-144.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-192.png">
-<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png"><link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#0E2540">
+<link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="96x96" href="assets/img/icon-v2-96.png"><link rel="icon" type="image/png" sizes="144x144" href="assets/img/icon-v2-144.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-v2-192.png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon-v2.png"><link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#0E2540">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/style.min.css?v={VER}">
@@ -284,7 +284,7 @@ def page(fname, title, desc, active, body, schema=''):
 '''
     open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER))))
 
-WEBSITE_SCHEMA = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "@id": "https://myunimentor.in/#website", "name": "MyUniMentor", "alternateName": ["My Uni Mentor", "myunimentor.in"], "url": "https://myunimentor.in/", "inLanguage": "en-IN", "publisher": {"@id": "https://myunimentor.in/#org"}}) + '</script>'
+WEBSITE_SCHEMA = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "@id": "https://myunimentor.in/#website", "name": "MyUniMentor", "alternateName": ["My Uni Mentor"], "url": "https://myunimentor.in/", "inLanguage": "en-IN", "publisher": {"@id": "https://myunimentor.in/#org"}}) + '</script>'
 ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for Class 11–12 students in India, based in Dehradun, Uttarakhand.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
 
 ICONS = {
@@ -1019,7 +1019,7 @@ def build_blog():
         art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": p_['h1'], "description": p_['desc'], "datePublished": dpub, "dateModified": dmod,
                   "image": "https://myunimentor.in/assets/img/og-image.jpg", "mainEntityOfPage": f"https://myunimentor.in/{p_['slug']}",
                   "author": {"@type": "Person", "name": "Om Garg", "url": "https://myunimentor.in/omgarg", "jobTitle": "Founder, MyUniMentor"},
-                  "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-512.png"}}}
+                  "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-v2-512.png"}}}
         body = page_hero(p_['h1'], e(p_['lede']), "Blog", meta) + f'''
 <section class="section article-section"><div class="wrap art-grid">
   <article class="article">{p_['body']}</article>
@@ -1048,7 +1048,7 @@ def build_courses():
         dpub, dmod = pub_mod(c['slug'], c.get('date'))
         art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": f"{c['name']} after 12th: {c['full']}", "description": c['desc'], "datePublished": dpub, "dateModified": dmod,
                   "image": "https://myunimentor.in/assets/img/og-image.jpg", "mainEntityOfPage": f"https://myunimentor.in/{c['slug']}",
-                  "author": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"}, "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-512.png"}}}
+                  "author": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"}, "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-v2-512.png"}}}
         body = page_hero(f"{c['name']} after 12th", e(c['intro']), "Course guides", f'<dl class="course-facts">{facts}</dl>') + f'''
 <section class="section article-section"><div class="wrap art-grid">
   <article class="article">
