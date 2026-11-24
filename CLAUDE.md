@@ -5,10 +5,12 @@ All HTML pages are generated. Never hand-edit `*.html`; edit the sources and reb
 
 ## Build
 ```
-pip install --break-system-packages rcssmin rjsmin pillow
+pip install --break-system-packages rcssmin rjsmin pillow fonttools brotli
 python3 build.py          # must end with "built 29 universities, 12 schools" (numbers may grow)
 ```
 `CLEAN_URLS` defaults to 1 (links like `/about`). Leave it that way for anything pushed to GitHub.
+
+Share images: `tools/og.py` makes a 1200×630 image per page in `assets/og/` (cached in `data/og.json`; it only redraws when a title changes). Commit both. CSS rules that only style `/account`, `/admin` and `/test` (`.acct`, `.adm`, `.psy`) are split into `assets/css/app.min.css` at build time and loaded only on those pages.
 
 ## Where content lives
 - `data/exams.json` — exam calendar. Fields: exam, for, date (YYYY-MM-DD), label (as shown), status (`confirmed` | `tentative` | `expected`), streams, note, site (official URL).

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Builds the MyUniMentor site from data/*.json into plain HTML pages.
 Add a school or university to the JSON files, drop its logo into assets/logos/, run this."""
-import json, re, html, os, math
+import json, re, html, os, math, sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 D = lambda f: json.load(open(os.path.join(ROOT, 'data', f), encoding='utf-8'))
@@ -226,7 +226,32 @@ open(os.path.join(ROOT, 'assets/js/admin.min.js'), 'w').write('\n'.join(l.strip(
 open(os.path.join(ROOT, 'assets/js/tour.min.js'), 'w').write('\n'.join(l.strip() for l in _tjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 # rjsmin squeezes spaces inside template strings, so check.js is only trimmed
 open(os.path.join(ROOT, 'assets/js/check.min.js'), 'w').write('\n'.join(l.strip() for l in _cjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
-open(os.path.join(ROOT, 'assets/css/style.min.css'), 'w').write(rcssmin.cssmin(_css))
+def split_css(css):
+    """Rules used only by /account, /admin and /test go to app.css, so public pages load less CSS before showing anything."""
+    APP = re.compile(r'(\.acct|\.adm|#adm|\.psy)')
+    def only_app(sel): return all(APP.search(x) for x in sel.split(',') if x.strip())
+    def rules(text):
+        out, i, n = [], 0, len(text)
+        while i < n:
+            j = text.find('{', i)
+            if j < 0: break
+            sel, depth, k = text[i:j].strip(), 1, j + 1
+            while depth and k < n:
+                depth += {'{': 1, '}': -1}.get(text[k], 0); k += 1
+            out.append((sel, text[j + 1:k - 1])); i = k
+        return out
+    core, app = [], []
+    for sel, body in rules(rcssmin.cssmin(css)):
+        if sel.startswith('@media') or sel.startswith('@supports'):
+            inner = rules(body); c = [f'{a}{{{b}}}' for a, b in inner if not only_app(a)]; a_ = [f'{a}{{{b}}}' for a, b in inner if only_app(a)]
+            if c: core.append(f'{sel}{{{"".join(c)}}}')
+            if a_: app.append(f'{sel}{{{"".join(a_)}}}')
+        elif sel.startswith('@') or not only_app(sel): core.append(f'{sel}{{{body}}}')
+        else: app.append(f'{sel}{{{body}}}')
+    return ''.join(core), ''.join(app)
+_core_css, _app_css = split_css(_css)
+open(os.path.join(ROOT, 'assets/css/style.min.css'), 'w').write(_core_css)
+open(os.path.join(ROOT, 'assets/css/app.min.css'), 'w').write(_app_css)
 FORM_URL = 'https://script.google.com/macros/s/AKfycbwcvPVe57-G-AyYdHVcCyGneK9waUp5nRnvPbH8xneLtcKcp0AnnB0sjrx2DaRnrbZ4kw/exec'   # Google Apps Script web app URL for the lead forms
 open(os.path.join(ROOT, 'assets/js/main.min.js'), 'w').write((f"window.MUM_FORM_URL='{FORM_URL}';" if FORM_URL else '') + rjsmin.jsmin(_js))
 
@@ -244,29 +269,60 @@ def slim_html(h):
     h = re.sub(r'\n[ \t]+', '\n', h)
     return re.sub(r'\n{2,}', '\n', h)
 
+OG_KICK = {'exam-calendar': 'Exam calendar', 'career-check': 'Free career check', 'psychometric-test': 'Psychometric test', 'courses': 'Course guides',
+           'blog': 'Guides and articles', 'about': 'About MyUniMentor', 'omgarg': 'Founder, MyUniMentor', 'contact': 'Contact', 'network': 'Our network',
+           'testimonials': 'Testimonials', 'career-summit': 'School Career Guidance Summit', 'services-students': 'For students and parents',
+           'services-schools': 'For schools', 'services-universities': 'For universities'}
+def og_kicker(slug):
+    if slug in OG_KICK: return OG_KICK[slug]
+    if slug.startswith('career-counselling-'): return 'Career counselling'
+    tags = {x['slug']: x['tag'] for x in globals().get('POSTS', [])}
+    if slug in tags: return tags[slug]
+    if any(c.get('slug') == slug for c in globals().get('COURSES', [])): return 'Course guide'
+    return 'MyUniMentor'
+
+def head_social(fname, title, schema):
+    """Share image, its alt text and article tags for one page."""
+    slug = fname.replace('.html', ''); img = None
+    if fname != 'index.html' and fname not in NOINDEX and fname != '404.html':
+        t = re.sub(r'\s*\|\s*MyUniMentor$', '', title); t = re.sub(r'^MyUniMentor:\s*', '', t)
+        try:
+            sys.path.insert(0, os.path.join(ROOT, 'tools')); import og
+            img = og.og_image(slug, t, og_kicker(slug))
+        except Exception as ex:
+            print('share images off:', ex)
+    img = img or 'https://myunimentor.in/assets/img/og-image.jpg'
+    alt = 'MyUniMentor: Right Guidance. Right Fit. Right University.' if img.endswith('og-image.jpg') else title
+    art = ''
+    if '"@type": "Article"' in schema:
+        pub = re.search(r'"datePublished": "([^"]+)"', schema); mod = re.search(r'"dateModified": "([^"]+)"', schema)
+        art = (f'<meta property="article:published_time" content="{pub.group(1)}">' if pub else '') + (f'<meta property="article:modified_time" content="{mod.group(1)}">' if mod else '') + f'<meta property="article:section" content="{e(og_kicker(slug))}">'
+    return img, alt, art
+
 def page(fname, title, desc, active, body, schema=''):
     title, desc = META.get(fname, (title, desc))
+    img, img_alt, art = head_social(fname, title, schema)
     doc = f'''<!DOCTYPE html>
 <html lang="en-IN" class="no-js">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{e(title)}</title>
-<meta name="description" content="{e(desc)}">{'<meta name="robots" content="noindex, nofollow">' if fname in NOINDEX else ''}
+<meta name="description" content="{e(desc)}">{'<meta name="robots" content="noindex, nofollow">' if fname in NOINDEX else '<meta name="robots" content="max-image-preview:large, max-snippet:-1, max-video-preview:-1">'}
 <link rel="canonical" href="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
-<meta property="og:type" content="website"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
-<meta property="og:image" content="https://myunimentor.in/assets/img/og-image.jpg"><meta property="og:image:secure_url" content="https://myunimentor.in/assets/img/og-image.jpg">
+<meta property="og:type" content="{'article' if art else 'website'}"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">{art}
+<meta property="og:image" content="{img}"><meta property="og:image:secure_url" content="{img}">
 <meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:alt" content="MyUniMentor: Right Guidance. Right Fit. Right University.">
+<meta property="og:image:alt" content="{e(img_alt)}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:site_name" content="MyUniMentor"><meta property="og:locale" content="en_IN"><meta property="og:url" content="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="https://myunimentor.in/assets/img/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{e(title)}"><meta name="twitter:description" content="{e(desc)}"><meta name="twitter:image" content="{img}"><meta name="twitter:image:alt" content="{e(img_alt)}">
 <link rel="icon" href="favicon.ico" sizes="48x48"><link rel="icon" type="image/png" sizes="96x96" href="assets/img/icon-v2-96.png"><link rel="icon" type="image/png" sizes="144x144" href="assets/img/icon-v2-144.png">
 <link rel="icon" type="image/png" sizes="192x192" href="assets/img/icon-v2-192.png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon-v2.png"><link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#0E2540">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/css/style.min.css?v={VER}">
+<link rel="stylesheet" href="assets/css/style.min.css?v={VER}">{'<link rel="stylesheet" href="assets/css/app.min.css?v={VER}">' if fname in NOINDEX else ''}
 <script type="speculationrules">{{"prefetch":[{{"where":{{"and":[{{"href_matches":"/*"}},{{"not":{{"href_matches":"/assets/*"}}}}]}},"eagerness":"moderate"}}]}}</script>
 </head>
 <body>
@@ -285,7 +341,7 @@ def page(fname, title, desc, active, body, schema=''):
     open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER))))
 
 WEBSITE_SCHEMA = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "@id": "https://myunimentor.in/#website", "name": "MyUniMentor", "alternateName": ["My Uni Mentor"], "url": "https://myunimentor.in/", "inLanguage": "en-IN", "publisher": {"@id": "https://myunimentor.in/#org"}}) + '</script>'
-ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for students across India, online and in person. Based in Dehradun, Uttarakhand.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","Online career counselling","Psychometric career assessment","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
+ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for students across India, online and in person. Based in Dehradun, Uttarakhand.","disambiguatingDescription":"Indian career counselling and admissions guidance organisation at myunimentor.in, run by MyUniMentor Edtech LLP, Dehradun.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","Online career counselling","Psychometric career assessment","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
 
 ICONS = {
     'tools': '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="5" fill="currentColor" opacity=".3"/><path d="M16 17h16M16 24h16M16 31h10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
@@ -1019,7 +1075,7 @@ def build_blog():
         dpub, dmod = pub_mod(p_['slug'], p_.get('date'))
         meta = f'<p class="art-meta"><span>By <a href="omgarg.html">Om Garg</a>, Founder, MyUniMentor</span><span aria-hidden="true">·</span>Updated {nice_date(dmod)}<span aria-hidden="true">·</span>{p_["read"]} min read</p>'
         art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": p_['h1'], "description": p_['desc'], "datePublished": dpub, "dateModified": dmod,
-                  "image": "https://myunimentor.in/assets/img/og-image.jpg", "mainEntityOfPage": f"https://myunimentor.in/{p_['slug']}",
+                  "image": [f"https://myunimentor.in/assets/og/{p_['slug']}.jpg", "https://myunimentor.in/assets/img/og-image.jpg"], "mainEntityOfPage": f"https://myunimentor.in/{p_['slug']}",
                   "author": {"@type": "Person", "name": "Om Garg", "url": "https://myunimentor.in/omgarg", "jobTitle": "Founder, MyUniMentor"},
                   "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-v2-512.png"}}}
         body = page_hero(p_['h1'], e(p_['lede']), "Blog", meta) + f'''
@@ -1049,7 +1105,7 @@ def build_courses():
         li = lambda xs: ''.join(f'<li>{e(x)}</li>' for x in xs)
         dpub, dmod = pub_mod(c['slug'], c.get('date'))
         art_ld = {"@context": "https://schema.org", "@type": "Article", "headline": f"{c['name']} after 12th: {c['full']}", "description": c['desc'], "datePublished": dpub, "dateModified": dmod,
-                  "image": "https://myunimentor.in/assets/img/og-image.jpg", "mainEntityOfPage": f"https://myunimentor.in/{c['slug']}",
+                  "image": [f"https://myunimentor.in/assets/og/{c['slug']}.jpg", "https://myunimentor.in/assets/img/og-image.jpg"], "mainEntityOfPage": f"https://myunimentor.in/{c['slug']}",
                   "author": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"}, "publisher": {"@type": "Organization", "@id": "https://myunimentor.in/#org", "name": "MyUniMentor", "logo": {"@type": "ImageObject", "url": "https://myunimentor.in/assets/img/icon-v2-512.png"}}}
         body = page_hero(f"{c['name']} after 12th", e(c['intro']), "Course guides", f'<dl class="course-facts">{facts}</dl>') + f'''
 <section class="section article-section"><div class="wrap art-grid">
@@ -1275,7 +1331,7 @@ def build_seo_files():
     COURSES_MD = '\n'.join(f"- [{x['name']} after 12th](https://myunimentor.in/{x['slug']}): {x['desc']}" for x in COURSES)
     open(os.path.join(ROOT, 'llms.txt'), 'w').write(f"""# MyUniMentor
 
-> MyUniMentor (MyUniMentor Edtech LLP) is a career counselling and university admissions guidance organisation that works with students across India, online and in person. It is based in Dehradun, Uttarakhand, and was founded in 2026 by Om Garg. Tagline: "Right Guidance. Right Fit. Right University."
+> MyUniMentor (MyUniMentor Edtech LLP) is a career counselling and university admissions guidance organisation that works with students across India, online and in person. It is based in Dehradun, Uttarakhand, and was founded in 2026 by Om Garg. It is not connected to myunimentor.com, an unrelated student-mentoring community in Australia. Tagline: "Right Guidance. Right Fit. Right University."
 
 ## What MyUniMentor does
 - Free first one-on-one career counselling session for Class 11–12 students, online and in person
