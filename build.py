@@ -131,8 +131,8 @@ FOOTER = '''<footer class="site-footer">
 
 META = {
 "index.html": [
-"MyUniMentor: Career Counselling in Dehradun",
-"Free 1-on-1 career counselling for Class 11–12, free school seminars and the School Career Guidance Summit with 29 partner universities. Dehradun & Saharanpur."
+"Career Counsellor for Students Across India | MyUniMentor",
+"Talk to a career counsellor free: one-on-one, online or in person, anywhere in India. Help with your stream, course, entrance exams and university admissions."
 ],
 "about.html": [
 "About MyUniMentor: Our Story and Founder",
@@ -285,7 +285,7 @@ def page(fname, title, desc, active, body, schema=''):
     open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER))))
 
 WEBSITE_SCHEMA = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "@id": "https://myunimentor.in/#website", "name": "MyUniMentor", "alternateName": ["My Uni Mentor"], "url": "https://myunimentor.in/", "inLanguage": "en-IN", "publisher": {"@id": "https://myunimentor.in/#org"}}) + '</script>'
-ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for Class 11–12 students in India, based in Dehradun, Uttarakhand.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
+ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for students across India, online and in person. Based in Dehradun, Uttarakhand.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","Online career counselling","Psychometric career assessment","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
 
 ICONS = {
     'tools': '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="5" fill="currentColor" opacity=".3"/><path d="M16 17h16M16 24h16M16 31h10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
@@ -480,11 +480,13 @@ def words(text):
     return ' '.join(f'<span class="w" style="--i:{i}">{e(w)}</span>' for i, w in enumerate(text.split()))
 
 HOME_FAQ = [
-    ("What is MyUniMentor?", "MyUniMentor is a career counselling and admissions guidance organisation based in Dehradun, Uttarakhand. It helps Class 11–12 students choose the right stream, course and university, runs free career seminars for schools, and organises the School Career Guidance Summit, where universities meet students inside their schools."),
+    ("What is MyUniMentor?", "MyUniMentor is a career counselling and admissions guidance organisation that works with students across India, online and in person, from its base in Dehradun, Uttarakhand. It helps Class 11–12 students choose the right stream, course and university, runs free career seminars for schools, and organises the School Career Guidance Summit, where universities meet students inside their schools."),
+    ("Can I get career counselling online from anywhere in India?", "Yes. MyUniMentor counsels students anywhere in India online, and in person in Dehradun and Saharanpur. The first one-on-one session is free. Book through this website, or call or WhatsApp +91 74175 57070."),
+    ("How do I choose a good career counsellor?", "Choose one who asks about your marks, interests and plans before suggesting anything, explains every option with its entrance exams, does not push a single university, and is clear about any fees upfront. MyUniMentor’s first session is free, so you can judge for yourself."),
     ("Is career counselling at MyUniMentor free for students?", "Yes. The first one-on-one counselling session is free for Class 11–12 students. Book through the form on this website, or call or WhatsApp +91 74175 57070."),
     ("Are MyUniMentor's career seminars free for schools?", "Yes. Career guidance seminars for Class 11–12 students are offered free of cost to schools."),
     ("Which cities does MyUniMentor work in?", "MyUniMentor works with schools in Dehradun (Uttarakhand) and Saharanpur (Uttar Pradesh), and counsels students across India online and offline. In 2027, we plan to expand to Rishikesh, Roorkee, Srinagar and the wider Garhwal region."),
-    ("What is the School Career Guidance Summit?", "It is an in-school career fair organised by MyUniMentor. Universities set up stalls on the school campus and Class 11–12 students meet them, ask questions and compare options without leaving the school campus. The first edition (October 2026) ran across 12 schools in Dehradun and Saharanpur in October 2026."),
+    ("What is the School Career Guidance Summit?", "It is an in-school career fair organised by MyUniMentor. Universities set up stalls on the school campus and Class 11–12 students meet them, ask questions and compare options without leaving the school campus. The first edition ran across 12 schools in Dehradun and Saharanpur in October 2026."),
     ("How can a university partner with MyUniMentor?", "Universities can exhibit at the School Career Guidance Summit and use MyUniMentor's admission and outreach support. 29 universities are currently partners. Send an enquiry through the partnership form or email info@myunimentor.in."),
 ]
 
@@ -958,7 +960,7 @@ def build_contact():
   </div>
   {form_card()}
 </div></section>'''
-    page('contact.html', 'Contact MyUniMentor — Book Free Career Counselling in Dehradun', 'Call or WhatsApp +91 74175 57070 or email info@myunimentor.in to book free 1-on-1 career counselling, a free school seminar, or a university partnership.', '', body,
+    page('contact.html', 'Contact MyUniMentor: Book Free Career Counselling', 'Call or WhatsApp +91 74175 57070 or email info@myunimentor.in to book free 1-on-1 career counselling, a free school seminar, or a university partnership.', '', body,
          crumbs_schema([("Home", ""), ("Contact", "contact")]) + f'<script type="application/ld+json">{json.dumps(lb)}</script>')
 
 from content_blog import POSTS
@@ -1273,7 +1275,7 @@ def build_seo_files():
     COURSES_MD = '\n'.join(f"- [{x['name']} after 12th](https://myunimentor.in/{x['slug']}): {x['desc']}" for x in COURSES)
     open(os.path.join(ROOT, 'llms.txt'), 'w').write(f"""# MyUniMentor
 
-> MyUniMentor (MyUniMentor Edtech LLP) is a career counselling and university admissions guidance organisation based in Dehradun, Uttarakhand, India, founded in 2026 by Om Garg. Tagline: "Right Guidance. Right Fit. Right University."
+> MyUniMentor (MyUniMentor Edtech LLP) is a career counselling and university admissions guidance organisation that works with students across India, online and in person. It is based in Dehradun, Uttarakhand, and was founded in 2026 by Om Garg. Tagline: "Right Guidance. Right Fit. Right University."
 
 ## What MyUniMentor does
 - Free first one-on-one career counselling session for Class 11–12 students, online and in person

@@ -1,6 +1,6 @@
 # MyUniMentor
 
-> MyUniMentor (MyUniMentor Edtech LLP) is a career counselling and university admissions guidance organisation based in Dehradun, Uttarakhand, India, founded in 2026 by Om Garg. Tagline: "Right Guidance. Right Fit. Right University."
+> MyUniMentor (MyUniMentor Edtech LLP) is a career counselling and university admissions guidance organisation that works with students across India, online and in person. It is based in Dehradun, Uttarakhand, and was founded in 2026 by Om Garg. Tagline: "Right Guidance. Right Fit. Right University."
 
 ## What MyUniMentor does
 - Free first one-on-one career counselling session for Class 11–12 students, online and in person
