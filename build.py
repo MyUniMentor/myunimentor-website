@@ -47,7 +47,9 @@ ACCOUNT_TEST = False   # True builds /account even when SHOW_ACCOUNTS is off (hi
 ACCOUNT = {'authUrl': 'https://script.google.com/macros/s/AKfycbzKTnZKtIM1WRjTqRlmwSk7ZIHSqvNP3pi4nhvsLKx3mP7x7zVyR7kWnPshJho_RV1mpw/exec', 'firebase': {
     'apiKey': 'AIzaSyAI8nojG3Q_4VlkKqN2B2nH1UlJZFkG_Go', 'authDomain': 'myunimentor-web.firebaseapp.com', 'projectId': 'myunimentor-web',
     'storageBucket': 'myunimentor-web.firebasestorage.app', 'messagingSenderId': '817646080151', 'appId': '1:817646080151:web:343bcb2c1b62d9a2d699d2'}}
-NOINDEX = {'account.html', 'admin.html'}
+NOINDEX = {'account.html', 'admin.html', 'test.html'}
+SHOW_PSY = True        # ₹99 psychometric test: landing page /psychometric-test, the test itself at /test (noindex)
+PSY = {'price': 99, 'payLive': False}   # payLive: True only after Razorpay is activated and its keys are in the accounts Apps Script
 
 NAV = [
     ('Home', 'index.html', None),
@@ -65,13 +67,14 @@ NAV = [
     ('Resources', 'exam-calendar.html', [
         ('Exam calendar 2027', 'exam-calendar.html', 'JEE, NEET, CUET, CLAT and more'),
         ('Free career check', 'career-check.html', 'About 4 minutes, built around your stream'),
+        ('Psychometric test', 'psychometric-test.html', '25 minutes, with a detailed report'),
         ('Free Class 12 guide', 'free-guide.html', 'Download the PDF'),
         ('Course guides', 'courses.html', 'BBA, B.Tech, Law, Design and more'),
         ('Blog', 'blog.html', 'Guides and articles')]),
 ]
 for _grp in NAV:
     if _grp[2]:
-        _grp[2][:] = [x for x in _grp[2] if not ((x[1] == 'career-check.html' and not SHOW_CAREER_CHECK) or (x[1] == 'free-guide.html' and not SHOW_GUIDE))]
+        _grp[2][:] = [x for x in _grp[2] if not ((x[1] == 'career-check.html' and not SHOW_CAREER_CHECK) or (x[1] == 'free-guide.html' and not SHOW_GUIDE) or (x[1] == 'psychometric-test.html' and not SHOW_PSY))]
 
 def header(active):
     items = []
@@ -213,7 +216,11 @@ import hashlib, rcssmin, rjsmin
 _css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read(); _cjs = open(os.path.join(ROOT, 'assets/js/check.js')).read()
 _tjs = open(os.path.join(ROOT, 'assets/js/tour.js')).read(); _ajs = open(os.path.join(ROOT, 'assets/js/account.js')).read()
 _djs = open(os.path.join(ROOT, 'assets/js/admin.js')).read()
-VER = hashlib.md5((_css + _js + _cjs + _tjs + _ajs + _djs).encode()).hexdigest()[:8]
+# The psychometric test reuses the career areas (courses, exams, lengths) from the career check, so both stay in step.
+_cl = _cjs[_cjs.index('  const SCI = '):_cjs.index('  /* Activity cards')].strip()
+_pjs = open(os.path.join(ROOT, 'assets/js/psy.js')).read().replace('/*@CL@*/', _cl)
+VER = hashlib.md5((_css + _js + _cjs + _tjs + _ajs + _djs + _pjs).encode()).hexdigest()[:8]
+open(os.path.join(ROOT, 'assets/js/psy.min.js'), 'w').write('\n'.join(l.strip() for l in _pjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/js/account.min.js'), 'w').write('\n'.join(l.strip() for l in _ajs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/js/admin.min.js'), 'w').write('\n'.join(l.strip() for l in _djs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/js/tour.min.js'), 'w').write('\n'.join(l.strip() for l in _tjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
@@ -1227,7 +1234,7 @@ def page_text(fname):
     return s.strip()
 
 def build_llms_full():
-    order = ['index', 'about', 'omgarg', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'testimonials', 'exam-calendar'] + (['career-check'] if SHOW_CAREER_CHECK else []) + ['courses'] \
+    order = ['index', 'about', 'omgarg', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'testimonials', 'exam-calendar'] + (['career-check'] if SHOW_CAREER_CHECK else []) + (['psychometric-test'] if SHOW_PSY else []) + ['courses'] \
             + [x['slug'] for x in COURSES] + [x['slug'] for x in POSTS] + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'contact']
     out = ['# MyUniMentor: full site content', '', '> Plain-text copy of myunimentor.in for AI assistants and search engines. Source: https://myunimentor.in/', '']
     for o in order:
@@ -1236,10 +1243,11 @@ def build_llms_full():
             out += [f'\n\n---\n# Page: https://myunimentor.in/{"" if o == "index" else o}\n', page_text(f)]
     open(os.path.join(ROOT, 'llms-full.txt'), 'w', encoding='utf-8').write('\n'.join(out) + '\n')
 
-CC_LLMS_LINE = '- [Free career check for Class 9–12](https://myunimentor.in/career-check): questions adapt to the student\'s stream and answers\n' if SHOW_CAREER_CHECK else ''
+CC_LLMS_LINE = ('- [Free career check for Class 9–12](https://myunimentor.in/career-check): questions adapt to the student\'s stream and answers\n' if SHOW_CAREER_CHECK else '') + \
+    (f"- [Career psychometric test for Class 9–12](https://myunimentor.in/psychometric-test): 25 minutes; interests (RIASEC), Big Five personality, six timed aptitude sections, situations and work values, matched to 24 career areas with Indian courses and entrance exams; ₹{PSY['price']} or free when three friends sign up\n" if SHOW_PSY else '')
 
 def build_seo_files():
-    urls = ['', 'about', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'omgarg', 'blog', 'contact', 'exam-calendar', 'testimonials'] + (['career-check'] if SHOW_CAREER_CHECK else []) + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'courses'] + [x['slug'] for x in POSTS] + [x['slug'] for x in COURSES]
+    urls = ['', 'about', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'omgarg', 'blog', 'contact', 'exam-calendar', 'testimonials'] + (['career-check'] if SHOW_CAREER_CHECK else []) + (['psychometric-test'] if SHOW_PSY else []) + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'courses'] + [x['slug'] for x in POSTS] + [x['slug'] for x in COURSES]
     # lastmod: the date a page's content last really changed (asset version strings ignored), kept in data/lastmod.json
     import datetime as _dt
     today = (_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=5, minutes=30)).date().isoformat()
@@ -1390,16 +1398,17 @@ def career_teaser():
 
 CC_LINK_TEXT = {'cal': 'Entrance exam calendar', 'net': 'Partner universities', 'cuet': 'CUET UG guide', 'stream': 'Choosing a stream after Class 10', 'btech': 'B.Tech CSE after 12th',
                 'bca': 'BCA after 12th', 'branches': 'Engineering branches explained', 'bdes': 'B.Des after 12th', 'pcb': 'Careers after PCB beyond MBBS', 'bcom': 'B.Com (Hons) after 12th',
-                'bba': 'BBA after 12th', 'law': 'Law after 12th', 'logo': 'MyUniMentor logo'}
+                'bba': 'BBA after 12th', 'law': 'Law after 12th', 'logo': 'MyUniMentor logo', 'acct': 'Your account', 'contact': 'Contact', 'psy': 'Psychometric test'}
 def build_career_check():
     faq_html, faq_schema = faq_block([
         ("Is the MyUniMentor career check free?", "Yes. It is free and takes about four minutes. You share your name and phone number before you see your result, and a MyUniMentor counsellor calls you to talk it through."),
         ("Who is it for?", "Students in Class 9, 10, 11 and 12. Class 9 and 10 students also see which stream fits each career path."),
         ("How is it different from other career tests?", "The questions change with your stream and your answers. Commerce, PCM, PCB, PCMB and Humanities students each get their own set of activities, and the check then asks follow-up questions only about your top areas."),
-        ("Is this a psychometric test?", "No. It is a short guidance tool based on your interests, stream and plans. For a detailed plan, a counsellor looks at your marks, strengths and options with you.")], "About the career check")
-    links = ''.join((f'<li hidden><a data-k="{k}" href="{h}" tabindex="-1">{e(CC_LINK_TEXT.get(k, k))}</a></li>' if k == 'logo' else f'<li><a data-k="{k}" href="{h}">{e(CC_LINK_TEXT.get(k, k))}</a></li>') for k, h in [('cal','exam-calendar.html'),('net','network.html#universities'),('cuet','cuet-guide-class-12.html'),('stream','stream-after-class-10.html'),
+        ("Can I save my result?", "Yes. If you are logged in to your free MyUniMentor account, your result is saved to it automatically. If not, tap Save to my account on the result, log in with your email, and it is saved there. You can open the full result again anytime from your dashboard."),
+        ("Is this a psychometric test?", "No. It is a short guidance tool based on your interests, stream and plans. For a detailed picture, take the <a href=\"psychometric-test.html\">MyUniMentor career psychometric test</a>: about 25 minutes, with personality, aptitude and values, and a full report." if SHOW_PSY else "No. It is a short guidance tool based on your interests, stream and plans. For a detailed plan, a counsellor looks at your marks, strengths and options with you.")], "About the career check")
+    links = ''.join((f'<li hidden><a data-k="{k}" href="{h}" tabindex="-1">{e(CC_LINK_TEXT.get(k, k))}</a></li>' if k in ('logo', 'acct', 'contact', 'psy') else f'<li><a data-k="{k}" href="{h}">{e(CC_LINK_TEXT.get(k, k))}</a></li>') for k, h in [('cal','exam-calendar.html'),('net','network.html#universities'),('cuet','cuet-guide-class-12.html'),('stream','stream-after-class-10.html'),
         ('btech','btech-cse-after-12th.html'),('bca','bca-after-12th.html'),('branches','engineering-branches-explained.html'),('bdes','bdes-after-12th.html'),('pcb','careers-after-pcb-beyond-mbbs.html'),
-        ('bcom','bcom-hons-after-12th.html'),('bba','bba-after-12th.html'),('law','law-after-12th.html'),('logo','assets/img/logo-horizontal-dark.webp')])
+        ('bcom','bcom-hons-after-12th.html'),('bba','bba-after-12th.html'),('law','law-after-12th.html'),('logo','assets/img/logo-horizontal-dark.webp'),('contact','contact.html')] + ([('acct','account.html')] if SHOW_ACCOUNTS else []) + ([('psy','psychometric-test.html')] if SHOW_PSY else []))
     body = page_hero("Free career check", "For Class 9–12. About four minutes. The questions change with your stream and your answers, then show the career paths, courses and entrance exams that fit you.", "Career check") + f'''
 <section class="section quiz-section">
   <div class="wrap">
@@ -1411,6 +1420,7 @@ def build_career_check():
 <section class="section cc-guides"><div class="wrap"><div class="section-head"><h2>Guides that go with your result</h2><p>Free guides on courses, streams and entrance exams, written for Class 9–12 students and parents.</p></div>
   <nav class="cc-links" aria-label="Course and exam guides"><ul>{links}</ul></nav></div></section>
 {faq_html}
+{f'<script>window.MUM_ACCOUNT={{"firebase":{json.dumps(ACCOUNT["firebase"])}}};</script>' if SHOW_ACCOUNTS else ''}
 <script src="assets/js/check.min.js?v={VER}" defer></script>'''
     page('career-check.html', 'Free Career Check', 'Free career check', 'Resources', body,
          crumbs_schema([("Home", ""), ("Career check", "career-check")]) + faq_schema)
@@ -1421,7 +1431,7 @@ def build_account():
     json.dump(public, open(os.path.join(ROOT, 'assets/data/exams.json'), 'w'), ensure_ascii=False, separators=(',', ':'))
     if not (SHOW_ACCOUNTS or ACCOUNT_TEST):
         return
-    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('cal', 'exam-calendar.html'), ('check', 'career-check.html'), ('courses', 'courses.html'), ('exams', f'assets/data/exams.json?v={VER}')])
+    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('cal', 'exam-calendar.html'), ('check', 'career-check.html'), ('courses', 'courses.html'), ('exams', f'assets/data/exams.json?v={VER}')] + ([('test', 'test.html'), ('psy', 'psychometric-test.html')] if SHOW_PSY else []))
     body = f'''
 <section class="acct-page"><div class="wrap">
   <h1 class="acct-h1">Your MyUniMentor account</h1>
@@ -1436,7 +1446,7 @@ def build_admin():
     """Staff-only panel at /admin: never linked, noindex, data protected by Firestore rules (admin claim)."""
     if not (SHOW_ACCOUNTS or ACCOUNT_TEST):
         return
-    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('account', 'account.html'), ('exams', f'assets/data/exams.json?v={VER}')])
+    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('account', 'account.html'), ('exams', f'assets/data/exams.json?v={VER}')] + ([('test', 'test.html')] if SHOW_PSY else []))
     body = f'''
 <section class="acct-page"><div class="wrap">
   <h1 class="acct-h1">MyUniMentor admin</h1>
@@ -1446,6 +1456,102 @@ def build_admin():
 <script>window.MUM_ACCOUNT={json.dumps(ACCOUNT)};</script>
 <script type="module" src="assets/js/admin.min.js?v={VER}"></script>'''
     page('admin.html', 'Admin', 'MyUniMentor staff panel.', 'Admin', body)
+
+PSY_LINKS = [('account', 'account.html'), ('about', 'psychometric-test.html'), ('cal', 'exam-calendar.html'), ('stream', 'stream-after-class-10.html'), ('contact', 'contact.html'),
+    ('btech', 'btech-cse-after-12th.html'), ('bca', 'bca-after-12th.html'), ('branches', 'engineering-branches-explained.html'), ('bdes', 'bdes-after-12th.html'),
+    ('pcb', 'careers-after-pcb-beyond-mbbs.html'), ('bcom', 'bcom-hons-after-12th.html'), ('bba', 'bba-after-12th.html'), ('law', 'law-after-12th.html'), ('logo', 'assets/img/logo-horizontal-dark.webp'), ('logoL', 'assets/img/logo-horizontal-light.webp')]
+
+def build_test():
+    """The test itself at /test: needs an account, noindex, never in the sitemap or llms files."""
+    if not (SHOW_PSY and SHOW_ACCOUNTS):
+        return
+    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in PSY_LINKS)
+    body = f'''
+<section class="acct-page psy-page"><div class="wrap">
+  <h1 class="acct-h1">Career psychometric test</h1>
+  <div id="psy" class="psy is-loading" aria-live="polite"><div class="psy-card"><p>Loading your test…</p></div></div>
+  <nav class="psy-links" hidden aria-hidden="true">{links}</nav>
+</div></section>
+<script>window.MUM_ACCOUNT={json.dumps(ACCOUNT)};window.MUM_TEST={json.dumps(PSY)};</script>
+<script type="module" src="assets/js/psy.min.js?v={VER}"></script>'''
+    page('test.html', 'Career psychometric test', 'Take the MyUniMentor career psychometric test.', 'Resources', body)
+
+def build_psy_landing():
+    if not SHOW_PSY:
+        return
+    price = PSY['price']
+    arrow = lambda r: f'<svg viewBox="0 0 64 64" aria-hidden="true"><g transform="rotate({r} 32 32)"><path d="M32 52V13M32 12l-9 10M32 12l9 10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g></svg>'
+    parts = [
+        ('Interests', '36 activities', 'How much would you enjoy fixing a scooter, writing a script, running a stall or caring for patients? Scored on Holland’s six interest types (RIASEC), the model behind most career tests worldwide.'),
+        ('Personality', '25 statements', 'Social energy, warmth, discipline, calm under pressure and curiosity: the Big Five, measured with free research scales from the International Personality Item Pool.'),
+        ('Aptitude', '6 timed sections', 'Numbers, words, patterns, shapes you turn in your mind, gears and levers, and a one-minute speed check. About 12 minutes in all.'),
+        ('Situations', '6 real moments', 'Falling behind before boards, a teammate who isn’t pulling their weight, a hard problem you can’t crack. What you would really do.'),
+        ('Values', 'Rank 6', 'Achievement, independence, recognition, relationships, support and working conditions: the six work values used by O*NET.'),
+        ('About you', '1 minute', 'Your class, stream, marks band, favourite subjects and how long you want to study, so every suggestion is one you can actually take.')]
+    cards = ''.join(f'<li><span class="pl-n">{i + 1}</span><h3>{a}</h3><p class="pl-c">{b}</p><p>{c}</p></li>' for i, (a, b, c) in enumerate(parts))
+    samples = f'''<div class="pl-samples">
+  <figure class="pl-sample"><figcaption>Interests</figcaption><p class="pl-q">How much would you enjoy this?<b>Build a working model, like a robot, a drone or a bridge</b></p><div class="pl-scale"><span>Strongly dislike</span><span>Dislike</span><span>Not sure</span><span class="on">Like</span><span>Strongly like</span></div></figure>
+  <figure class="pl-sample"><figcaption>Personality</figcaption><p class="pl-q">How much is this like you?<b>I pay attention to details.</b></p><div class="pl-scale"><span>Not like me at all</span><span>Not much</span><span>In between</span><span>Quite like me</span><span class="on">Very much</span></div></figure>
+  <figure class="pl-sample"><figcaption>Aptitude: logical reasoning</figcaption><p class="pl-q">Which figure comes next?</p><div class="pl-seq">{arrow(0)}{arrow(45)}{arrow(90)}{arrow(135)}<span>?</span></div></figure>
+  <figure class="pl-sample"><figcaption>Aptitude: mechanical reasoning</figcaption><p class="pl-q"><b>Gear A has 20 teeth and turns gear B, which has 40 teeth. When A turns 10 times, how many times does B turn?</b></p><div class="pl-scale"><span>5</span><span>10</span><span>20</span><span>40</span></div></figure>
+  <figure class="pl-sample"><figcaption>Situations</figcaption><p class="pl-q"><b>A classmate who is usually cheerful has been quiet and alone for a few days. What do you do?</b></p><ul class="pl-opts"><li>Sit with them and gently ask if everything is okay</li><li>Tell a teacher you are worried about them</li><li>Give them space; they will talk if they want to</li><li>Assume it is not your business</li></ul></figure>
+</div>'''
+    report = [('Your top five career paths', 'with a fit score, why each one suits you, what to keep in mind, and the courses, course lengths and entrance exams for each'),
+              ('Your interest code', 'your three strongest interest types, like IAS or ECS, and what they mean for the work you will enjoy'),
+              ('Your aptitudes', 'six bands from Building to Strong, with what to practise'),
+              ('Your personality', 'five traits, each with a strength and a tip'),
+              ('How you handle situations', 'your strengths and what is worth working on'),
+              ('Your values', 'what you want from work, and the fields that offer it'),
+              ('Paths to think twice about', 'the areas that came lowest for you'),
+              ('How to study, for you', 'methods with strong research behind them, picked for your profile'),
+              ('Your next 90 days', 'a plan for your class: Class 9–10, Class 11, or Class 12 and gap year'),
+              ('How the report works', 'the methods and sources behind every score')]
+    rep = ''.join(f'<li><b>{a}</b><span>{b}</span></li>' for a, b in report)
+    mock = '''<div class="pl-mock" aria-label="Sample report preview" role="img"><p class="pl-mock-k">Sample report</p><p class="pl-mock-h">Riya, here is your report</p>
+  <div class="pl-mock-sum"><div><span>Interest code</span><b>IAS</b></div><div><span>Top match</span><b>Psychology</b></div></div>
+  <div class="pl-mock-bars"><p><span>Investigative</span><i style="--w:88%"></i></p><p><span>Artistic</span><i style="--w:72%"></i></p><p><span>Social</span><i style="--w:69%"></i></p><p><span>Enterprising</span><i style="--w:44%"></i></p><p><span>Realistic</span><i style="--w:31%"></i></p><p><span>Conventional</span><i style="--w:25%"></i></p></div>
+  <p class="pl-mock-tag">Strong fit · 82%</p></div>'''
+    faq_html, faq_schema = faq_block([
+        ("What is a psychometric test for career guidance?", "A set of questions that measures your interests, abilities, personality and values, and then matches them to careers. MyUniMentor’s test takes about 25 minutes and matches you to 24 career areas, with the courses and entrance exams for each."),
+        ("Who is it for?", "Students in Class 9, 10, 11 and 12, and students taking a gap year. Class 9 and 10 students also see which stream each career path needs."),
+        ("How much does it cost?", f"₹{price}, paid once. You can also unlock it free: share your invite link, and when three friends create free MyUniMentor accounts with it, your test unlocks. Schools and events may also give you an access code."),
+        ("Can I stop and finish later?", "Yes. Your answers save as you go to your free MyUniMentor account, so you can stop anytime and continue on any device. Each timed aptitude section keeps its remaining time."),
+        ("How accurate is it?", "It is a guidance tool, not a final answer. Interests are the strongest single guide to a career you will enjoy, which is why they carry half the weight. Each section is short, so read scores as rough bands, and talk your report through with a counsellor before deciding."),
+        ("Can my parents see the report?", "Yes, if you link your accounts. A parent who links to your account from their own MyUniMentor account can open your report once you finish."),
+        ("Do you use DMIT or fingerprint tests?", "No. Fingerprint-based tests (DMIT) are not backed by scientific evidence, and neither are “learning styles”. We leave both out."),
+        ("How is it different from the free career check?", "The free career check takes about 4 minutes and looks at your interests and plans. The psychometric test takes about 25 minutes and adds personality, six timed aptitude sections, real-life situations and values, with a much more detailed report.")], 'About the psychometric test')
+    body = page_hero("Career psychometric test", f"For Class 9–12. About 25 minutes. Interests, aptitude, personality and values, matched to Indian courses and entrance exams, with a detailed report. ₹{price}, or free when three friends join.", "Psychometric test",
+        f'''<div class="hero-actions pl-hero-btns"><a href="test.html" class="btn btn-cyan btn-lg">Start the test</a><a href="#how-it-works" class="btn btn-outline-light btn-lg">See how it works</a></div>''') + f'''
+<section class="section pl-facts"><div class="wrap"><ul class="pl-fact-row">
+  <li><b>25 min</b><span>Save and resume anytime</span></li><li><b>6 parts</b><span>95 questions and a speed round</span></li><li><b>24 areas</b><span>Matched to Indian courses and exams</span></li><li><b>₹{price}</b><span>Or free with 3 friends</span></li></ul></div></section>
+<section class="section" id="how-it-works"><div class="wrap"><div class="section-head"><h2>What the test measures</h2><p>Six short parts. Interests tell you what you will enjoy, aptitude what comes easily to you, personality how you like to work, and values what you want from a job.</p></div>
+  <ol class="pl-parts">{cards}</ol></div></section>
+<section class="section pl-sample-sec"><div class="wrap"><div class="section-head"><h2>Sample questions</h2><p>A taste of each part. The real test has 95 questions and a one-minute speed round.</p></div>{samples}</div></section>
+<section class="section"><div class="wrap pl-split"><div><h2>How we match you to careers</h2>
+  <p>Every career area has a profile. For interests, we use the U.S. Department of Labor’s O*NET interest codes for related jobs: software developers and data scientists are “Investigative and Conventional”, lawyers “Enterprising, Conventional and Investigative”, physiotherapists “Social, Investigative and Realistic”.</p>
+  <p>Your answers are compared with each profile and weighted like this:</p>
+  <ul class="pl-weights"><li><b>50%</b> Interests</li><li><b>25%</b> Aptitude</li><li><b>15%</b> Personality</li><li><b>10%</b> Values</li></ul>
+  <p>Subjects you enjoy add a little. If you are in Class 11 or 12 and a path needs a different stream, it is marked clearly, so you only plan around options open to you.</p></div>
+  {mock}</div></section>
+<section class="section pl-report"><div class="wrap"><div class="section-head"><h2>What is in your report</h2><p>Ten sections on screen and as a PDF you can download, print and share.</p></div><ol class="pl-rep">{rep}</ol></div></section>
+<section class="section"><div class="wrap pl-split pl-honest"><div><h2>What we leave out, and why</h2>
+  <p><b>No fingerprint (DMIT) tests.</b> There is no scientific evidence that fingerprints predict talent or careers.</p>
+  <p><b>No “learning styles”.</b> Reviews of the research have found no good evidence that teaching to a visual or auditory “style” helps. We give study tips with strong evidence instead, like testing yourself and spacing out revision.</p>
+  <p><b>No personality “types”.</b> We measure traits on a scale, because people are rarely one type or the other.</p></div>
+  <div><h2>Its limits, honestly</h2><p>Each section is short, so treat scores as bands, not exact numbers. Aptitudes grow with practice. And for now we compare you with your own profile; comparisons with other students will be added once enough students have taken the test. That is why every report ends with a free session with a counsellor.</p></div></div></section>
+<section class="section pl-how"><div class="wrap"><div class="section-head"><h2>How to take it</h2></div>
+  <ol class="steps"><li><span class="step-n">1</span><h3>Create your free account</h3><p>Log in with your email. No password needed.</p></li>
+  <li><span class="step-n">2</span><h3>Unlock the test</h3><p>Pay ₹{price}, use an access code, or share your invite link: when three friends sign up with it, your test is free.</p></li>
+  <li><span class="step-n">3</span><h3>Take it and get your report</h3><p>About 25 minutes. Your report is ready the moment you finish, and saved in your account.</p></li></ol>
+  <p class="pl-alt">Just want a quick idea first? Try the <a href="career-check.html">free 4-minute career check</a>.</p></div></section>
+{faq_html}
+{cta("Ready to find your best-fit career?", "About 25 minutes. Your report is ready the moment you finish.", "Start the test", "test.html")}'''
+    service = {"@context": "https://schema.org", "@type": "Service", "@id": "https://myunimentor.in/psychometric-test#service", "name": "MyUniMentor career psychometric test",
+               "serviceType": "Career psychometric assessment", "description": "A 25-minute online psychometric test for Class 9–12 students in India: interests (RIASEC), Big Five personality, six timed aptitude sections, situations and work values, matched to 24 career areas with Indian courses and entrance exams.",
+               "provider": {"@id": "https://myunimentor.in/#org"}, "areaServed": {"@type": "Country", "name": "India"}, "audience": {"@type": "EducationalAudience", "educationalRole": "student"},
+               "url": "https://myunimentor.in/psychometric-test", "offers": {"@type": "Offer", "price": str(price), "priceCurrency": "INR", "url": "https://myunimentor.in/psychometric-test"}}
+    page('psychometric-test.html', 'Career Psychometric Test, Class 9–12 | MyUniMentor', f'A 25-minute psychometric test for Class 9–12: interests, aptitude, personality and values, matched to Indian courses and exams. Detailed report for ₹{price}.', 'Resources', body,
+         crumbs_schema([("Home", ""), ("Psychometric test", "psychometric-test")]) + faq_schema + '<script type="application/ld+json">' + json.dumps(service, ensure_ascii=False) + '</script>')
 
 def build_404():
     body = f'''<section class="page-hero nf" style="--rays:url(&quot;{rays_svg(19)}&quot;)"><div class="wrap">
@@ -1620,5 +1726,5 @@ def build_guide_page():
          crumbs_schema([("Home", ""), ("Free guide", "free-guide")]))
 
 if __name__ == '__main__':
-    build_home(); build_network(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_account(); build_admin(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
+    build_home(); build_network(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_account(); build_admin(); build_test(); build_psy_landing(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
     print('built', len(UNIS), 'universities,', len(SCHOOLS), 'schools')

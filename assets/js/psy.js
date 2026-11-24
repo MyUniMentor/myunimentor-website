@@ -1,0 +1,782 @@
+/* MyUniMentor psychometric test: about 25 minutes, six parts, a detailed report.
+   Loaded only on /test. Firebase is imported here, never on public pages.
+   Sources: interest profiles of occupations from O*NET OnLine (U.S. Department of Labor, CC BY 4.0);
+   personality items from the IPIP (public domain: Mini-IPIP, Donnellan et al. 2006, plus five IPIP-50 items);
+   aptitude, situation and interest items written by MyUniMentor. */
+const ROOT = document.getElementById('psy');
+const CFG = window.MUM_ACCOUNT || {}, TEST = window.MUM_TEST || {};
+const FB_VER = '12.11.0';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const link = k => { const a = document.querySelector('.psy-links a[data-k="' + k + '"]'); return a ? a.getAttribute('href') : '#'; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+const pct = v => Math.round(clamp(v, 0, 100));
+
+/* ---------- career areas: courses, exams and lengths come from the career check (one source of truth) ---------- */
+/*@CL@*/
+const STREAM_NAME = { pcm: 'Science (PCM)', pcb: 'Science (PCB)', pcmb: 'Science (PCMB)', comm: 'Commerce with Maths', com: 'Commerce without Maths', hum: 'Humanities', und: 'stream not decided yet' };
+const ON_CAL = ['JEE Main', 'JEE Advanced', 'NEET UG', 'CUET', 'CLAT', 'NID DAT', 'NIFT', 'UCEED', 'IPMAT'];
+
+/* ---------- what each area asks of you ----------
+   occ: O*NET occupations with their interest codes (O*NET OnLine, checked 24 Nov 2026). For defence, O*NET has no officer
+   profiles, so the nearest uniformed-service occupations are used.
+   apt: how much each aptitude matters, 0–3, in this order: numerical, verbal, logical, spatial, mechanical, speed.
+   per: Big Five traits that help (E social energy, A warmth, C discipline, S calm under pressure, O curiosity), 1–2.
+   val: the two work values this area rewards most. MyUniMentor's mapping, reviewed by counsellors. */
+const AREA = {
+  cs: { occ: [['Software Developers', 'IC'], ['Data Scientists', 'IC'], ['Computer and Information Research Scientists', 'IC'], ['Web and Digital Interface Designers', 'IAC']], apt: [2, 1, 3, 1, 0, 1], per: { C: 1, O: 2 }, val: ['ach', 'ind'] },
+  core: { occ: [['Mechanical Engineers', 'RIC'], ['Civil Engineers', 'RIC'], ['Electrical Engineers', 'RIC'], ['Electronics Engineers', 'RIC']], apt: [3, 1, 2, 2, 3, 0], per: { C: 2, O: 1 }, val: ['ach', 'wc'] },
+  arch: { occ: [['Architects', 'RCA'], ['Interior Designers', 'AR'], ['Urban and Regional Planners', 'IEC']], apt: [2, 1, 1, 3, 1, 1], per: { O: 2, C: 1 }, val: ['ach', 'ind'] },
+  design: { occ: [['Commercial and Industrial Designers', 'ARI'], ['Fashion Designers', 'ARE'], ['Graphic Designers', 'AC'], ['Interior Designers', 'AR'], ['Special Effects Artists and Animators', 'AR']], apt: [0, 1, 1, 3, 0, 1], per: { O: 2 }, val: ['ind', 'ach'] },
+  sci: { occ: [['Physicists', 'IRC'], ['Chemists', 'IRC'], ['Mathematicians', 'IC'], ['Biochemists and Biophysicists', 'IR']], apt: [3, 2, 3, 1, 1, 0], per: { O: 2, C: 1 }, val: ['ach', 'ind'] },
+  data: { occ: [['Statisticians', 'IC'], ['Actuaries', 'CIE'], ['Data Scientists', 'IC'], ['Business Intelligence Analysts', 'CIE']], apt: [3, 1, 3, 0, 0, 2], per: { C: 2, O: 1 }, val: ['ach', 'wc'] },
+  defence: { occ: [['Police and Sheriff\'s Patrol Officers', 'RCE'], ['First-Line Supervisors of Police and Detectives', 'EC']], apt: [1, 1, 2, 2, 2, 2], per: { C: 2, S: 2, E: 1 }, val: ['rec', 'sup'] },
+  med: { occ: [['Family Medicine Physicians', 'SI'], ['General Internal Medicine Physicians', 'ISR'], ['Emergency Medicine Physicians', 'ISC'], ['Dentists, General', 'IRS']], apt: [2, 3, 2, 1, 0, 2], per: { C: 2, S: 2, A: 1 }, val: ['rel', 'ach'] },
+  allied: { occ: [['Physical Therapists', 'SIR'], ['Registered Nurses', 'SCI'], ['Dietitians and Nutritionists', 'SI'], ['Optometrists', 'ISR']], apt: [1, 2, 1, 1, 1, 1], per: { A: 2, C: 1, S: 1 }, val: ['rel', 'sup'] },
+  psy: { occ: [['Clinical and Counseling Psychologists', 'SI'], ['Industrial-Organizational Psychologists', 'IEC'], ['Psychiatrists', 'IS']], apt: [1, 3, 2, 0, 0, 1], per: { A: 2, O: 1, S: 1 }, val: ['rel', 'ach'] },
+  bio: { occ: [['Medical Scientists', 'IR'], ['Microbiologists', 'IRC'], ['Biochemists and Biophysicists', 'IR'], ['Forensic Science Technicians', 'IRC']], apt: [2, 2, 3, 1, 0, 1], per: { O: 2, C: 1 }, val: ['ach', 'ind'] },
+  pharm: { occ: [['Pharmacists', 'ISC']], apt: [2, 2, 2, 0, 0, 2], per: { C: 2 }, val: ['sup', 'wc'] },
+  agri: { occ: [['Veterinarians', 'IR'], ['Soil and Plant Scientists', 'IR'], ['Agricultural Engineers', 'RI'], ['Food Scientists and Technologists', 'IRC']], apt: [1, 1, 2, 1, 2, 0], per: { C: 1 }, val: ['ind', 'ach'] },
+  ca: { occ: [['Accountants and Auditors', 'CEI'], ['Budget Analysts', 'CEI'], ['Tax Examiners and Revenue Agents', 'CE'], ['Compliance Officers', 'CE']], apt: [3, 1, 2, 0, 0, 3], per: { C: 2, S: 1 }, val: ['wc', 'sup'] },
+  fin: { occ: [['Financial and Investment Analysts', 'CEI'], ['Financial Managers', 'EC'], ['Personal Financial Advisors', 'ECS'], ['Securities and Financial Services Sales Agents', 'EC']], apt: [3, 2, 3, 0, 0, 1], per: { C: 1, S: 1, E: 1 }, val: ['rec', 'wc'] },
+  mkt: { occ: [['Marketing Managers', 'EC'], ['Advertising and Promotions Managers', 'ECA'], ['Public Relations Specialists', 'EAS'], ['Market Research Analysts', 'ECI']], apt: [1, 3, 1, 1, 0, 1], per: { E: 2, O: 1 }, val: ['rec', 'ind'] },
+  biz: { occ: [['Chief Executives', 'EC'], ['General and Operations Managers', 'EC'], ['Human Resources Managers', 'ECS'], ['Management Analysts', 'CIE']], apt: [2, 2, 2, 0, 0, 1], per: { E: 2, C: 1, S: 1 }, val: ['ind', 'rec'] },
+  eco: { occ: [['Economists', 'ICE'], ['Environmental Economists', 'IEC']], apt: [3, 2, 3, 0, 0, 0], per: { O: 2, C: 1 }, val: ['ach', 'ind'] },
+  law: { occ: [['Lawyers', 'ECI'], ['Judges and Magistrates', 'ECS'], ['Paralegals and Legal Assistants', 'CIE']], apt: [0, 3, 3, 0, 0, 1], per: { E: 1, C: 1, S: 1, O: 1 }, val: ['rec', 'ach'] },
+  civil: { occ: [['Legislators', 'ESC'], ['Political Scientists', 'IA'], ['Urban and Regional Planners', 'IEC']], apt: [1, 3, 2, 0, 0, 2], per: { C: 2, E: 1, S: 1 }, val: ['rec', 'rel'] },
+  media: { occ: [['News Analysts, Reporters and Journalists', 'AIE'], ['Producers and Directors', 'AE'], ['Broadcast Announcers', 'AES'], ['Film and Video Editors', 'AC']], apt: [0, 3, 1, 1, 0, 1], per: { O: 2, E: 1 }, val: ['ind', 'rec'] },
+  lang: { occ: [['Writers and Authors', 'AE'], ['Editors', 'ACE'], ['English Language and Literature Teachers, Postsecondary', 'SIA']], apt: [0, 3, 1, 0, 0, 1], per: { O: 2 }, val: ['ind', 'ach'] },
+  social: { occ: [['Child, Family and School Social Workers', 'S'], ['Secondary School Teachers', 'S'], ['Educational, Guidance and Career Counselors', 'SCE'], ['Training and Development Specialists', 'SI']], apt: [0, 2, 1, 0, 0, 0], per: { A: 2, E: 1 }, val: ['rel', 'ach'] },
+  hosp: { occ: [['Lodging Managers', 'ECS'], ['Food Service Managers', 'ECR'], ['Meeting, Convention and Event Planners', 'ECS'], ['Chefs and Head Cooks', 'ERC'], ['Flight Attendants', 'CSR']], apt: [1, 2, 1, 1, 0, 2], per: { E: 2, A: 1, S: 1 }, val: ['rel', 'rec'] }
+};
+const RIASEC = 'RIASEC'.split('');
+for (const k in AREA) {                       // area interest profile: 1st letter 3, 2nd 2, 3rd 1, averaged over its occupations
+  const w = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+  AREA[k].occ.forEach(([, code]) => code.split('').forEach((l, i) => { w[l] += [3, 2, 1][i] / AREA[k].occ.length; }));
+  AREA[k].w = w;
+  AREA[k].code = RIASEC.slice().sort((a, b) => w[b] - w[a]).filter(l => w[l] >= .5).slice(0, 3).join('');
+}
+const SUBJ_AREAS = { 'Maths': ['data', 'cs', 'core', 'eco', 'fin', 'sci'], 'Physics': ['core', 'sci', 'arch'], 'Chemistry': ['sci', 'pharm', 'bio'], 'Biology': ['med', 'allied', 'bio', 'agri'],
+  'Computer Science': ['cs', 'data'], 'Accountancy': ['ca', 'fin'], 'Business Studies': ['biz', 'mkt'], 'Economics': ['eco', 'fin', 'civil'], 'English': ['lang', 'media', 'law'],
+  'Hindi or another language': ['lang', 'media'], 'History': ['civil', 'law'], 'Political Science': ['civil', 'law'], 'Geography': ['civil', 'agri', 'arch'], 'Psychology': ['psy'],
+  'Art or Design': ['design', 'arch'], 'Physical Education': ['defence', 'allied'] };
+
+/* ---------- Part 1: interests (36 activities, 6 per type) ---------- */
+const TYPES = {
+  R: { n: 'Realistic', nick: 'The Doer', like: 'working with your hands, tools, machines and the physical world', work: 'You like a practical result you can see: something built, fixed or made to work.' },
+  I: { n: 'Investigative', nick: 'The Thinker', like: 'asking why, solving problems, science and research', work: 'You enjoy digging into a problem until you really understand it.' },
+  A: { n: 'Artistic', nick: 'The Creator', like: 'creating, designing, writing and expressing ideas', work: 'You want work with room for originality and your own style.' },
+  S: { n: 'Social', nick: 'The Helper', like: 'teaching, caring for and helping people', work: 'You get energy from making a real difference to someone.' },
+  E: { n: 'Enterprising', nick: 'The Persuader', like: 'leading, convincing, selling and starting things', work: 'You like taking charge, making decisions and winning people over.' },
+  C: { n: 'Conventional', nick: 'The Organiser', like: 'order, numbers, records and getting details right', work: 'You like clear systems, accuracy and well-organised work.' }
+};
+const INT = [
+  ['R', 'Repair a bicycle or scooter that has stopped working'], ['I', 'Find out why a chemical reaction happens the way it does'], ['A', 'Design a poster, a logo or a T-shirt'],
+  ['S', 'Teach a younger student something they find hard'], ['E', 'Lead a team for a school fest or competition'], ['C', 'Keep the accounts for a club: money in, money out'],
+  ['R', 'Build a working model, like a robot, a drone or a bridge'], ['I', 'Solve a tricky puzzle or Maths problem that takes a long time'], ['A', 'Write a story, a poem or a script'],
+  ['S', 'Listen to a friend’s problem and help them feel better'], ['E', 'Sell a product and convince people to buy it'], ['C', 'Organise files, notes or data so anything can be found quickly'],
+  ['R', 'Set up the wiring and speakers for a school event'], ['I', 'Read about how the brain, the body or the universe works'], ['A', 'Act, sing, dance or play music in front of an audience'],
+  ['S', 'Care for people who are sick, elderly or injured'], ['E', 'Start a small business, online or offline'], ['C', 'Check a long document or spreadsheet for mistakes'],
+  ['R', 'Work outdoors: on a farm, a building site or in a forest'], ['I', 'Test an idea with an experiment and record the results'], ['A', 'Shoot and edit a short video or reel'],
+  ['S', 'Volunteer with an NGO in your city'], ['E', 'Give a speech to get people to back your idea'], ['C', 'Follow clear steps to get a task exactly right'],
+  ['R', 'Use tools to make or fix furniture'], ['I', 'Study data to find the cause of a problem'], ['A', 'Plan how a room or a stage should look'],
+  ['S', 'Help a new student settle into your class'], ['E', 'Negotiate a deal or settle an argument between two sides'], ['C', 'Make a timetable or a budget and stick to it'],
+  ['R', 'Operate machines or lab equipment carefully'], ['I', 'Investigate how a disease spreads and how to stop it'], ['A', 'Sketch, paint or create digital art'],
+  ['S', 'Run a health or cleanliness drive in your area'], ['E', 'Plan how a project could earn more money'], ['C', 'Enter and update records on a computer']
+];
+const LIKE = ['Strongly dislike', 'Dislike', 'Not sure', 'Like', 'Strongly like'];
+
+/* ---------- Part 2: personality (IPIP, public domain). r = reverse scored ---------- */
+const TRAITS = {
+  E: { n: 'Social energy', hi: 'You get energy from people. Group work, presenting and meeting new people come naturally to you.', hiW: 'Protect some quiet, focused study time every day. Deep learning happens there.',
+    lo: 'You recharge with quiet time and think before you speak. You often do your best work alone or in small groups.', loW: 'Practise speaking up in class and in mock interviews. It gets easier with practice.',
+    mid: 'You are comfortable both with people and on your own, and can switch between the two.' },
+  A: { n: 'Warmth and cooperation', hi: 'You are caring and cooperative, and people find you easy to work with and trust.', hiW: 'Learn to say no and hold your ground when it matters to you.',
+    lo: 'You are direct and comfortable challenging ideas, and you are not afraid of competition.', loW: 'Show people you value them. Teamwork matters in every career.',
+    mid: 'You balance kindness with standing up for yourself.' },
+  C: { n: 'Discipline and organisation', hi: 'You are organised and reliable, and you finish what you start. Research links this trait closely with doing well in studies and at work.', hiW: 'Do not let perfection slow you down. Sometimes good enough is the right call.',
+    lo: 'You are flexible and spontaneous, and you handle change well.', loW: 'Use simple systems: a weekly planner, a daily top-three list and a study timer, to keep long preparation on track.',
+    mid: 'You are organised when it counts, without being rigid.' },
+  S: { n: 'Calm under pressure', hi: 'You stay calm under pressure and bounce back quickly from setbacks.', hiW: 'Calm is a strength. Just do not let it turn into last-minute preparation.',
+    lo: 'You feel things deeply and may worry before exams or big decisions.', loW: 'Practise in timed, exam-like conditions and try slow breathing before tests. Worry shrinks when the situation feels familiar.',
+    mid: 'You handle most pressure well, with the odd stressful phase like anyone.' },
+  O: { n: 'Curiosity and imagination', hi: 'You are curious and imaginative, and you enjoy new ideas and abstract thinking.', hiW: 'Pick a few interests to go deep on, rather than starting many things at once.',
+    lo: 'You are practical and like proven, concrete ways of doing things.', loW: 'Try one new kind of activity each term. It can open doors you did not know about.',
+    mid: 'You like new ideas when they are useful, and you also value what already works.' }
+};
+const PER = [
+  ['E', 'I am the life of the party.'], ['A', 'I sympathise with other people’s feelings.'], ['C', 'I get my work done right away.'], ['S', 'I have frequent mood swings.', 1], ['O', 'I have a vivid imagination.'],
+  ['E', 'I don’t talk a lot.', 1], ['A', 'I am not interested in other people’s problems.', 1], ['C', 'I often forget to put things back in their proper place.', 1], ['S', 'I am relaxed most of the time.'], ['O', 'I am not interested in abstract ideas.', 1],
+  ['E', 'I talk to a lot of different people at parties and functions.'], ['A', 'I feel other people’s emotions.'], ['C', 'I like order.'], ['S', 'I get upset easily.', 1], ['O', 'I have difficulty understanding abstract ideas.', 1],
+  ['E', 'I keep in the background.', 1], ['A', 'I am not really interested in others.', 1], ['C', 'I make a mess of things.', 1], ['S', 'I seldom feel low.'], ['O', 'I do not have a good imagination.', 1],
+  ['E', 'I feel comfortable around people.'], ['A', 'I am interested in people.'], ['C', 'I pay attention to details.'], ['S', 'I worry about things.', 1], ['O', 'I am full of ideas.']
+];
+const ACC = ['Not like me at all', 'Not much like me', 'In between', 'Quite like me', 'Very much like me'];
+
+/* ---------- Part 3: aptitude (timed) ---------- */
+const svg = (inner, w = 64, h = 64) => `<svg viewBox="0 0 ${w} ${h}" class="psy-fig" aria-hidden="true">${inner}</svg>`;
+const ST = 'fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
+const F = {
+  arrow: r => `<g transform="rotate(${r} 32 32)"><path d="M32 52V13M32 12l-9 10M32 12l9 10" ${ST}/></g>`,
+  dots: n => { const p = [[32, 32], [20, 20, 44, 44], [18, 18, 32, 32, 46, 46], [20, 20, 44, 20, 20, 44, 44, 44], [18, 18, 46, 18, 32, 32, 18, 46, 46, 46], [20, 16, 44, 16, 20, 32, 44, 32, 20, 48, 44, 48]][n - 1]; let s = ''; for (let i = 0; i < p.length; i += 2) s += `<circle cx="${p[i]}" cy="${p[i + 1]}" r="5" fill="currentColor"/>`; return s; },
+  corner: c => { const [x, y] = { tl: [20, 20], tr: [44, 20], br: [44, 44], bl: [20, 44], c: [32, 32] }[c]; return `<rect x="10" y="10" width="44" height="44" rx="3" ${ST}/><circle cx="${x}" cy="${y}" r="6" fill="currentColor"/>`; },
+  poly: n => { if (!n) return `<circle cx="32" cy="32" r="21" ${ST}/>`; const pts = []; for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / n; pts.push((32 + 22 * Math.cos(a)).toFixed(1) + ',' + (32 + 22 * Math.sin(a)).toFixed(1)); } return `<polygon points="${pts.join(' ')}" ${ST}/>`; },
+  tri: (r, f) => `<g transform="rotate(${r} 32 32)"><polygon points="32,12 52,48 12,48" fill="${f ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/></g>`,
+  nest: (o, c) => { const [x, y] = { tl: [17, 17], tr: [37, 17], br: [37, 37], bl: [17, 37] }[c]; return (o === 'sq' ? `<rect x="8" y="8" width="48" height="48" rx="3" ${ST}/>` : `<circle cx="32" cy="32" r="25" ${ST}/>`) + `<rect x="${x}" y="${y}" width="10" height="10" fill="currentColor"/>`; }
+};
+/* Shapes for mental rotation: square cells; they may be turned but never flipped */
+const turn = (cells, k) => { let c = cells.map(p => p.slice()); for (let i = 0; i < k; i++) c = c.map(([x, y]) => [y, -x]); return norm(c); };
+const flip = cells => norm(cells.map(([x, y]) => [-x, y]));
+function norm(c) { const mx = Math.min(...c.map(p => p[0])), my = Math.min(...c.map(p => p[1])); return c.map(([x, y]) => [x - mx, y - my]).sort((a, b) => a[0] - b[0] || a[1] - b[1]); }
+const same = (a, b) => JSON.stringify(norm(a)) === JSON.stringify(norm(b));
+function cellsSvg(c) {
+  const w = Math.max(...c.map(p => p[0])) + 1, h = Math.max(...c.map(p => p[1])) + 1, u = 12, W = 64, ox = (W - w * u) / 2, oy = (W - h * u) / 2;
+  return svg(c.map(([x, y]) => `<rect x="${ox + x * u}" y="${oy + y * u}" width="${u}" height="${u}" fill="currentColor" fill-opacity=".85" stroke="#fff" stroke-width="1.5"/>`).join(''));
+}
+const SPA_SHAPES = [
+  { c: [[1, 0], [2, 0], [0, 1], [1, 1], [1, 2]], ok: 1, opts: [['t', 1], ['f', 0], ['f', 2], ['f', 3]] },
+  { c: [[0, 0], [0, 1], [0, 2], [0, 3], [1, 3]], ok: 2, opts: [['f', 1], ['f', 3], ['t', 2], ['f', 0]] },
+  { c: [[1, 0], [0, 1], [1, 1], [1, 2], [1, 3]], ok: 3, opts: [['f', 2], ['f', 0], ['f', 3], ['t', 3]] },
+  { c: [[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]], ok: 0, opts: [['t', 3], ['f', 1], ['f', 2], ['f', 0]] },
+  { c: [[0, 0], [1, 0], [2, 0], [2, 1], [3, 1], [1, 2]], ok: 2, opts: [['f', 0], ['f', 1], ['t', 1], ['f', 3]] }
+].map(s => ({ c: s.c, opts: s.opts.map(([m, k]) => m === 't' ? turn(s.c, k) : turn(flip(s.c), k)), a: s.opts.findIndex(o => o[0] === 't') }));
+
+const APT = [
+  { k: 'num', n: 'Numerical reasoning', what: 'working with numbers, percentages, ratios and data', time: 150,
+    tip: 'Do 10 minutes of mental maths and table-or-graph questions every day.',
+    items: [
+      { q: 'A shirt costs ₹800. It is on sale at 25% off. What is the sale price?', o: ['₹200', '₹575', '₹600', '₹625'], a: 2 },
+      { q: 'What number comes next? 3, 7, 15, 31, …', o: ['47', '62', '63', '64'], a: 2 },
+      { q: 'A train covers 180 km in 2 hours 30 minutes. What is its average speed?', o: ['60 km/h', '72 km/h', '75 km/h', '90 km/h'], a: 1 },
+      { q: 'Boys and girls in a class are in the ratio 3 : 2. There are 40 students. How many are girls?', o: ['12', '16', '20', '24'], a: 1 },
+      { q: 'Riya scored 72, 85 and 78 in three tests. What must she score in the fourth to average 80?', o: ['80', '83', '85', '88'], a: 2 },
+      { q: 'A price goes up by 20% and then comes down by 20%. Compared with the start, it is now:', o: ['the same', '4% lower', '4% higher', '2% lower'], a: 1 }] },
+  { k: 'ver', n: 'Verbal reasoning', what: 'understanding words, meaning and arguments', time: 120,
+    tip: 'Read one newspaper editorial a day, note three new words and sum it up in two lines.',
+    items: [
+      { q: 'Which word is closest in meaning to <b>abundant</b>?', o: ['scarce', 'plentiful', 'ancient', 'noisy'], a: 1 },
+      { q: 'Which word is opposite in meaning to <b>transparent</b>?', o: ['clear', 'opaque', 'fragile', 'honest'], a: 1 },
+      { q: '<b>Book</b> is to <b>reader</b> as <b>recipe</b> is to …', o: ['kitchen', 'food', 'cook', 'page'], a: 2 },
+      { q: 'Which word is spelt correctly?', o: ['accomodate', 'acommodate', 'acomodate', 'accommodate'], a: 3 },
+      { q: 'The scientist was ___ about the results; she wanted more data before drawing any conclusion.', o: ['cautious', 'careless', 'certain', 'delighted'], a: 0 },
+      { q: 'Everyone who passed the test got a certificate. Arjun did not get a certificate. Which must be true?', o: ['Arjun passed the test', 'Arjun did not pass the test', 'Arjun missed the test', 'The test was very hard'], a: 1 }] },
+  { k: 'log', n: 'Logical reasoning', what: 'spotting patterns and rules in shapes and sequences', time: 150,
+    tip: 'Solve a few pattern and series puzzles regularly. They appear in many entrance exams.',
+    items: [
+      { q: 'Which figure comes next?', seq: [F.arrow(0), F.arrow(45), F.arrow(90), F.arrow(135)], o: [F.arrow(90), F.arrow(180), F.arrow(225), F.arrow(0)], a: 1 },
+      { q: 'Which figure comes next?', seq: [F.dots(1), F.dots(2), F.dots(3), F.dots(4)], o: [F.dots(4), F.dots(6), F.dots(5), F.dots(3)], a: 2 },
+      { q: 'Which figure comes next?', seq: [F.corner('tl'), F.corner('tr'), F.corner('br'), F.corner('bl')], o: [F.corner('tr'), F.corner('br'), F.corner('c'), F.corner('tl')], a: 3 },
+      { q: 'Which figure comes next?', seq: [F.poly(3), F.poly(4), F.poly(5), F.poly(6)], o: [F.poly(7), F.poly(8), F.poly(5), F.poly(0)], a: 0 },
+      { q: 'Which figure comes next?', seq: [F.tri(0, 1), F.tri(90, 0), F.tri(180, 1), F.tri(270, 0)], o: [F.tri(0, 0), F.tri(90, 1), F.tri(180, 1), F.tri(0, 1)], a: 3 },
+      { q: 'Which figure comes next?', seq: [F.nest('sq', 'tl'), F.nest('ci', 'bl'), F.nest('sq', 'br'), F.nest('ci', 'tr')], o: [F.nest('ci', 'tl'), F.nest('sq', 'tl'), F.nest('sq', 'tr'), F.nest('sq', 'bl')], a: 1 }] },
+  { k: 'spa', n: 'Spatial reasoning', what: 'picturing shapes and turning them in your mind', time: 120,
+    tip: 'Sketch objects from different angles, try 3D puzzles, or learn a free 3D design app.',
+    items: SPA_SHAPES.map(s => ({ q: 'Which shape is the first one, only turned? (Turned, never flipped.)', base: cellsSvg(s.c), o: s.opts.map(cellsSvg), a: s.a })) },
+  { k: 'mec', n: 'Mechanical reasoning', what: 'understanding gears, levers, forces and machines', time: 120,
+    tip: 'Take things apart (safely) and connect what you see with your Physics chapters on force and motion.',
+    items: [
+      { q: 'Gear A turns clockwise. It turns gear B, which turns gear C. Which way does gear C turn?', fig: svg('<circle cx="22" cy="40" r="15" ' + ST + '/><circle cx="54" cy="40" r="15" ' + ST + '/><circle cx="86" cy="40" r="15" ' + ST + '/><text x="22" y="45" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">A</text><text x="54" y="45" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">B</text><text x="86" y="45" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor">C</text><path d="M10 20a18 18 0 0 1 22-6l-3-4M32 14l-5 2" ' + ST + '/>', 108, 64), o: ['Clockwise', 'Anticlockwise', 'It does not move', 'It depends on its size'], a: 0 },
+      { q: 'Gear A has 20 teeth and turns gear B, which has 40 teeth. When A turns 10 times, how many times does B turn?', o: ['5', '10', '20', '40'], a: 0 },
+      { q: 'On a seesaw, a 30 kg child sits 2 m from the middle. Where must a 20 kg child sit on the other side to balance it?', fig: svg('<path d="M8 30h92" ' + ST + '/><path d="M54 30l-8 16h16z" fill="currentColor"/><rect x="14" y="16" width="14" height="14" rx="2" fill="currentColor"/><rect x="82" y="20" width="10" height="10" rx="2" fill="currentColor" opacity=".6"/><text x="21" y="12" text-anchor="middle" font-size="10" fill="currentColor">30 kg</text><text x="87" y="14" text-anchor="middle" font-size="10" fill="currentColor">20 kg</text><text x="36" y="58" text-anchor="middle" font-size="10" fill="currentColor">2 m</text><text x="74" y="58" text-anchor="middle" font-size="10" fill="currentColor">?</text>', 108, 64), o: ['1.5 m', '2 m', '3 m', '4 m'], a: 2 },
+      { q: 'You lift a load with a single fixed pulley instead of lifting it straight up. What changes?', o: ['You need half the force', 'You need the same force, but you pull down instead of up', 'You need twice the force', 'You need no force'], a: 1 },
+      { q: 'A wooden block floats in fresh water with half of it above the surface. In salty sea water it will float:', o: ['higher', 'lower', 'at the same level', 'it will sink'], a: 0 }] }
+];
+const SPEED = { k: 'spd', n: 'Speed and accuracy', what: 'checking details quickly without mistakes', time: 60, tip: 'Timed practice tests build exam speed. Go through every mistake afterwards.' };
+const APT_ALL = APT.concat([SPEED]);
+function speedPairs(seed) {
+  let s = seed || 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  const L = 'ABCDEFGHJKLMNPRSTUVWXYZ', D = '0123456789', out = [];
+  for (let i = 0; i < 60; i++) {
+    const a = L[r() * 23 | 0] + L[r() * 23 | 0] + D[r() * 10 | 0] + D[r() * 10 | 0] + D[r() * 10 | 0] + D[r() * 10 | 0] + L[r() * 23 | 0];
+    let b = a;
+    if (r() < .5) {
+      const p = 2 + (r() * 4 | 0), ch = b.split('');
+      if (r() < .5 && ch[p] !== ch[p + 1] && p < 5) { [ch[p], ch[p + 1]] = [ch[p + 1], ch[p]]; } else { ch[p] = D[(D.indexOf(ch[p]) + 1 + (r() * 8 | 0)) % 10]; }
+      b = ch.join('');
+    }
+    out.push([a, b]);
+  }
+  return out;
+}
+
+/* ---------- Part 4: situations (how you handle real moments). Points 3/2/1/0 ---------- */
+const SJT = [
+  { k: 'pressure', n: 'Handling pressure', q: 'Your board exam is two weeks away and you feel you have fallen behind. What do you do?',
+    o: [['Make a day-by-day plan for the topics that carry the most marks, and start today', 3], ['Ask a teacher which topics to focus on, then study those', 2], ['Study very late every night, even if you sleep much less', 1], ['Feel it is too late now and wait to see what happens', 0]] },
+  { k: 'team', n: 'Teamwork', q: 'In a group project, one member is not doing their part. What do you do?',
+    o: [['Talk to them alone, find out why, and agree on what they will finish', 3], ['Tell the teacher what is happening', 2], ['Split their work among the rest of the group', 1], ['Do all of it yourself and say nothing', 0]] },
+  { k: 'grit', n: 'Persistence', q: 'You have tried a hard Maths problem three times and still cannot solve it. What do you do?',
+    o: [['Study a solved example of a similar problem, then try again', 3], ['Ask a friend or teacher to explain the method', 2], ['Move on to easier questions for now', 1], ['Decide you are just not a Maths person', 0]] },
+  { k: 'care', n: 'Empathy', q: 'A classmate who is usually cheerful has been quiet and alone for a few days. What do you do?',
+    o: [['Sit with them and gently ask if everything is okay', 3], ['Tell a teacher you are worried about them', 2], ['Give them space; they will talk if they want to', 1], ['Assume it is not your business', 0]] },
+  { k: 'lead', n: 'Taking charge', q: 'Your class has to plan a farewell, but nobody is taking charge. What do you do?',
+    o: [['Call a quick meeting, split the tasks and set a deadline', 3], ['Offer to handle one part, like the decorations', 2], ['Wait for the class monitor or a teacher to start', 1], ['Skip it; someone else will sort it out', 0]] },
+  { k: 'feedback', n: 'Learning from feedback', q: 'A teacher says your project, which you worked hard on, needs big changes. What do you do?',
+    o: [['Ask exactly what needs to change and plan how to fix it', 3], ['Make the changes, even though you feel a bit upset', 2], ['Explain why you think your version was fine', 1], ['Feel let down and do the minimum', 0]] }
+];
+const SJT_TEXT = {
+  pressure: ['You respond to pressure with a plan. That is exactly what long entrance-exam preparation needs.', 'Under pressure, start with a simple plan: list topics by marks, then do the biggest first.'],
+  team: ['You deal with problems in a team directly and fairly. Every workplace values this.', 'When teamwork goes wrong, try a calm one-to-one talk first. It solves more than it seems.'],
+  grit: ['You keep going when work gets hard and look for a better method. This matters more than talent over time.', 'When you are stuck, study a worked example, then try again. Being stuck is part of learning.'],
+  care: ['You notice how others feel and reach out. People will trust you.', 'Checking on someone with a simple “Are you okay?” matters more than you might think.'],
+  lead: ['You step up when nobody else does. You are a natural organiser.', 'Try leading one small thing: a project, a club event. Leadership grows with practice.'],
+  feedback: ['You use feedback to get better instead of taking it personally. This speeds up everything you learn.', 'Feedback stings at first. Asking “what exactly should I change?” turns it into a plan.']
+};
+
+/* ---------- Part 5: work values (O*NET's six work values) ---------- */
+const VALUES = {
+  ach: { n: 'Achievement', d: 'Using my best abilities and seeing the results of my work', fits: 'research, engineering, medicine and any field where results are clear' },
+  ind: { n: 'Independence', d: 'Working my own way and making my own decisions', fits: 'design, writing, research, your own business and freelance work' },
+  rec: { n: 'Recognition', d: 'Respect, a good position and the chance to lead', fits: 'law, management, civil services, finance and media' },
+  rel: { n: 'Relationships', d: 'Helping people and working with people I like', fits: 'healthcare, teaching, psychology, social work and hospitality' },
+  sup: { n: 'Support', d: 'Fair treatment, good guidance and a well-run organisation', fits: 'established organisations: hospitals, banks, government and large companies' },
+  wc: { n: 'Working conditions', d: 'Job security, good pay and a comfortable place to work', fits: 'accounting, finance, IT and pharmacy, and stable jobs in large organisations' }
+};
+
+/* ---------- Part 6: about you ---------- */
+const SUBJECTS = Object.keys(SUBJ_AREAS);
+const MARKS = ['90% or more', '75–89%', '60–74%', 'Below 60%', 'Prefer not to say'];
+
+const PARTS = [
+  { k: 'int', n: 'Interests', min: 4, intro: 'For each activity, say how much you would enjoy doing it. Don’t think about whether you are good at it, or what it pays. Just whether you would like doing it.' },
+  { k: 'per', n: 'Personality', min: 3, intro: 'How well does each sentence describe you as you are now, not as you wish to be? There are no right or wrong answers.' },
+  { k: 'apt', n: 'Aptitude', min: 12, intro: 'Six short timed sections: numbers, words, patterns, shapes, machines, and a speed check. Each has its own timer. Skip anything you cannot solve and come back if time allows. Use rough paper if you like, but no calculator.' },
+  { k: 'sjt', n: 'Situations', min: 2, intro: 'Six everyday situations. Pick what you would most likely do, not what sounds best.' },
+  { k: 'val', n: 'Values', min: 1, intro: 'What matters most to you in a future job? Tap the six values in order, starting with the most important.' },
+  { k: 'about', n: 'About you', min: 1, intro: 'A few quick questions so your report fits your subjects and plans.' }
+];
+
+/* ======================= scoring ======================= */
+const APT_KEYS = ['num', 'ver', 'log', 'spa', 'mec', 'spd'];
+const band = p => p >= 75 ? 'Strong' : p >= 45 ? 'Good' : 'Building';
+const fitLabel = f => f >= 70 ? 'Strong fit' : f >= 57 ? 'Good fit' : 'Worth exploring';
+const level = p => p >= 65 ? 'hi' : p <= 35 ? 'lo' : 'mid';
+function scoreAll(S) {
+  const ab = S.about || {}, I = {}, P = {}, A = {}, J = {}, Vr = {};
+  RIASEC.forEach(t => { const v = INT.map((x, i) => x[0] === t ? S.int[i] : null).filter(v => v != null); I[t] = pct((avg(v) - 1) / 4 * 100); });
+  const order = RIASEC.slice().sort((a, b) => I[b] - I[a]);
+  Object.keys(TRAITS).forEach(t => { const v = PER.map((x, i) => x[0] === t && S.per[i] != null ? (x[2] ? 6 - S.per[i] : S.per[i]) : null).filter(v => v != null); P[t] = pct((avg(v) - 1) / 4 * 100); });
+  APT.forEach(sec => { const ans = (S.apt || {})[sec.k] || [], c = sec.items.filter((it, i) => ans[i] === it.a).length; A[sec.k] = { c, n: sec.items.length, p: pct(c / sec.items.length * 100), tried: ans.filter(x => x != null).length }; });
+  const sp = S.spd || { c: 0, w: 0, n: 0 }; A.spd = { c: sp.c, w: sp.w, n: sp.n, p: pct((sp.c - sp.w) / 24 * 100) };
+  SJT.forEach((s, i) => { const pick = (S.sjt || [])[i]; J[s.k] = pick == null ? null : s.o[pick][1]; });
+  (S.val || []).forEach((k, i) => { Vr[k] = i + 1; });
+  const st = ab.stream, early = ['Class 9', 'Class 10'].includes(ab.cls);
+  const lo = Math.min(...RIASEC.map(t => I[t])), hi = Math.max(...RIASEC.map(t => I[t]));
+  const areas = Object.keys(AREA).filter(k => CL[k]).map(k => {
+    const ar = AREA[k], ws = RIASEC.reduce((s, t) => s + ar.w[t], 0);
+    const iAbs = RIASEC.reduce((s, t) => s + ar.w[t] * I[t], 0) / ws;
+    const iRel = RIASEC.reduce((s, t) => s + ar.w[t] * ((I[t] - lo) / ((hi - lo) || 1) * 100), 0) / ws;
+    const iFit = hi - lo < 5 ? iAbs : .5 * iAbs + .5 * iRel;
+    const aw = ar.apt.reduce((s, x) => s + x, 0), aFit = APT_KEYS.reduce((s, key, i) => s + ar.apt[i] * A[key].p, 0) / (aw || 1);
+    const pw = Object.values(ar.per).reduce((s, x) => s + x, 0), pFit = Object.keys(ar.per).reduce((s, t) => s + ar.per[t] * P[t], 0) / (pw || 1);
+    const vFit = avg(ar.val.map(v => Vr[v] ? (6 - Vr[v]) / 5 * 100 : 50));
+    const subj = (ab.subjects || []).filter(s => (SUBJ_AREAS[s] || []).includes(k));
+    const fits = early || !st || st === 'und' || CL[k].co.some(c => c.st.includes(st));
+    const fit = .5 * iFit + .25 * aFit + .15 * pFit + .1 * vFit + Math.min(6, subj.length * 3) - (fits ? 0 : 15);
+    return { k, fit: pct(fit), iFit: pct(iFit), aFit: pct(aFit), pFit: pct(pFit), vFit: pct(vFit), subj, fits };
+  }).sort((a, b) => b.fit - a.fit);
+  const same = arr => { const n = arr.filter(v => v != null); if (n.length < 10) return false; const c = {}; n.forEach(v => { c[v] = (c[v] || 0) + 1; }); return Math.max(...Object.values(c)) / n.length >= .9; };
+  return { I, order, code: order.slice(0, 3).join(''), P, A, J, Vr, areas, flat: hi - lo < 15, rushed: same(S.int || []) || same(S.per || []), early };
+}
+
+/* ======================= app ======================= */
+let fb = null, me = null, profile = null, S = null, tick = null, saveT = null;
+async function loadFb() {
+  if (fb) return fb;
+  const base = 'https://www.gstatic.com/firebasejs/' + FB_VER + '/';
+  const [app, auth, fs] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-firestore.js')]);
+  const a = app.initializeApp(CFG.firebase);
+  fb = { auth: auth.getAuth(a), A: auth, db: fs.getFirestore(a), F: fs };
+  return fb;
+}
+async function api(action, body) {
+  const t = me ? await me.getIdToken() : '';
+  const r = await fetch(CFG.authUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, idToken: t }, body)) });
+  return r.json();
+}
+const D = (...p) => fb.F.doc(fb.db, ...p);
+const get = async (...p) => { try { const s = await fb.F.getDoc(D(...p)); return s.exists() ? s.data() : null; } catch (e) { return null; } };
+function shell(html) { ROOT.innerHTML = html; ROOT.classList.remove('is-loading'); }
+function card(title, body) { shell(`<div class="psy-card"><h2>${title}</h2>${body}</div>`); }
+const ORDER = ['Class 9', 'Class 10', 'Class 11', 'Class 12'];
+const sessionOf = d => d.getMonth() >= 3 ? d.getFullYear() : d.getFullYear() - 1;
+function clsNow(p) {
+  if (!p || !p.cls) return '';
+  const t = p.created && p.created.toDate ? p.created.toDate() : new Date(), base = p.clsSession != null ? p.clsSession : sessionOf(t), yrs = Math.max(0, sessionOf(new Date()) - base);
+  if (!ORDER.includes(p.cls)) return p.cls;
+  return ORDER[ORDER.indexOf(p.cls) + yrs] || 'Finished Class 12';
+}
+function seedOf(s) { let h = 7; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 2147483647; return h || 7; }
+function fresh() {
+  let r = seedOf(me.uid); const rnd = () => (r = (r * 16807) % 2147483647) / 2147483647;
+  return { v: 1, part: 0, step: -1, sec: 0, int: [], per: [], apt: {}, left: {}, spd: null, sjt: [], sjtOrder: SJT.map(() => [0, 1, 2, 3].sort(() => rnd() - .5)), val: [], about: {}, started: Date.now() };
+}
+const KEY = () => 'mum-psy-' + me.uid;
+function save(remote) {
+  try { localStorage.setItem(KEY(), JSON.stringify(S)); } catch (e) {}
+  if (!remote) return;
+  clearTimeout(saveT);
+  saveT = setTimeout(() => { fb.F.setDoc(D('results', me.uid), { uid: me.uid, state: S, updated: fb.F.serverTimestamp() }, { merge: true }).catch(() => {}); }, 400);
+}
+const progress = s => s ? s.part * 1000 + (s.sec || 0) * 50 + Math.max(0, s.step) : -1;
+
+async function start() {
+  ROOT.classList.add('is-loading');
+  try { await loadFb(); } catch (e) { return card('Could not load the test', '<p>Check your internet connection and refresh the page.</p>'); }
+  fb.A.onAuthStateChanged(fb.auth, async u => {
+    me = u;
+    if (!u) return card('Log in to take your test', `<p>Your test and report are saved to your free MyUniMentor account, so you can stop anytime and pick up where you left off.</p>
+      <a class="btn btn-cyan btn-lg" href="${link('account')}?next=${encodeURIComponent(location.pathname + location.search)}">Log in or sign up</a>
+      <p class="psy-fine"><a href="${link('about')}">What is in the test?</a></p>`);
+    profile = await get('users', u.uid);
+    const view = new URLSearchParams(location.search).get('u');
+    if (view && view !== u.uid) return viewOther(view);
+    if (!profile) return card('Finish setting up your account', `<p>Add your class and stream first, so your report fits you.</p><a class="btn btn-cyan" href="${link('account')}?next=${encodeURIComponent(location.pathname)}">Set up my profile</a>`);
+    if (profile.role === 'parent') return parentView();
+    const res = await get('results', u.uid);
+    if (res && res.done) return report(res.state, { name: profile.name, when: res.done, uid: u.uid, own: true });
+    const access = await get('access', u.uid);
+    if (!access) return unlock();
+    let local = null; try { local = JSON.parse(localStorage.getItem(KEY()) || 'null'); } catch (e) {}
+    S = [local, res && res.state].filter(Boolean).sort((a, b) => progress(b) - progress(a))[0] || null;
+    if (!S) { S = fresh(); welcome(); } else render();
+  });
+}
+
+/* ---------- unlock: pay, invite three friends, or a code ---------- */
+async function unlock(msg) {
+  const share = new URL(link('about'), location.href).href.split('#')[0] + '?ref=' + me.uid;
+  const wa = 'https://wa.me/?text=' + encodeURIComponent(`I’m taking MyUniMentor’s career psychometric test: interests, aptitude and personality, matched to real courses. Join with my link: ${share}`);
+  shell(`<div class="psy-unlock">
+    <div class="psy-unlock-head"><h2>Unlock your career psychometric test</h2><p>About 25 minutes. Six parts. A detailed report with your best-fit careers, courses and entrance exams, and a 90-day plan.</p>${msg ? `<p class="psy-ok">${esc(msg)}</p>` : ''}</div>
+    <div class="psy-ways">
+      <section class="psy-way psy-way-free"><h3>Free with 3 friends</h3><p>Share your link. When three friends create their free MyUniMentor accounts with it, your test unlocks free.</p>
+        <div class="psy-refs"><span class="psy-ref-n">…</span><div class="psy-ref-bar"><span></span></div></div>
+        <div class="psy-share"><input class="psy-link" readonly value="${esc(share)}" aria-label="Your invite link"><button type="button" class="btn btn-outline btn-small psy-copy">Copy</button></div>
+        <div class="psy-row"><a class="btn btn-small psy-wa" href="${wa}" target="_blank" rel="noopener">Share on WhatsApp</a><button type="button" class="acct-link psy-recheck">Check again</button></div></section>
+      <section class="psy-way"><h3>Pay ₹${TEST.price || 99}</h3><p>One-time payment by UPI, card or net banking. Your test unlocks straight away.</p>
+        ${TEST.payLive ? `<button type="button" class="btn btn-cyan psy-pay">Pay ₹${TEST.price || 99} and start</button><p class="psy-err" hidden></p>` : '<p class="psy-soon">Online payment opens soon. Until then, unlock it free with three friends or a code.</p>'}</section>
+      <section class="psy-way"><h3>Have a code?</h3><p>Your school or MyUniMentor may have given you one.</p>
+        <form class="psy-code" novalidate><input name="code" maxlength="16" autocomplete="off" placeholder="e.g. SCHOOL2026" aria-label="Access code"><button class="btn btn-outline btn-small" type="submit">Use code</button></form><p class="psy-err psy-code-err" hidden></p></section>
+    </div>
+    <p class="psy-fine">Questions? WhatsApp <a href="https://wa.me/917417557070">+91 74175 57070</a>.</p></div>`);
+  const refN = ROOT.querySelector('.psy-ref-n'), refBar = ROOT.querySelector('.psy-ref-bar span');
+  const check = async () => {
+    refN.textContent = 'Checking…';
+    const r = await api('ref_check').catch(() => ({}));
+    if (r.unlocked) return start();
+    const n = Math.min(3, r.count || 0);
+    refN.textContent = r.ok ? `${n} of 3 friends joined` : 'Could not check right now';
+    refBar.style.width = (n / 3 * 100) + '%';
+  };
+  check();
+  ROOT.querySelector('.psy-recheck').addEventListener('click', check);
+  ROOT.querySelector('.psy-copy').addEventListener('click', e => { const i = ROOT.querySelector('.psy-link'); i.select(); (navigator.clipboard ? navigator.clipboard.writeText(i.value) : Promise.reject()).catch(() => document.execCommand('copy')); e.target.textContent = 'Copied'; });
+  const cf = ROOT.querySelector('.psy-code'), ce = ROOT.querySelector('.psy-code-err');
+  cf.addEventListener('submit', async e => {
+    e.preventDefault(); ce.hidden = true;
+    const code = cf.code.value.trim().toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    if (code.length < 4) { ce.textContent = 'Enter your code.'; ce.hidden = false; return; }
+    const b = cf.querySelector('button'); b.disabled = true; b.textContent = 'Checking…';
+    const r = await api('redeem_code', { code }).catch(() => ({}));
+    if (r.ok) return start();
+    ce.textContent = r.error || 'That code did not work.'; ce.hidden = false; b.disabled = false; b.textContent = 'Use code';
+  });
+  const pb = ROOT.querySelector('.psy-pay');
+  if (pb) pb.addEventListener('click', () => pay(pb));
+  let pending = null; try { pending = localStorage.getItem('mum-pay'); } catch (e) {}
+  if (pending && TEST.payLive) { const r = await api('pay_check', { order_id: pending }).catch(() => ({})); if (r.ok && r.unlocked) { try { localStorage.removeItem('mum-pay'); } catch (e) {} return start(); } }
+}
+function loadScript(src) { return new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
+async function pay(btn) {
+  const err = ROOT.querySelector('.psy-way .psy-err'); err.hidden = true; btn.disabled = true; btn.textContent = 'Opening…';
+  const fail = m => { err.textContent = m; err.hidden = false; btn.disabled = false; btn.textContent = `Pay ₹${TEST.price || 99} and start`; };
+  try {
+    const r = await api('pay_order');
+    if (!r.ok) return fail(r.error || 'Could not start the payment. Try again.');
+    if (!window.Razorpay) await loadScript('https://checkout.razorpay.com/v1/checkout.js');
+    try { localStorage.setItem('mum-pay', r.order); } catch (e) {}
+    const rz = new window.Razorpay({
+      key: r.key, order_id: r.order, amount: r.amount, currency: 'INR', name: 'MyUniMentor', description: 'Career psychometric test',
+      prefill: { name: profile.name, email: me.email || profile.email, contact: profile.whatsapp ? '+91' + profile.whatsapp : '' }, theme: { color: '#087286' },
+      handler: async p => {
+        btn.textContent = 'Confirming…';
+        const v = await api('pay_verify', { order_id: p.razorpay_order_id, payment_id: p.razorpay_payment_id, signature: p.razorpay_signature }).catch(() => ({}));
+        if (v.ok) { try { localStorage.removeItem('mum-pay'); } catch (e) {} return start(); }
+        fail(v.error || 'We could not confirm the payment yet. If money was taken, refresh in a minute: it unlocks automatically.');
+      },
+      modal: { ondismiss: () => fail('Payment cancelled. You can try again.') }
+    });
+    rz.open();
+  } catch (e) { fail('Could not open the payment window. Check your connection and try again.'); }
+}
+
+/* ---------- welcome and parts ---------- */
+function welcome() {
+  shell(`<div class="psy-card psy-welcome"><h2>Your test is ready, ${esc(String(profile.name || '').split(' ')[0])}</h2>
+    <p>About 25 minutes in six parts. Your answers save as you go, so you can stop anytime and come back on any device.</p>
+    <ol class="psy-parts">${PARTS.map(p => `<li><b>${p.n}</b><span>about ${p.min} min</span></li>`).join('')}</ol>
+    <ul class="psy-tips"><li>Find a quiet place. The aptitude part is timed.</li><li>Answer honestly. There are no right answers outside the aptitude part.</li><li>Keep rough paper and a pen handy. No calculator.</li></ul>
+    <button type="button" class="btn btn-cyan btn-lg psy-go">Start the test</button></div>`);
+  ROOT.querySelector('.psy-go').addEventListener('click', () => { save(true); render(); });
+}
+function frame(inner, opts = {}) {
+  const pi = S.part, part = PARTS[pi];
+  const done = PARTS.map((p, i) => `<li class="${i < pi ? 'done' : i === pi ? 'now' : ''}"><span>${i + 1}</span><b>${p.n}</b></li>`).join('');
+  shell(`<div class="psy-test"><ol class="psy-steps" aria-label="Test parts">${done}</ol>
+    <div class="psy-top"><span class="psy-count">${opts.count || part.n}</span>${opts.timer != null ? `<span class="psy-timer" role="timer" aria-live="off">${mmss(opts.timer)}</span>` : ''}<div class="psy-bar" aria-hidden="true"><span style="width:${opts.bar || 0}%"></span></div></div>
+    <div class="psy-stage">${inner}</div>
+    ${opts.nav === false ? '' : `<div class="psy-nav">${opts.back === false ? '<span></span>' : '<button type="button" class="btn btn-outline btn-small psy-back">Back</button>'}${opts.next ? `<button type="button" class="btn btn-small psy-next">${opts.next}</button>` : ''}</div>`}</div>`);
+  const b = ROOT.querySelector('.psy-back'); if (b) b.addEventListener('click', back);
+}
+const mmss = s => Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+function partIntro(extra = '') {
+  const p = PARTS[S.part];
+  frame(`<div class="psy-intro"><p class="psy-k">Part ${S.part + 1} of 6 · about ${p.min} minutes</p><h2>${p.n}</h2><p>${p.intro}</p>${extra}<button type="button" class="btn btn-cyan btn-lg psy-begin">Begin</button></div>`, { back: S.part > 0, nav: S.part > 0 });
+  ROOT.querySelector('.psy-begin').addEventListener('click', () => { S.step = 0; save(); render(); });
+}
+function next() { S.step++; save(); render(); }
+function back() {
+  stopTimer();
+  if (S.part === 2) { if (S.step > 0 && S.sec < APT.length) { S.step--; return render(); } return; }
+  if (S.step > 0) S.step--; else if (S.step === 0) S.step = -1;
+  else if (S.part > 0 && S.part !== 3) { S.part--; S.step = S.part === 0 ? INT.length - 1 : S.part === 1 ? PER.length - 1 : 0; }
+  save(); render();
+}
+function endPart() { stopTimer(); S.part++; S.step = -1; S.sec = 0; save(true); render(); }
+
+function render() {
+  stopTimer(); window.scrollTo({ top: Math.max(0, ROOT.getBoundingClientRect().top + scrollY - 90) });
+  const k = PARTS[S.part] && PARTS[S.part].k;
+  if (S.part >= PARTS.length) return finish();
+  if (k === 'int') return S.step < 0 ? partIntro() : likert(INT, 'int', LIKE, i => INT[i][1], 'How much would you enjoy this?');
+  if (k === 'per') return S.step < 0 ? partIntro() : likert(PER, 'per', ACC, i => PER[i][1], 'How much is this like you?');
+  if (k === 'apt') return aptitude();
+  if (k === 'sjt') return S.step < 0 ? partIntro() : situation();
+  if (k === 'val') return S.step < 0 ? partIntro() : values();
+  if (k === 'about') return about();
+}
+function likert(list, key, scale, text, ask) {
+  const i = S.step; if (i >= list.length) return endPart();
+  const cur = S[key][i];
+  frame(`<fieldset class="psy-q"><legend><span class="psy-ask">${ask}</span><span class="psy-stmt">${esc(text(i))}</span></legend>
+    <div class="psy-scale">${scale.map((l, v) => `<button type="button" class="psy-opt${cur === v + 1 ? ' on' : ''}" data-v="${v + 1}"><i aria-hidden="true">${v + 1}</i>${l}</button>`).join('')}</div></fieldset>
+    <p class="psy-hint">Tip: use keys 1–5.</p>`, { count: `${PARTS[S.part].n} · ${i + 1} of ${list.length}`, bar: i / list.length * 100, back: !(S.part === 0 && i === 0) });
+  ROOT.querySelectorAll('.psy-opt').forEach(b => b.addEventListener('click', () => {
+    ROOT.querySelectorAll('.psy-opt').forEach(x => x.classList.toggle('on', x === b));
+    S[key][i] = +b.dataset.v; setTimeout(() => { if ((i + 1) % 12 === 0) save(true); next(); }, 160);
+  }));
+}
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea,select') || e.metaKey || e.ctrlKey || e.altKey) return;
+  const spd = ROOT.querySelector('.psy-speed');
+  if (spd) { const m = { s: 'same', d: 'diff', ArrowLeft: 'same', ArrowRight: 'diff' }[e.key]; if (m) { e.preventDefault(); const b = spd.querySelector(`[data-v="${m}"]`); if (b) b.click(); } return; }
+  const n = parseInt(e.key, 10); if (!n) return;
+  const opts = ROOT.querySelectorAll('.psy-stage .psy-opt'); if (opts[n - 1]) { e.preventDefault(); opts[n - 1].click(); }
+});
+
+/* ---------- aptitude ---------- */
+function stopTimer() { if (tick) { clearInterval(tick); tick = null; } }
+function aptitude() {
+  if (S.sec >= APT_ALL.length) return endPart();
+  const sec = APT_ALL[S.sec];
+  if (S.left[sec.k] == null) S.left[sec.k] = sec.time;
+  if (S.step < 0 || S.left[sec.k] <= 0 && S.step < 0) {
+    const first = S.sec === 0 ? `<p class="psy-k">Part 3 of 6 · six timed sections</p><h2>Aptitude</h2><p>${PARTS[2].intro}</p><hr>` : '';
+    frame(`<div class="psy-intro">${first}<p class="psy-k">Section ${S.sec + 1} of ${APT_ALL.length}</p><h3>${sec.n}</h3><p>Tests ${sec.what}. ${sec.k === 'spd' ? `You will see pairs of codes. Tap <b>Same</b> if they match exactly, <b>Different</b> if they don’t. Go as fast as you can without mistakes. Wrong answers count against you. Keys: S = same, D = different.` : `${sec.items.length} questions.`}</p>
+      <p class="psy-time">Time: ${mmss(sec.time)}</p><button type="button" class="btn btn-cyan btn-lg psy-begin">Start the timer</button></div>`, { nav: false, count: `Aptitude · section ${S.sec + 1} of ${APT_ALL.length}`, bar: S.sec / APT_ALL.length * 100 });
+    ROOT.querySelector('.psy-begin').addEventListener('click', () => { S.step = 0; save(); render(); });
+    return;
+  }
+  if (sec.k === 'spd') return speed();
+  const i = Math.min(S.step, sec.items.length - 1), it = sec.items[i], ans = S.apt[sec.k] = S.apt[sec.k] || [], cur = ans[i];
+  const fig = it.seq ? `<div class="psy-seq">${it.seq.map(f => `<span>${svg(f)}</span>`).join('')}<span class="psy-qm">?</span></div>` : it.base ? `<div class="psy-seq psy-base"><span>${it.base}</span></div>` : it.fig ? `<div class="psy-mfig">${it.fig}</div>` : '';
+  const pic = !!(it.seq || it.base);
+  frame(`<div class="psy-q"><p class="psy-stmt psy-stmt-s">${it.q}</p>${fig}
+    <div class="psy-choices${pic ? ' psy-pics' : ''}">${it.o.map((o, v) => `<button type="button" class="psy-opt${cur === v ? ' on' : ''}" data-v="${v}"><i aria-hidden="true">${'ABCD'[v]}</i>${pic ? (o.startsWith('<svg') ? o : svg(o)) : o}</button>`).join('')}</div>
+    <div class="psy-dots" aria-hidden="true">${sec.items.map((x, j) => `<span class="${ans[j] != null ? 'a' : ''}${j === i ? ' c' : ''}"></span>`).join('')}</div></div>`,
+    { count: `${sec.n} · ${i + 1} of ${sec.items.length}`, timer: S.left[sec.k], bar: S.sec / APT_ALL.length * 100, back: i > 0, next: i < sec.items.length - 1 ? 'Skip' : 'Finish section' });
+  ROOT.querySelectorAll('.psy-opt').forEach(b => b.addEventListener('click', () => {
+    ROOT.querySelectorAll('.psy-opt').forEach(x => x.classList.toggle('on', x === b)); ans[i] = +b.dataset.v; save();
+    setTimeout(() => { if (i < sec.items.length - 1) next(); else { const nb = ROOT.querySelector('.psy-next'); if (nb) nb.focus(); } }, 180);
+  }));
+  ROOT.querySelector('.psy-next').addEventListener('click', () => {
+    if (i < sec.items.length - 1) return next();
+    const gaps = sec.items.map((x, j) => ans[j] == null ? j : -1).filter(j => j >= 0);
+    if (gaps.length && S.left[sec.k] > 5 && !ROOT.querySelector('.psy-confirm')) {
+      ROOT.querySelector('.psy-nav').insertAdjacentHTML('beforebegin', `<p class="psy-confirm">${gaps.length} unanswered. <button type="button" class="acct-link psy-goto" data-j="${gaps[0]}">Go to question ${gaps[0] + 1}</button> or tap Finish again.</p>`);
+      ROOT.querySelector('.psy-goto').addEventListener('click', ev => { S.step = +ev.target.dataset.j; render(); });
+      return;
+    }
+    endSection();
+  });
+  runTimer(sec);
+}
+function runTimer(sec) {
+  const el = ROOT.querySelector('.psy-timer');
+  tick = setInterval(() => {
+    S.left[sec.k] = Math.max(0, S.left[sec.k] - 1);
+    if (el) { el.textContent = mmss(S.left[sec.k]); el.classList.toggle('low', S.left[sec.k] <= 15); }
+    if (S.left[sec.k] % 5 === 0) save();
+    if (S.left[sec.k] <= 0) { stopTimer(); endSection(true); }
+  }, 1000);
+}
+function endSection(timeUp) {
+  stopTimer(); S.sec++; S.step = -1; save(true);
+  if (timeUp) { const s = ROOT.querySelector('.psy-stage'); if (s) s.insertAdjacentHTML('afterbegin', '<p class="psy-ok">Time is up for this section.</p>'); setTimeout(render, 900); } else render();
+}
+function speed() {
+  const pairs = speedPairs(seedOf(me.uid)), sp = S.spd = S.spd || { c: 0, w: 0, n: 0 };
+  const show = () => {
+    if (sp.n >= pairs.length) { S.left.spd = 0; return endSection(); }
+    const [a, b] = pairs[sp.n];
+    ROOT.querySelector('.psy-pair').innerHTML = `<code>${a}</code><code>${b}</code>`;
+    ROOT.querySelector('.psy-sp-n').textContent = sp.n;
+  };
+  frame(`<div class="psy-q psy-speed"><p class="psy-stmt psy-stmt-s">Are these two codes exactly the same?</p><div class="psy-pair"></div>
+    <div class="psy-sd"><button type="button" class="psy-opt" data-v="same"><i aria-hidden="true">S</i>Same</button><button type="button" class="psy-opt" data-v="diff"><i aria-hidden="true">D</i>Different</button></div>
+    <p class="psy-hint">Done: <span class="psy-sp-n">0</span></p></div>`, { count: SPEED.n, timer: S.left.spd, bar: S.sec / APT_ALL.length * 100, back: false, nav: false });
+  ROOT.querySelectorAll('.psy-sd .psy-opt').forEach(btn => btn.addEventListener('click', () => {
+    const [a, b] = pairs[sp.n], right = (a === b) === (btn.dataset.v === 'same');
+    right ? sp.c++ : sp.w++; sp.n++; btn.classList.add(right ? 'flash' : 'flash-x'); setTimeout(() => btn.classList.remove('flash', 'flash-x'), 120); show();
+  }));
+  show(); runTimer(SPEED);
+}
+
+/* ---------- situations, values, about you ---------- */
+function situation() {
+  const i = S.step; if (i >= SJT.length) return endPart();
+  const s = SJT[i], ord = S.sjtOrder[i], cur = S.sjt[i];
+  frame(`<fieldset class="psy-q"><legend><span class="psy-ask">Situation ${i + 1} of ${SJT.length}</span><span class="psy-stmt psy-stmt-s">${esc(s.q)}</span></legend>
+    <div class="psy-choices">${ord.map((oi, v) => `<button type="button" class="psy-opt${cur === oi ? ' on' : ''}" data-v="${oi}"><i aria-hidden="true">${v + 1}</i>${esc(s.o[oi][0])}</button>`).join('')}</div></fieldset>`,
+    { count: `Situations · ${i + 1} of ${SJT.length}`, bar: i / SJT.length * 100 });
+  ROOT.querySelectorAll('.psy-opt').forEach(b => b.addEventListener('click', () => { ROOT.querySelectorAll('.psy-opt').forEach(x => x.classList.toggle('on', x === b)); S.sjt[i] = +b.dataset.v; setTimeout(next, 180); }));
+}
+function values() {
+  const keys = Object.keys(VALUES), picked = S.val.slice();
+  frame(`<div class="psy-q"><p class="psy-stmt psy-stmt-s">Tap these in order of importance to you, most important first.</p>
+    <div class="psy-vals">${keys.map(k => { const r = picked.indexOf(k); return `<button type="button" class="psy-val${r > -1 ? ' on' : ''}" data-k="${k}"><span class="psy-rank">${r > -1 ? r + 1 : ''}</span><b>${VALUES[k].n}</b><small>${VALUES[k].d}</small></button>`; }).join('')}</div>
+    <button type="button" class="acct-link psy-reset">Start over</button></div>`, { count: 'Values', bar: picked.length / 6 * 100, next: picked.length === 6 ? 'Next' : null });
+  ROOT.querySelectorAll('.psy-val').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.k, at = S.val.indexOf(k);
+    if (at > -1) S.val.splice(at, 1); else S.val.push(k);
+    save(); values();
+  }));
+  ROOT.querySelector('.psy-reset').addEventListener('click', () => { S.val = []; values(); });
+  const nb = ROOT.querySelector('.psy-next'); if (nb) nb.addEventListener('click', endPart);
+}
+function about() {
+  const a = S.about, cls = a.cls || clsNow(profile), st = a.stream || profile.stream || '';
+  const opts = (arr, cur) => arr.map(([v, l]) => `<option value="${esc(v)}"${v === cur ? ' selected' : ''}>${esc(l)}</option>`).join('');
+  frame(`<form class="psy-q psy-about acct-form" novalidate><p class="psy-stmt psy-stmt-s">Last step: a little about you</p>
+    <div class="acct-grid"><label>Class<select name="cls">${opts([['Class 9', 'Class 9'], ['Class 10', 'Class 10'], ['Class 11', 'Class 11'], ['Class 12', 'Class 12'], ['Gap year / dropper', 'Gap year / dropper'], ['Finished Class 12', 'Finished Class 12']], cls)}</select></label>
+    <label>Stream<select name="stream">${opts(Object.entries(STREAM_NAME).map(([k, v]) => [k, k === 'und' ? 'Not decided yet' : v]), st)}</select></label>
+    <label>Marks in your last exam<select name="marks"><option value="">Choose…</option>${opts(MARKS.map(m => [m, m]), a.marks)}</select></label>
+    <label>Years you’re happy to study after Class 12<select name="years">${opts([['ns', 'Not sure yet'], ['3', 'About 3'], ['4', 'About 4'], ['5', '5 or more']], a.years || 'ns')}</select></label>
+    <label class="acct-span">Where would you like to study?<select name="where">${opts([['india', 'Anywhere in India'], ['near', 'Close to home'], ['abroad', 'Abroad, if possible']], a.where || 'india')}</select></label></div>
+    <fieldset class="acct-targets"><legend>Subjects you enjoy most <span class="opt">(up to 3)</span></legend><div class="acct-chips">${SUBJECTS.map(s => `<label><input type="checkbox" name="subj" value="${esc(s)}"${(a.subjects || []).includes(s) ? ' checked' : ''}><span>${esc(s)}</span></label>`).join('')}</div></fieldset>
+    <p class="psy-err" hidden></p><button type="submit" class="btn btn-cyan btn-lg">See my report</button></form>`, { count: 'About you', bar: 50, next: null });
+  const f = ROOT.querySelector('form'), err = f.querySelector('.psy-err');
+  f.querySelectorAll('[name=subj]').forEach(c => c.addEventListener('change', () => { const on = f.querySelectorAll('[name=subj]:checked'); if (on.length > 3) c.checked = false; }));
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    S.about = { cls: f.cls.value, stream: f.stream.value, marks: f.marks.value, years: f.years.value, where: f.where.value, subjects: [...f.querySelectorAll('[name=subj]:checked')].map(x => x.value) };
+    if (!S.about.subjects.length) { err.textContent = 'Pick at least one subject you enjoy.'; err.hidden = false; return; }
+    endPart();
+  });
+}
+async function finish() {
+  clearTimeout(saveT);
+  card('Building your report…', '<p>This takes a few seconds.</p>');
+  const sc = scoreAll(S);
+  S.finished = Date.now();
+  const doc = { uid: me.uid, state: S, done: fb.F.serverTimestamp(), name: profile.name, cls: S.about.cls, stream: S.about.stream, code: sc.code, top: sc.areas.slice(0, 3).map(a => a.k), topN: sc.areas.slice(0, 3).map(a => CL[a.k].n), updated: fb.F.serverTimestamp() };
+  try { await fb.F.setDoc(D('results', me.uid), doc, { merge: true }); } catch (e) { return card('Could not save your report', '<p>Your answers are safe on this device. Check your connection and <button type="button" class="acct-link" onclick="location.reload()">try again</button>.</p>'); }
+  try { localStorage.removeItem(KEY()); } catch (e) {}
+  report(S, { name: profile.name, when: new Date(), uid: me.uid, own: true, fresh: true });
+}
+
+/* ---------- parents and staff ---------- */
+async function parentView() {
+  let kids = [];
+  try { const q = fb.F.query(fb.F.collection(fb.db, 'links'), fb.F.where('parentUid', '==', me.uid), fb.F.where('status', '==', 'accepted')); kids = (await fb.F.getDocs(q)).docs.map(d => d.data()); } catch (e) {}
+  const rows = await Promise.all(kids.map(async l => ({ l, r: await get('results', l.childUid) })));
+  card('Your child’s psychometric report', rows.length ? `<ul class="psy-kids">${rows.map(({ l, r }) => `<li><b>${esc(l.childName || l.childEmail)}</b>${r && r.done ? `<a class="btn btn-small" href="?u=${esc(l.childUid)}">View report</a>` : '<span>Not taken yet</span>'}</li>`).join('')}</ul>`
+    : `<p>Once your child accepts your link request and finishes the test, their report appears here.</p><a class="btn btn-outline" href="${link('account')}">Go to your account</a>`);
+}
+async function viewOther(uid) {
+  const r = await get('results', uid);
+  if (!r || !r.done) return card('Report not available', '<p>This report does not exist yet, or you do not have access to it.</p>');
+  report(r.state, { name: r.name, when: r.done, uid, own: false });
+}
+
+/* ======================= report ======================= */
+const bar = (p, cls = '') => `<span class="psy-meter${cls ? ' ' + cls : ''}"><span style="--w:${Math.max(4, p)}%"></span></span>`;
+const exChip = e => ON_CAL.includes(e) ? `<a href="${link('cal')}">${esc(e)}</a>` : `<span>${esc(e)}</span>`;
+const aptName = k => APT_ALL.find(s => s.k === k).n;
+const lower = s => s.charAt(0).toLowerCase() + s.slice(1);
+const list = a => a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+function whyLines(r, x) {
+  const ar = AREA[x.k], why = [], watch = [];
+  const shared = ar.code.split('').filter(l => r.code.includes(l));
+  if (shared.length) why.push(`Your interests (<b>${r.code}</b>) overlap with this field’s profile (<b>${ar.code}</b>): you scored well on ${list(shared.map(l => TYPES[l].n))}.`);
+  else watch.push(`This field leans ${list(ar.code.split('').map(l => TYPES[l].n))}, which is not among your top interests. Talk to someone who works in it before deciding.`);
+  const need = APT_KEYS.map((k, i) => ({ k, w: ar.apt[i], p: r.A[k].p })).filter(a => a.w >= 2).sort((a, b) => b.w - a.w || b.p - a.p);
+  const good = need.filter(a => a.p >= 60), weak = need.filter(a => a.p < 45);
+  if (good.length) why.push(`It uses ${list(good.slice(0, 2).map(a => lower(aptName(a.k))))}, where you did well.`);
+  if (weak.length) watch.push(`It leans on ${list(weak.slice(0, 2).map(a => lower(aptName(a.k))))}, which is still building for you. Regular practice can change that.`);
+  const tr = Object.keys(ar.per).filter(t => ar.per[t] >= 2 || Object.keys(ar.per).length === 1);
+  const tHi = tr.filter(t => r.P[t] >= 60), tLo = tr.filter(t => r.P[t] <= 35);
+  if (tHi.length) why.push(`Your ${list(tHi.map(t => lower(TRAITS[t].n)))} suits the way people work here.`);
+  if (tLo.length) watch.push(`People here often need ${list(tLo.map(t => lower(TRAITS[t].n)))}. See the tips in your personality section.`);
+  const v = ar.val.filter(k => r.Vr[k] && r.Vr[k] <= 2);
+  if (v.length) why.push(`It rewards ${list(v.map(k => VALUES[k].n.toLowerCase()))}, which you ranked near the top.`);
+  if (x.subj.length) why.push(`You enjoy ${list(x.subj)}.`);
+  if (!x.fits) watch.push(`Most courses here need ${CL[x.k].s}. A counsellor can show you the routes still open with your subjects.`);
+  return { why, watch };
+}
+function studyTips(r) {
+  const t = [['Test yourself instead of re-reading.', 'Close the book and write down what you remember, then check. This is one of the best-proven ways to learn.'],
+    ['Space it out.', 'Revise each topic again after a day, a week and a month, rather than all at once.'],
+    ['Mix question types.', 'Practise different kinds of questions in one sitting, the way real exams mix them.']];
+  if (r.P.C < 45) t.push(['Make the plan visible.', 'Write a weekly plan, pick your top three tasks each morning, and study in 30-minute blocks with a timer.']);
+  if (r.P.S < 45) t.push(['Rehearse the exam.', 'Take full mock tests in exam conditions. The real exam then feels familiar, and worry drops.']);
+  if (r.P.E >= 60) t.push(['Teach it to someone.', 'Explaining a topic aloud to a friend shows you what you have not understood yet.']);
+  if (r.P.O >= 60) t.push(['Connect it to something real.', 'Link chapters to a project, a news story or a question you care about. It keeps your curiosity working for you.']);
+  const lowA = APT_ALL.slice().sort((a, b) => r.A[a.k].p - r.A[b.k].p)[0];
+  t.push([`Build your ${lower(lowA.n)}.`, lowA.tip]);
+  return t;
+}
+function plan(r, top) {
+  const cls = (S && S.about && S.about.cls) || '', a = CL[top[0].k], b = top[1] ? CL[top[1].k] : null;
+  const ex = [...new Set(top.slice(0, 2).flatMap(x => CL[x.k].co.flatMap(c => c.ex)).filter(e => ON_CAL.includes(e)))].slice(0, 4);
+  if (['Class 9', 'Class 10'].includes(cls)) return [
+    ['Days 1–30', `Talk this report through with your parents and a counsellor. Read about ${a.n.toLowerCase()}${b ? ' and ' + b.n.toLowerCase() : ''}.`],
+    ['Days 31–60', 'Try something real in your top area: a short online course, a small project, or a conversation with someone who works in it.'],
+    ['Days 61–90', `Choose your Class 11 stream. Your top match usually needs <b>${esc(a.s)}</b>. Read <a href="${link('stream')}">how to choose your stream after Class 10</a>.`]];
+  if (cls === 'Class 11') return [
+    ['Days 1–30', `Shortlist two or three courses from your top matches and note their entrance exams${ex.length ? ' (' + ex.join(', ') + ')' : ''}. Follow them in <a href="${link('account')}">your account</a> to get date alerts.`],
+    ['Days 31–60', 'Start a steady weekly plan for those exams alongside school. Small and regular beats long and rare.'],
+    ['Days 61–90', 'Build your profile with something that fits your top area: a project, an olympiad, a club role or a summer programme.']];
+  return [
+    ['Days 1–30', `Check registration dates for ${ex.length ? ex.join(', ') : 'the exams your top courses need'} on our <a href="${link('cal')}">exam calendar</a>, and follow them in <a href="${link('account')}">your account</a> for reminders.`],
+    ['Days 31–60', 'Make a main plan and a backup plan: one course that needs an entrance exam, and one that admits on Class 12 marks or a university’s own test.'],
+    ['Days 61–90', `Shortlist universities for both plans and <a href="${link('contact')}">book a free session</a> to check your list.`]];
+}
+function report(state, meta) {
+  stopTimer(); S = state;
+  const r = scoreAll(state), top = r.areas.slice(0, 5), best = top[0], ab = state.about || {};
+  const first = esc(String(meta.name || '').split(' ')[0]);
+  const when = meta.when && meta.when.toDate ? meta.when.toDate() : new Date(meta.when && meta.when.seconds ? meta.when.seconds * 1000 : meta.when || Date.now());
+  const date = when.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  const rid = 'MUM-' + String(meta.uid || '').slice(1, 7).toUpperCase() + '-' + when.toISOString().slice(2, 10).replace(/-/g, '');
+  const early = r.early, st = ab.stream;
+  const areaCard = (x, n) => {
+    const c = CL[x.k], { why, watch } = whyLines(r, x);
+    const courses = c.co.map(o => { const ok = early || !st || st === 'und' || o.st.includes(st); return `<li class="${ok ? '' : 'nofit'}"><div><strong>${esc(o.n)}</strong>${ok ? '' : '<em class="warn">Needs a different stream</em>'}</div><span>${esc(o.why)} ${esc(o.y)}.</span><div class="cc-exams">${o.ex.map(exChip).join('')}</div>${o.g ? `<a class="cc-guide" href="${link(o.g)}">Read our guide</a>` : ''}</li>`; }).join('');
+    return `<article class="psy-area"><div class="psy-area-head"><span class="psy-rank">${n + 1}</span><div><h3>${esc(c.n)}</h3><p>${esc(c.c)}</p></div><span class="psy-tag t${x.fit >= 70 ? 0 : x.fit >= 57 ? 1 : 2}">${fitLabel(x.fit)} · ${x.fit}%</span></div>
+      <dl class="psy-parts4"><div><dt>Interests</dt><dd>${bar(x.iFit)}</dd></div><div><dt>Aptitude</dt><dd>${bar(x.aFit)}</dd></div><div><dt>Personality</dt><dd>${bar(x.pFit)}</dd></div><div><dt>Values</dt><dd>${bar(x.vFit)}</dd></div></dl>
+      ${why.length ? `<div class="psy-why"><b>Why it fits you</b><ul>${why.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}
+      ${watch.length ? `<div class="psy-watch"><b>Keep in mind</b><ul>${watch.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}
+      ${early ? `<p class="cc-stream">Stream for this path: <strong>${esc(c.s)}</strong></p>` : ''}
+      <ul class="cc-courses">${courses}</ul></article>`;
+  };
+  const types = RIASEC.slice().sort((a, b) => r.I[b] - r.I[a]);
+  const traitRow = t => { const p = r.P[t], lv = level(p), T = TRAITS[t]; return `<div class="psy-trait"><div class="psy-trow"><b>${T.n}</b>${bar(p)}<span class="psy-lv">${lv === 'hi' ? 'High' : lv === 'lo' ? 'Low' : 'Middle'}</span></div><p>${T[lv]}</p>${lv !== 'mid' ? `<p class="psy-tipline"><b>Tip:</b> ${T[lv + 'W']}</p>` : ''}</div>`; };
+  const sjtGood = SJT.filter(s => r.J[s.k] === 3), sjtGrow = SJT.filter(s => r.J[s.k] != null && r.J[s.k] <= 1);
+  const vals = Object.keys(VALUES).sort((a, b) => (r.Vr[a] || 9) - (r.Vr[b] || 9));
+  const bottom = r.areas.slice(-3).reverse();
+  const tips = studyTips(r), steps = plan(r, top);
+  const share = encodeURIComponent(`My MyUniMentor psychometric test result: my interest code is ${r.code}. Top matches:\n${top.slice(0, 3).map((x, i) => `${i + 1}. ${CL[x.k].n}`).join('\n')}\nTake yours: ${new URL(link('about'), location.href).href.split('#')[0]}${meta.own ? '?ref=' + meta.uid : ''}`);
+  shell(`<div class="psy-report">
+  ${meta.own ? '' : `<p class="psy-viewing">You are viewing ${esc(meta.name)}’s report.</p>`}
+  <header class="psy-cover">
+    <img src="${link('logoL')}" alt="MyUniMentor" width="191" height="52">
+    <p class="psy-k">Career psychometric report</p>
+    <h2>${meta.own ? first + ', here is your report' : esc(meta.name)}</h2>
+    <p class="psy-meta">${esc(ab.cls || '')}${st ? ' · ' + esc(STREAM_NAME[st] || '') : ''} · ${date} · Report ${rid}</p>
+    <div class="psy-sum">
+      <div class="psy-icode"><span>Your interest code</span><b>${r.code}</b><small>${r.code.split('').map(l => TYPES[l].nick).join(' · ')}</small></div>
+      <div class="psy-top3"><span>Your top matches</span><ol>${top.slice(0, 3).map(x => `<li><b>${esc(CL[x.k].n)}</b><em>${fitLabel(x.fit)}</em></li>`).join('')}</ol></div>
+      <div class="psy-str"><span>Your strongest aptitude</span><b>${aptName(APT_ALL.slice().sort((a, b) => r.A[b.k].p - r.A[a.k].p)[0].k)}</b><small>Top trait: ${TRAITS[Object.keys(TRAITS).sort((a, b) => r.P[b] - r.P[a])[0]].n}</small></div>
+    </div>
+    ${r.rushed ? '<p class="cc-note">Many of your answers were the same. If you rushed, your result may be less accurate. A counsellor can go through it with you.</p>' : ''}
+    ${r.flat ? '<p class="cc-note">Your interests are spread quite evenly, so you are open to many paths. Your aptitude and values matter more in narrowing them down. A counsellor can help.</p>' : ''}
+    <div class="hero-actions psy-actions"><button type="button" class="btn btn-cyan psy-pdf">Download as PDF</button><a class="btn btn-outline" href="https://wa.me/?text=${share}" target="_blank" rel="noopener">Share on WhatsApp</a><a class="btn btn-outline" href="${link('contact')}">Talk it through: free session</a></div>
+  </header>
+
+  <section class="psy-sec"><h2><span>1</span>Your best-fit career paths</h2>
+    <p class="psy-lead">We matched your answers against 24 career areas. Each match weighs your interests (50%), aptitude (25%), personality (15%) and values (10%), plus the subjects you enjoy${early ? '' : ' and whether your stream allows it'}.</p>
+    <div class="psy-areas">${top.map(areaCard).join('')}</div></section>
+
+  <section class="psy-sec psy-brk"><h2><span>2</span>Your interests</h2>
+    <p class="psy-lead">Interests are the strongest single guide to a career you will enjoy and stick with. We use Holland’s six interest types (RIASEC), the model behind most career tests worldwide.</p>
+    <div class="psy-bars">${types.map(t => `<div class="psy-brow${r.code.includes(t) ? ' on' : ''}"><b>${TYPES[t].n} <small>${TYPES[t].nick}</small></b>${bar(r.I[t])}<span>${r.I[t]}</span></div>`).join('')}</div>
+    <div class="psy-cols">${r.code.split('').map(l => `<div class="psy-mini"><h3>${TYPES[l].n}: ${TYPES[l].nick}</h3><p>You enjoy ${TYPES[l].like}. ${TYPES[l].work}</p></div>`).join('')}</div></section>
+
+  <section class="psy-sec psy-brk"><h2><span>3</span>Your aptitudes</h2>
+    <p class="psy-lead">How you did on six short timed sections. Aptitudes grow with practice, so treat these as where you stand today, not a limit.</p>
+    <div class="psy-bars">${APT_ALL.map(s => `<div class="psy-brow"><b>${s.n} <small>${s.what}</small></b>${bar(r.A[s.k].p, 'b-' + band(r.A[s.k].p).toLowerCase())}<span>${band(r.A[s.k].p)}</span></div>`).join('')}</div>
+    <p class="psy-small">${APT.map(s => `${s.n}: ${r.A[s.k].c} of ${r.A[s.k].n} right`).join(' · ')} · Speed: ${r.A.spd.c} right, ${r.A.spd.w} wrong in a minute.</p></section>
+
+  <section class="psy-sec psy-brk"><h2><span>4</span>Your personality</h2>
+    <p class="psy-lead">Based on the Big Five, the most researched model of personality. No score is good or bad: each has strengths, and each fits some work better.</p>
+    <div class="psy-traits">${Object.keys(TRAITS).map(traitRow).join('')}</div></section>
+
+  <section class="psy-sec"><h2><span>5</span>How you handle real situations</h2>
+    <div class="psy-cols2">${sjtGood.length ? `<div class="psy-why"><b>Your strengths</b><ul>${sjtGood.map(s => `<li><b>${s.n}.</b> ${SJT_TEXT[s.k][0]}</li>`).join('')}</ul></div>` : ''}
+    ${sjtGrow.length ? `<div class="psy-watch"><b>Worth working on</b><ul>${sjtGrow.map(s => `<li><b>${s.n}.</b> ${SJT_TEXT[s.k][1]}</li>`).join('')}</ul></div>` : ''}
+    ${!sjtGood.length && !sjtGrow.length ? '<p>You handle everyday situations in a balanced, sensible way.</p>' : ''}</div></section>
+
+  <section class="psy-sec"><h2><span>6</span>What you value in work</h2>
+    <ol class="psy-vlist">${vals.map((k, i) => `<li class="${i < 2 ? 'on' : ''}"><b>${VALUES[k].n}</b><span>${VALUES[k].d}</span></li>`).join('')}</ol>
+    <p>Your top values, <b>${VALUES[vals[0]].n}</b> and <b>${VALUES[vals[1]].n}</b>, are easiest to find in ${VALUES[vals[0]].fits}. Keep them in mind when you compare courses and, later, job offers.</p></section>
+
+  <section class="psy-sec psy-brk"><h2><span>7</span>Paths to think twice about</h2>
+    <p class="psy-lead">These came lowest for you. Not impossible, just less likely to suit you right now.</p>
+    <ul class="psy-low">${bottom.map(x => `<li><b>${esc(CL[x.k].n)}</b><span>${fitLabel(x.fit) === 'Worth exploring' ? 'Low match' : fitLabel(x.fit)} · ${x.fit}%. Leans ${list(AREA[x.k].code.split('').map(l => TYPES[l].n))}.</span></li>`).join('')}</ul></section>
+
+  <section class="psy-sec"><h2><span>8</span>How to study, for you</h2>
+    <ul class="psy-tiplist">${tips.map(([h, b]) => `<li><b>${h}</b> ${b}</li>`).join('')}</ul></section>
+
+  <section class="psy-sec"><h2><span>9</span>Your next 90 days</h2>
+    <ol class="psy-plan">${steps.map(([h, b]) => `<li><b>${h}</b><p>${b}</p></li>`).join('')}</ol>
+    <div class="cc-cta"><p><strong>This report is a starting point, not a final answer.</strong> Book a free session and a MyUniMentor counsellor will go through it with you, alongside your marks and plans.</p><a class="btn btn-cyan" href="${link('contact')}">Book a free session</a></div></section>
+
+  <section class="psy-sec psy-method"><h2><span>10</span>How this report works</h2>
+    <p><b>Interests:</b> 36 activities across Holland’s six types. Each career area’s interest profile comes from the U.S. Department of Labor’s O*NET interest codes for related occupations (for example, ${esc(AREA[best.k].occ.slice(0, 2).map(o => o[0] + ' (' + o[1] + ')').join(' and '))} for your top match).</p>
+    <p><b>Personality:</b> 25 statements from the International Personality Item Pool (the Mini-IPIP and the IPIP Big Five), free public-domain scales used in research worldwide.</p>
+    <p><b>Aptitude, situations and values:</b> written by MyUniMentor. Values follow O*NET’s six work values.</p>
+    <p><b>What it is not:</b> this is a guidance tool, not a medical or clinical test, and it does not use fingerprints or “learning styles”, which are not backed by evidence. Each section is short, so read scores as rough bands. We compare you with your own profile; comparisons with other students will be added once enough students have taken the test.</p>
+    <p class="psy-small">This report uses information from O*NET OnLine by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the CC BY 4.0 license. MyUniMentor has modified some of this information. USDOL/ETA has not approved, endorsed or tested these modifications. O*NET® is a trademark of USDOL/ETA.</p>
+    <p class="psy-print-foot">myunimentor.in · +91 74175 57070 · info@myunimentor.in · Report ${rid}</p></section>
+  </div>`);
+  ROOT.querySelector('.psy-pdf').addEventListener('click', () => {
+    const t = document.title; document.title = 'MyUniMentor psychometric report - ' + (meta.name || '');
+    document.documentElement.classList.add('psy-printing');
+    const done = () => { document.title = t; document.documentElement.classList.remove('psy-printing'); window.removeEventListener('afterprint', done); };
+    window.addEventListener('afterprint', done); window.print(); setTimeout(done, 60000);
+  });
+  requestAnimationFrame(() => ROOT.querySelectorAll('.psy-meter span').forEach(s => s.classList.add('go')));
+  if (meta.fresh) ROOT.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ---------- demo (#demo): a full report from sample answers, for previews only ---------- */
+function demoState() {
+  const s = { v: 1, int: INT.map(([t], i) => ({ I: 5, A: 4, S: 4, R: 2, E: 3, C: 2 }[t] - (i % 3 === 0 ? 1 : 0))), per: PER.map(([t, , rv], i) => { const hi = { E: 3, A: 4, C: 3, S: 3, O: 5 }[t]; return rv ? 6 - hi : hi; }),
+    apt: { num: [2, 2, 1, 1, 2, 0], ver: [1, 1, 2, 3, 0, 1], log: [1, 2, 3, 0, 3, 0], spa: SPA_SHAPES.map((x, i) => i < 3 ? x.a : (x.a + 1) % 4), mec: [0, 0, 1, 1, 0] }, spd: { c: 19, w: 2, n: 21 },
+    sjt: [0, 0, 1, 0, 2, 0], val: ['ach', 'rel', 'ind', 'rec', 'wc', 'sup'], about: { cls: 'Class 11', stream: 'pcb', marks: '75–89%', years: '5', where: 'india', subjects: ['Biology', 'Psychology', 'English'] } };
+  return s;
+}
+
+if (ROOT) {
+  const demo = ['#demo', '#demo-test', '#demo-unlock'].includes(location.hash);
+  if (demo) {                                   // previews only: nothing is saved anywhere
+    me = { uid: 'udemo0000000000000000000000000', email: 'riya@example.com', getIdToken: async () => '' };
+    profile = { name: 'Riya Sharma', role: 'student', cls: 'Class 11', stream: 'pcb', clsSession: sessionOf(new Date()) };
+    fb = { F: { setDoc: async () => {}, doc: () => ({}), serverTimestamp: () => new Date() }, db: {} };
+    if (location.hash === '#demo') report(demoState(), { name: profile.name, when: new Date(), uid: me.uid, own: true });
+    else if (location.hash === '#demo-unlock') unlock();
+    else { S = fresh(); welcome(); }
+  } else start();
+}

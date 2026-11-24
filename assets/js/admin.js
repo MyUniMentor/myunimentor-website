@@ -24,7 +24,7 @@ function school(p, now) {
   const until = new Date(base + left, 6, 31, 23, 59);
   return { cls: 'Finished Class 12', done: true, active: now <= until, until, moved: true, cur };
 }
-let fb = null, S = { users: [], requests: [], ann: [], archive: [], links: [], sentToday: 0, exams: [] }, TAB = 'overview', Q = '', ROLE = 'all', RFILTER = 'open';
+let fb = null, S = { users: [], requests: [], ann: [], archive: [], links: [], sentToday: 0, exams: [], access: [], results: [], codes: [] }, TAB = 'overview', Q = '', ROLE = 'all', RFILTER = 'open';
 
 async function loadFb() {
   const base = 'https://www.gstatic.com/firebasejs/' + FB_VER + '/';
@@ -40,6 +40,7 @@ async function load() {
   const today = new Date(Date.now() + 5.5 * 36e5).toISOString().slice(0, 10);
   const [users, requests, ann, archive, links, stat] = await Promise.all([all('users'), all('requests'), all('announcements'), all('archive').catch(() => []), all('links'), F.getDoc(F.doc(fb.db, 'stats', 'mail-' + today)).catch(() => null)]);
   Object.assign(S, { users: users.map(u => Object.assign(u, { uid: u.id })), requests, ann, archive, links, sentToday: stat && stat.exists() ? stat.data().sent || 0 : 0 });
+  if (link('test') !== '#') { const [access, results, codes] = await Promise.all([all('access').catch(() => []), all('results').catch(() => []), all('codes').catch(() => [])]); Object.assign(S, { access, results, codes }); }
   const byTime = (a, b) => (toDate(b.created) || 0) - (toDate(a.created) || 0);
   S.users.sort(byTime); S.requests.sort(byTime); S.ann.sort(byTime); S.archive.sort((a, b) => (toDate(b.deletedAt) || 0) - (toDate(a.deletedAt) || 0));
 }
@@ -48,15 +49,15 @@ async function load() {
 function render() {
   const open = S.requests.filter(r => r.status === 'requested').length, drafts = S.ann.filter(a => a.status === 'draft').length;
   const tabs = [['overview', 'Overview'], ['people', `People <i>${S.users.length}</i>`], ['requests', `Counselling${open ? ` <i class="hot">${open}</i>` : ''}`],
-    ['ann', `Announcements${drafts ? ` <i class="hot">${drafts}</i>` : ''}`], ['deleted', `Deleted <i>${S.archive.length}</i>`]];
+    ['ann', `Announcements${drafts ? ` <i class="hot">${drafts}</i>` : ''}`]].concat(link('test') !== '#' ? [['test', `Psychometric test <i>${S.results.filter(r => r.done).length}</i>`]] : []).concat([['deleted', `Deleted <i>${S.archive.length}</i>`]]);
   shell(`<div class="adm">
     <header class="adm-top"><div><p class="acct-k">MyUniMentor admin</p><h2>Students and parents</h2></div>
       <div class="adm-top-btns"><button type="button" class="btn btn-outline btn-small adm-refresh">Refresh</button><a class="btn btn-outline btn-small" href="${link('account')}">My account</a></div></header>
     <nav class="adm-tabs" role="tablist">${tabs.map(([k, t]) => `<button type="button" role="tab" data-t="${k}" aria-selected="${TAB === k}">${t}</button>`).join('')}</nav>
-    <div class="adm-body">${({ overview, people, requests: reqs, ann: annTab, deleted })[TAB]()}</div></div>`);
+    <div class="adm-body">${({ overview, people, requests: reqs, ann: annTab, test: testTab, deleted })[TAB]()}</div></div>`);
   $$('.adm-tabs button').forEach(b => b.addEventListener('click', () => { TAB = b.dataset.t; render(); }));
   $('.adm-refresh').addEventListener('click', async () => { $('.adm-refresh').textContent = 'Loading…'; await load(); render(); });
-  ({ overview: () => {}, people: wirePeople, requests: wireReqs, ann: wireAnn, deleted: () => {} })[TAB]();
+  ({ overview: () => {}, people: wirePeople, requests: wireReqs, ann: wireAnn, test: wireTest, deleted: () => {} })[TAB]();
 }
 
 /* ---------- overview ---------- */
@@ -238,6 +239,62 @@ function deleted() {
     </tbody></table></div>`;
 }
 
+/* ---------- psychometric test: free access, codes, results ---------- */
+const VIA = { payment: 'Paid ₹99', invites: '3 friends joined', code: 'Access code', admin: 'Given by staff' };
+function testTab() {
+  const byUid = Object.fromEntries(S.users.map(u => [u.uid, u])), done = S.results.filter(r => r.done), started = S.results.filter(r => !r.done);
+  const invited = count(S.users.filter(u => u.ref), u => u.ref).map(([uid, n]) => [byUid[uid] ? byUid[uid].name : uid, n]).slice(0, 8);
+  const tiles = [['Unlocked', S.access.length], ['Finished', done.length], ['In progress', started.length], ['Joined by invite', S.users.filter(u => u.ref).length]];
+  return `<div class="adm-tiles">${tiles.map(([k, v]) => `<div class="adm-tile"><b>${v}</b><span>${k}</span></div>`).join('')}</div>
+    <div class="adm-grid2">
+      <section class="acct-box"><h3>Give free access</h3><p class="acct-muted">For a student who already has an account.</p>
+        <form class="adm-grant acct-form" novalidate><label>Student’s email<input type="email" name="email" placeholder="student@example.com" required></label><p class="acct-err" hidden></p><button class="btn btn-cyan btn-small" type="submit">Unlock their test</button></form></section>
+      <section class="acct-box"><h3>Make an access code</h3><p class="acct-muted">For a school, an event or a seminar. Each use unlocks one student.</p>
+        <form class="adm-code acct-form" novalidate><div class="acct-grid"><label>Code<input name="code" maxlength="16" value="${newCode()}" style="text-transform:uppercase"></label><label>How many uses<input name="max" type="number" min="1" max="2000" value="50"></label>
+        <label class="acct-span">Note (who it is for)<input name="note" maxlength="80" placeholder="e.g. Olympus High seminar, 2 Dec"></label></div><p class="acct-err" hidden></p><button class="btn btn-cyan btn-small" type="submit">Create code</button></form></section>
+    </div>
+    ${S.codes.length ? `<h3 class="adm-h">Access codes</h3><div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>Code</th><th>Used</th><th>For</th><th>Made</th><th></th></tr></thead><tbody>
+      ${S.codes.map(c => `<tr><td><b>${esc(c.id)}</b></td><td>${c.used || 0} of ${c.max}</td><td>${esc(c.note || '—')}</td><td>${fmt(c.created)}</td><td><button type="button" class="acct-link adm-code-tg" data-id="${esc(c.id)}" data-on="${c.active !== false}">${c.active === false ? 'Turn on' : 'Turn off'}</button></td></tr>`).join('')}</tbody></table></div>` : ''}
+    ${invited.length ? `<h3 class="adm-h">Top inviters</h3>${bars(invited)}` : ''}
+    <h3 class="adm-h">Students</h3><div class="adm-table-wrap"><table class="adm-table"><thead><tr><th>Name</th><th>Unlocked by</th><th>Interest code</th><th>Top match</th><th>Status</th><th></th></tr></thead><tbody>
+    ${S.access.map(a => { const u = byUid[a.id] || {}, r = S.results.find(x => x.id === a.id) || {};
+      return `<tr><td><b>${esc(u.name || a.id)}</b><small>${esc(u.email || '')}</small></td><td>${esc(VIA[a.via] || a.via)}${a.code ? `<small>${esc(a.code)}</small>` : ''}<small>${fmt(a.at)}</small></td><td>${esc(r.code || '—')}</td><td>${esc((r.topN || [])[0] || '—')}</td>
+        <td>${r.done ? 'Finished ' + fmt(r.done) : r.state ? 'In progress' : 'Not started'}</td><td>${r.done ? `<a class="btn btn-small btn-outline" href="${link('test')}?u=${esc(a.id)}">View report</a> <button type="button" class="acct-link adm-reset" data-id="${esc(a.id)}">Let them retake</button>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="6">Nobody has unlocked the test yet.</td></tr>'}
+    </tbody></table></div>`;
+}
+function newCode() { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let c = 'MUM-'; for (let i = 0; i < 5; i++) c += A[Math.random() * A.length | 0]; return c; }
+function wireTest() {
+  const F = fb.F, me = fb.auth && fb.auth.currentUser;
+  const g = $('.adm-grant'), ge = g.querySelector('.acct-err');
+  g.addEventListener('submit', async e => {
+    e.preventDefault(); ge.hidden = true;
+    const em = g.email.value.trim().toLowerCase(), u = S.users.find(x => (x.email || '').toLowerCase() === em);
+    if (!u) { ge.textContent = 'No account with this email. Ask them to sign up first.'; ge.hidden = false; return; }
+    if (S.access.some(a => a.id === u.uid)) { ge.textContent = `${u.name}’s test is already unlocked.`; ge.hidden = false; return; }
+    const d = { via: 'admin', by: me ? me.uid : '', at: F.serverTimestamp() };
+    await F.setDoc(F.doc(fb.db, 'access', u.uid), d); S.access.push(Object.assign({ id: u.uid }, d, { at: new Date() })); render();
+  });
+  const c = $('.adm-code'), ce = c.querySelector('.acct-err');
+  c.addEventListener('submit', async e => {
+    e.preventDefault(); ce.hidden = true;
+    const code = c.code.value.trim().toUpperCase().replace(/[^A-Z0-9-]/g, ''), max = parseInt(c.max.value, 10);
+    if (!/^[A-Z0-9-]{4,16}$/.test(code)) { ce.textContent = 'Use 4–16 letters, numbers or dashes.'; ce.hidden = false; return; }
+    if (!(max >= 1)) { ce.textContent = 'Enter how many students can use it.'; ce.hidden = false; return; }
+    if (S.codes.some(x => x.id === code)) { ce.textContent = 'That code already exists.'; ce.hidden = false; return; }
+    const d = { max, used: 0, note: c.note.value.trim(), active: true, created: F.serverTimestamp() };
+    await F.setDoc(F.doc(fb.db, 'codes', code), d); S.codes.unshift(Object.assign({ id: code }, d, { created: new Date() })); render();
+  });
+  $$('.adm-code-tg').forEach(b => b.addEventListener('click', async () => {
+    const on = b.dataset.on !== 'true'; await F.updateDoc(F.doc(fb.db, 'codes', b.dataset.id), { active: on });
+    S.codes.find(x => x.id === b.dataset.id).active = on; render();
+  }));
+  $$('.adm-reset').forEach(b => b.addEventListener('click', async () => {
+    const u = S.users.find(x => x.uid === b.dataset.id) || {};
+    if (!confirm(`Delete ${u.name || 'this student'}’s report so they can take the test again? Their old answers are removed.`)) return;
+    await F.deleteDoc(F.doc(fb.db, 'results', b.dataset.id)); S.results = S.results.filter(r => r.id !== b.dataset.id); render();
+  }));
+}
+
 /* ---------- boot ---------- */
 (async function boot() {
   try { S.exams = await (await fetch(link('exams'))).json(); } catch (e) {}
@@ -264,7 +321,11 @@ function demo() {
   S.ann = [{ id: 'n1', subject: 'New guide: Entrance exam deadlines from late November to January', body: 'Every deadline in one place.\n\nRead it free on myunimentor.in.', cta_label: 'Read the guide', cta_url: 'https://myunimentor.in/entrance-exam-deadlines-december-2026', audience: { role: 'all' }, status: 'draft', auto: true, created: day(0) }];
   S.archive = [{ name: 'Test Student', email: 'test@example.com', role: 'student', cls: 'Class 12', stream: 'pcb', city: 'Dehradun', created: day(5), deletedAt: day(1), deletedBy: 'user' }];
   S.links = [{ status: 'accepted' }]; S.sentToday = 12;
-  fb = { F: { doc: () => ({}), updateDoc: async () => {}, serverTimestamp: () => null } };
+  S.users[2].ref = 'a'; S.users[3].ref = 'a';
+  S.access = [{ id: 'a', via: 'code', code: 'MUM-OLY26', at: day(1) }, { id: 'c', via: 'admin', at: day(0) }];
+  S.results = [{ id: 'a', done: day(0), code: 'ICE', topN: ['Software, AI and computing', 'Maths, statistics and analytics', 'Core engineering'] }, { id: 'c', state: {} }];
+  S.codes = [{ id: 'MUM-OLY26', max: 120, used: 37, note: 'Olympus High seminar', created: day(3), active: true }];
+  fb = { F: { doc: () => ({}), updateDoc: async () => {}, setDoc: async () => {}, deleteDoc: async () => {}, serverTimestamp: () => null } };
   TAB = new URLSearchParams(location.search).get('tab') || 'overview';
   load = async () => {};
   render();

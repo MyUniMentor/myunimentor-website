@@ -1,3 +1,5 @@
+/* Invite links (?ref=…): remember who invited this visitor for 60 days; counted when they create an account */
+try { const r = new URLSearchParams(location.search).get('ref'); if (r && /^u[0-9a-f]{27}$/.test(r)) localStorage.setItem('mum-ref', JSON.stringify({ r, at: Date.now() })); } catch (e) {}
 // MyUniMentor — dependency-free interactions
 (function () {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

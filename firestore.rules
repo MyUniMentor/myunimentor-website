@@ -13,7 +13,8 @@ service cloud.firestore {
     function sane(d) {
       return d.size() <= 25 && d.name is string && d.name.size() >= 2 && d.name.size() <= 80
         && short(d, 'city', 60) && short(d, 'school', 120) && short(d, 'cls', 30) && short(d, 'stream', 10)
-        && fewer(d, 'saved', 60) && fewer(d, 'exams', 40) && fewer(d, 'targets', 20) && fewer(d, 'parents', 5) && fewer(d, 'parentEmails', 5);
+        && fewer(d, 'saved', 60) && fewer(d, 'exams', 40) && fewer(d, 'targets', 20) && fewer(d, 'parents', 5) && fewer(d, 'parentEmails', 5)
+        && (!('check' in d) || (d.check is map && d.check.size() <= 8));
     }
 
     match /users/{uid} {
@@ -22,10 +23,13 @@ service cloud.firestore {
       allow create: if signedIn() && request.auth.uid == uid && request.resource.data.email == myEmail()
                     && request.resource.data.role in ['student', 'parent'] && sane(request.resource.data)
                     && request.resource.data.whatsapp is string && request.resource.data.whatsapp.matches('^[6-9][0-9]{9}$')
-                    && getAfter(/databases/$(database)/documents/phones/$(request.resource.data.whatsapp)).data.uid == uid;
+                    && getAfter(/databases/$(database)/documents/phones/$(request.resource.data.whatsapp)).data.uid == uid
+                    // who invited them (for the free psychometric test): only set when the account is created
+                    && (!('ref' in request.resource.data) || (request.resource.data.ref is string && request.resource.data.ref.matches('^u[0-9a-f]{27}$') && request.resource.data.ref != uid));
       allow update: if isAdmin() || (signedIn() && request.auth.uid == uid && sane(request.resource.data)
                     && request.resource.data.email == resource.data.email && request.resource.data.role == resource.data.role
-                    && request.resource.data.get('whatsapp', '') == resource.data.get('whatsapp', ''));
+                    && request.resource.data.get('whatsapp', '') == resource.data.get('whatsapp', '')
+                    && request.resource.data.get('ref', '') == resource.data.get('ref', ''));
       allow delete: if isAdmin();   // students and parents delete with an emailed code; the server keeps a copy in archive
     }
     match /links/{id} {
@@ -54,6 +58,23 @@ service cloud.firestore {
       allow get: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
       allow delete: if isAdmin();
     }
+    // Psychometric test. access/{uid} is written only by the server (payment, three invites, a code) or by staff.
+    match /access/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin() || isParentOf(uid));
+      allow write: if isAdmin();
+    }
+    // Answers save as the student goes; once the report is done it cannot be changed (staff can reset it).
+    match /results/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin() || isParentOf(uid));
+      allow create, update: if signedIn() && request.auth.uid == uid && request.resource.data.uid == uid
+                    && exists(/databases/$(database)/documents/access/$(uid))
+                    && (resource == null || !('done' in resource.data))
+                    && request.resource.data.keys().hasOnly(['uid', 'state', 'updated', 'done', 'name', 'cls', 'stream', 'code', 'top', 'topN'])
+                    && request.resource.data.state is map && request.resource.data.state.size() <= 20;
+      allow delete: if isAdmin();
+    }
+    match /codes/{id} { allow read, write: if isAdmin(); }
+    match /payments/{id} { allow read: if isAdmin(); }
     match /announcements/{id} { allow read, write: if isAdmin(); }
     match /archive/{id} { allow read, create: if isAdmin(); }
     match /stats/{id} { allow read: if isAdmin(); }
