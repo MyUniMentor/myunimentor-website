@@ -66,6 +66,7 @@ NAV = [
         ('Testimonials', 'testimonials.html', 'Students, parents and schools')]),
     ('Resources', 'exam-calendar.html', [
         ('Exam calendar 2027', 'exam-calendar.html', 'JEE, NEET, CUET, CLAT and more'),
+        ('Board date sheets 2027', 'class-12-board-exams-2027.html', 'CBSE, ISC and ICSE, every subject'),
         ('Free career check', 'career-check.html', 'About 4 minutes, built around your stream'),
         ('Psychometric test', 'psychometric-test.html', '25 minutes, with a detailed report'),
         ('Free Class 12 guide', 'free-guide.html', 'Download the PDF'),
@@ -216,13 +217,15 @@ import hashlib, rcssmin, rjsmin
 _css = open(os.path.join(ROOT, 'assets/css/style.css')).read(); _js = open(os.path.join(ROOT, 'assets/js/main.js')).read(); _cjs = open(os.path.join(ROOT, 'assets/js/check.js')).read()
 _tjs = open(os.path.join(ROOT, 'assets/js/tour.js')).read(); _ajs = open(os.path.join(ROOT, 'assets/js/account.js')).read()
 _djs = open(os.path.join(ROOT, 'assets/js/admin.js')).read()
+_sjs = open(os.path.join(ROOT, 'assets/js/ds.js')).read()
 # The psychometric test reuses the career areas (courses, exams, lengths) from the career check, so both stay in step.
 _cl = _cjs[_cjs.index('  const SCI = '):_cjs.index('  /* Activity cards')].strip()
 _pjs = open(os.path.join(ROOT, 'assets/js/psy.js')).read().replace('/*@CL@*/', _cl)
-VER = hashlib.md5((_css + _js + _cjs + _tjs + _ajs + _djs + _pjs).encode()).hexdigest()[:8]
+VER = hashlib.md5((_css + _js + _cjs + _tjs + _ajs + _djs + _pjs + _sjs).encode()).hexdigest()[:8]
 open(os.path.join(ROOT, 'assets/js/psy.min.js'), 'w').write('\n'.join(l.strip() for l in _pjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/js/account.min.js'), 'w').write('\n'.join(l.strip() for l in _ajs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 open(os.path.join(ROOT, 'assets/js/admin.min.js'), 'w').write('\n'.join(l.strip() for l in _djs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
+open(os.path.join(ROOT, 'assets/js/ds.min.js'), 'w').write(rjsmin.jsmin(_sjs))
 open(os.path.join(ROOT, 'assets/js/tour.min.js'), 'w').write('\n'.join(l.strip() for l in _tjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 # rjsmin squeezes spaces inside template strings, so check.js is only trimmed
 open(os.path.join(ROOT, 'assets/js/check.min.js'), 'w').write('\n'.join(l.strip() for l in _cjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
@@ -341,7 +344,7 @@ def page(fname, title, desc, active, body, schema=''):
     open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER))))
 
 WEBSITE_SCHEMA = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "@id": "https://myunimentor.in/#website", "name": "MyUniMentor", "alternateName": ["My Uni Mentor"], "url": "https://myunimentor.in/", "inLanguage": "en-IN", "publisher": {"@id": "https://myunimentor.in/#org"}}) + '</script>'
-ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for students across India, online and in person. Based in Dehradun, Uttarakhand.","disambiguatingDescription":"Indian career counselling and admissions guidance organisation at myunimentor.in, run by MyUniMentor Edtech LLP, Dehradun.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","Online career counselling","Psychometric career assessment","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/"]}</script>'''
+ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for students across India, online and in person. Based in Dehradun, Uttarakhand.","disambiguatingDescription":"Indian career counselling and admissions guidance organisation at myunimentor.in, run by MyUniMentor Edtech LLP, Dehradun.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","Online career counselling","Psychometric career assessment","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/","https://share.google/ocON7keUcOY0Q2Gak"]}</script>'''
 
 ICONS = {
     'tools': '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="5" fill="currentColor" opacity=".3"/><path d="M16 17h16M16 24h16M16 31h10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>',
@@ -1579,7 +1582,7 @@ def build_psy_landing():
         ("Do you use DMIT or fingerprint tests?", "No. Fingerprint-based tests (DMIT) are not backed by scientific evidence, and neither are “learning styles”. We leave both out."),
         ("How is it different from the free career check?", "The free career check takes about 4 minutes and looks at your interests and plans. The psychometric test takes about 25 minutes and adds personality, six timed aptitude sections, real-life situations and values, with a much more detailed report.")], 'About the psychometric test')
     body = page_hero("Career psychometric test", f"For Class 9–12. About 25 minutes. Interests, aptitude, personality and values, matched to Indian courses and entrance exams, with a detailed report. ₹{price}, or free when three friends join.", "Psychometric test",
-        f'''<div class="hero-actions pl-hero-btns"><a href="test.html" class="btn btn-cyan btn-lg">Start the test</a><a href="#how-it-works" class="btn btn-outline-light btn-lg">See how it works</a></div>''') + f'''
+        f'''<div class="hero-actions pl-hero-btns"><a href="test.html" class="btn btn-cyan btn-lg">Start the test</a><a href="test.html#demo" class="btn btn-outline-light btn-lg">See a sample report</a></div>''') + f'''
 <section class="section pl-facts"><div class="wrap"><ul class="pl-fact-row">
   <li><b>25 min</b><span>Save and resume anytime</span></li><li><b>6 parts</b><span>95 questions and a speed round</span></li><li><b>24 areas</b><span>Matched to Indian courses and exams</span></li><li><b>₹{price}</b><span>Or free with 3 friends</span></li></ul></div></section>
 <section class="section" id="how-it-works"><div class="wrap"><div class="section-head"><h2>What the test measures</h2><p>Six short parts. Interests tell you what you will enjoy, aptitude what comes easily to you, personality how you like to work, and values what you want from a job.</p></div>
@@ -1591,7 +1594,8 @@ def build_psy_landing():
   <ul class="pl-weights"><li><b>50%</b> Interests</li><li><b>25%</b> Aptitude</li><li><b>15%</b> Personality</li><li><b>10%</b> Values</li></ul>
   <p>Subjects you enjoy add a little. If you are in Class 11 or 12 and a path needs a different stream, it is marked clearly, so you only plan around options open to you.</p></div>
   {mock}</div></section>
-<section class="section pl-report"><div class="wrap"><div class="section-head"><h2>What is in your report</h2><p>Ten sections on screen and as a PDF you can download, print and share.</p></div><ol class="pl-rep">{rep}</ol></div></section>
+<section class="section pl-report"><div class="wrap"><div class="section-head"><h2>What is in your report</h2><p>Ten sections on screen and as a PDF you can download, print and share.</p></div><ol class="pl-rep">{rep}</ol>
+  <p class="pl-alt"><a class="btn btn-cyan" href="test.html#demo">See what a report looks like</a></p></div></section>
 <section class="section"><div class="wrap pl-split pl-honest"><div><h2>What we leave out, and why</h2>
   <p><b>No fingerprint (DMIT) tests.</b> There is no scientific evidence that fingerprints predict talent or careers.</p>
   <p><b>No “learning styles”.</b> Reviews of the research have found no good evidence that teaching to a visual or auditory “style” helps. We give study tips with strong evidence instead, like testing yourself and spacing out revision.</p>
@@ -1644,6 +1648,7 @@ def build_exam_calendar():
         ("When are the design entrance exams (NID DAT, NIFT, UCEED) for 2027?", "NID DAT 2027 Prelims is on 20 December 2026 (last date to apply: 30 November 2026). NIFT 2027 is on 10 January 2027 (tentative; applications extended to 24 November 2026) and UCEED 2027 is on 17 January 2027. See our <a href=\"bdes-after-12th.html\">B.Des guide</a>."),
         ("When is the CHRIST University entrance test for 2027?", "The CHRIST University online entrance test for UG 2027 admissions is on 5 December 2026. The last date to apply for entrance-test programmes is 25 November 2026 (5 pm), and skill assessment and interviews run from 11 to 13 December 2026."),
         ("When is IPMAT 2027?", "IPMAT Indore 2027 is on 24 April 2027. Registration dates are awaited. It is the entrance exam for the five-year integrated management programme at IIM Indore."),
+        ("When do the CBSE and CISCE board exams 2027 start?", 'CBSE Class 10 and 12 exams start on 16 February 2027; Class 12 ends on 9 April. ISC (Class 12) runs from 9 February to 8 April 2027, and ICSE (Class 10) from 15 February to 31 March 2027. See the full <a href="cbse-class-12-date-sheet-2027.html">CBSE Class 12</a>, <a href="cbse-class-10-date-sheet-2027.html">CBSE Class 10</a>, <a href="isc-date-sheet-2027.html">ISC</a> and <a href="icse-date-sheet-2027.html">ICSE</a> date sheets.'),
         ("Which entrance exams can Commerce and Humanities students take?", "CUET UG (for central and many other universities), CLAT and AILET (law), IPMAT and JIPMAT (integrated management), and NID DAT, NIFT and UCEED (design) are all open to Commerce and Humanities students. JEE and NEET need Science subjects."),
         ("Can PCB students take JEE, or PCM students take NEET?", "B.Tech admissions through JEE generally need Physics, Chemistry and Maths in Class 12, so PCB students usually focus on NEET, CUET and other exams. NEET needs Biology, so PCM students are not eligible. PCMB students can take both."),
         ("How often is this exam calendar updated?", f"We check every date against the official websites regularly. This calendar was last checked on {CHECKED}. Always confirm on the official website before you apply."),
@@ -1661,12 +1666,14 @@ def build_exam_calendar():
     <p class="tc">Dates are compiled from official announcements and may change. MyUniMentor is not responsible for changes made by the conducting bodies.</p>
   </div>
 </section>
+<section class="section"><div class="wrap"><div class="section-head row-head" data-reveal><div><h2>Board exam date sheets 2027</h2><p>Every subject, date and timing, copied from the official CBSE and CISCE date sheets.</p></div><a class="btn btn-outline" href="class-12-board-exams-2027.html">Boards, results and rechecks</a></div>
+  <ul class="posts" data-hs="m">{''.join(post_card(POST_BY[s_], i) for i, s_ in enumerate(['cbse-class-12-date-sheet-2027', 'isc-date-sheet-2027', 'cbse-class-10-date-sheet-2027', 'icse-date-sheet-2027']))}</ul></div></section>
 <section class="section tint"><div class="wrap"><div class="section-head row-head" data-reveal><div><h2>Guides for these exams</h2><p>Step-by-step guides to the entrance exams on this calendar.</p></div><a class="btn btn-outline" href="blog.html">All guides</a></div>
   <ul class="posts" data-hs="m">{''.join(post_card(x, i) for i, x in enumerate([q for q in POSTS if q['tag'] == 'Entrance exams'][::-1][:3]))}</ul></div></section>
 {faq_html}
 {cta("Not sure which exams you should take?", "A counsellor will build your exam plan with you. 1-on-1 counselling is free for students.")}'''
     page('exam-calendar.html', 'Entrance Exam Calendar 2027 — JEE, NEET, CUET, CLAT Dates | MyUniMentor',
-         'JEE Main, JEE Advanced, NEET, CUET, CLAT, NID DAT, NIFT, UCEED and IPMAT 2027 exam dates in one calendar, with official links. Updated regularly by MyUniMentor, Dehradun.', 'Resources', body,
+         'JEE Main, JEE Advanced, NEET, CUET, CLAT, NID DAT, NIFT, UCEED and IPMAT 2027 dates in one calendar, plus CBSE, ISC and ICSE board date sheets.', 'Resources', body,
          crumbs_schema([("Home", ""), ("Exam calendar", "exam-calendar")]) + faq_schema)
 
 def build_cities():

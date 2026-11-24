@@ -472,4 +472,65 @@ POSTS = [
   ("Have NEET UG 2027 and CUET UG 2027 dates been announced?", "Not yet. As of 23 November 2026, NTA had not published dates for either exam. We update our exam calendar as soon as they are official.")],
  "related": ["jee-main-2027-session-1-guide", "cuet-guide-class-12", "questions-to-ask-a-university"]
 },
+{
+ "slug": "class-12-board-exams-2027",
+ "date": "2026-11-24",
+ "tag": "Board exams",
+ "title": "Class 12 Boards 2027: Date Sheets, Results | MyUniMentor",
+ "h1": "Class 12 board exams 2027: date sheets, results and what comes next",
+ "desc": "CBSE, ISC and Uttarakhand Board Class 12 exams 2027: where to get the official date sheet, how results come out, rechecks, supplementary exams and admissions.",
+ "read": 7,
+ "lede": "Board exams are only a few months away. Here is what each board has officially published so far, with full subject-wise date sheets, how results come out, what you can do if your marks are lower than expected, and why your board marks still matter for JEE and CUET admissions. Everything here is taken from the official websites on 24 November 2026.",
+ "body": """
+<h2>Date sheets: what each board has published</h2>
+<p>CBSE Class 12 starts on 16 February 2027 and ISC on 9 February 2027. We have copied every subject from the official date sheets into searchable pages, where you can also add your own papers to your phone calendar:</p>
+<ul class="ds-links">
+<li><a href="cbse-class-12-date-sheet-2027.html"><strong>CBSE Class 12 date sheet 2027</strong></a>: 16 February to 9 April, all 121 subjects</li>
+<li><a href="isc-date-sheet-2027.html"><strong>ISC Class 12 timetable 2027</strong></a>: 9 February to 8 April, every paper</li>
+<li><a href="cbse-class-10-date-sheet-2027.html"><strong>CBSE Class 10 date sheet 2027</strong></a>: 16 February to 9 March, all 83 subjects</li>
+<li><a href="icse-date-sheet-2027.html"><strong>ICSE Class 10 timetable 2027</strong></a>: 15 February to 31 March, every paper</li>
+</ul>
+<p>Always check your admit card and your board’s own website as well. Copies shared on WhatsApp are often old or edited.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Board</th><th>2027 Class 12 date sheet</th><th>Where to get it</th></tr></thead>
+<tbody>
+<tr><td><strong>CBSE</strong></td><td>Published on 6 November 2026 as “Date Sheet for Class X and Class XII Board Examinations, 2027”</td><td><a href="https://www.cbse.gov.in/cbsenew/examination_Circular.html" target="_blank" rel="noopener">cbse.gov.in, Examination circulars</a></td></tr>
+<tr><td><strong>CISCE (ISC)</strong></td><td>Published on 10 November 2026 as “ISC (Class XII) Year 2027 Examination Timetable and Instructions for Candidates”</td><td><a href="https://cisce.org/regulations-and-syllabuses-isc/" target="_blank" rel="noopener">cisce.org, Regulations and Syllabuses ISC</a></td></tr>
+<tr><td><strong>Uttarakhand Board (UBSE)</strong></td><td>Not published yet. As of 24 November 2026, the board’s exam documents page still lists the 2026 date sheet.</td><td><a href="https://ubse.uk.gov.in/document-category/examination-scheme/" target="_blank" rel="noopener">ubse.uk.gov.in, Board exam documents</a></td></tr>
+</tbody></table></div>
+<div class="callout"><strong>MyUniMentor tip</strong><p>Once you have your date sheet, put every paper into your phone calendar (our date sheet pages do this for you). Then check it against your entrance exam dates on our <a href="exam-calendar.html">exam calendar</a>, so you can see the weeks where both overlap and plan around them early.</p></div>
+
+<h2>How results come out</h2>
+<p>CISCE says the ISC 2027 results will be declared in April or May 2027. CBSE and the Uttarakhand Board have not announced a result month yet. For reference, CBSE declared its Class 12 results for 2026 on <strong>13 May 2026</strong>, for about 17.69 lakh candidates. Marksheets were made available in students’ DigiLocker accounts straight after the results, at <a href="https://results.digilocker.gov.in/" target="_blank" rel="noopener">results.digilocker.gov.in</a>. CISCE and the Uttarakhand Board publish their results and notices on <a href="https://cisce.org" target="_blank" rel="noopener">cisce.org</a> and <a href="https://ubse.uk.gov.in" target="_blank" rel="noopener">ubse.uk.gov.in</a>.</p>
+<p>Before results day, set up your DigiLocker account and keep your roll number and admit card handy. That way you can download your marksheet the moment it is out, which matters if a university asks for it during admissions.</p>
+
+<h2>If your marks are lower than expected</h2>
+<p>Every board gives you a way to have your marks checked, and a second chance to improve them.</p>
+<ul>
+<li><strong>CBSE:</strong> after results, CBSE offers verification of issues and re-evaluation. In 2026, the outcomes were released on DigiLocker from 21 June 2026 onwards. CBSE also holds supplementary exams; it declared the Class 12 supplementary results for 2026 on 12 August 2026.</li>
+<li><strong>CISCE (ISC):</strong> results can be rechecked first; the request must reach CISCE online within four days of the results. Applications for re-evaluation must reach CISCE online within three days of the recheck results. CISCE also runs an improvement exam, in which students can take up to three of the subjects they took in the main exam.</li>
+<li><strong>Uttarakhand Board:</strong> the board publishes its scrutiny and improvement exam notices on <a href="https://ubse.uk.gov.in" target="_blank" rel="noopener">ubse.uk.gov.in</a>.</li>
+</ul>
+<p>These windows are short. Read your board’s post-result notice on the day results come out, and apply on time.</p>
+
+<h2>Why your board marks still matter</h2>
+<p>Many students think only entrance exams count. Board marks decide whether you are eligible to use your entrance score at all.</p>
+<ul>
+<li><strong>NITs, IIITs and other central institutes through JEE Main:</strong> you need at least <strong>75%</strong> in Class 12 (65% for SC and ST candidates), or a place in the top 20 percentile of your board, according to NTA. JoSAA publishes each board’s top 20 percentile cut-off marks every year on <a href="https://josaa.nic.in/top-20-percentile/" target="_blank" rel="noopener">josaa.nic.in</a>.</li>
+<li><strong>Universities through CUET:</strong> each university sets its own minimum Class 12 marks for each course, listed on <a href="https://cuet.nta.nic.in" target="_blank" rel="noopener">cuet.nta.nic.in</a>. For example, Delhi Technological University asks for at least 50% and a pass in Mathematics for B.A. (Hons) Economics.</li>
+</ul>
+<p>Our guides to <a href="jee-main-2027-session-1-guide.html">JEE Main 2027</a> and <a href="cuet-guide-class-12.html">CUET</a> explain how each exam works. If you are unsure which courses fit your marks and interests, try our <a href="psychometric-test.html">psychometric test</a> or <a href="contact.html">book a free counselling session</a>. Dates can change, so always confirm on your board’s website before you act.</p>
+""",
+ "faq": [
+  ("When do the CBSE and ISC Class 12 exams 2027 start?", "CBSE Class 12 exams start on 16 February 2027 with Physics and end on 9 April 2027. ISC exams start on 9 February 2027 and end on 8 April 2027."),
+  ("When will the CBSE Class 12 results 2027 come out?", "CBSE has not announced the date yet. For reference, it declared the Class 12 results for 2026 on 13 May 2026, and marksheets were available in DigiLocker straight after."),
+  ("Has CBSE released the Class 12 date sheet for 2027?", "Yes. CBSE published the date sheet for the Class X and Class XII board examinations 2027 on 6 November 2026, on cbse.gov.in under Examination circulars."),
+  ("Has the Uttarakhand Board released the 2027 Class 12 date sheet?", "Not yet. As of 24 November 2026, the exam documents page on ubse.uk.gov.in still listed the 2026 date sheet."),
+  ("Can I get my ISC marks re-evaluated?", "Yes. CISCE first offers a recheck. Applications for re-evaluation must reach CISCE online within three days of the recheck results being declared."),
+  ("What Class 12 marks do I need for NITs through JEE Main?", "At least 75% in Class 12 (65% for SC and ST candidates), or a place in the top 20 percentile of your board, according to NTA. JoSAA publishes each board's top 20 percentile cut-off marks every year.")],
+ "related": ["cbse-class-12-date-sheet-2027", "isc-date-sheet-2027", "jee-main-2027-session-1-guide"]
+},
 ]
+
+from content_boards import BOARD_POSTS
+POSTS += BOARD_POSTS

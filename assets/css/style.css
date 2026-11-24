@@ -2122,3 +2122,37 @@ html.cc-printing .cc-guides { display: none !important; }
 .adm-h { margin: 1.6rem 0 .7rem; font-size: 1.2rem; }
 @media (min-width: 760px) { .pl-how .steps { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 560px) { .pl-hero-btns { display: grid; grid-template-columns: 1fr; } .pl-hero-btns .btn { text-align: center; justify-content: center; } }
+
+.psy-sample { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem 1.2rem; background: #FFF6DD; border: 1px solid #F3DC9A; border-radius: 16px; padding: .9rem 1.2rem; }
+.psy-sample p { margin: 0; flex: 1 1 320px; }
+@media print { .psy-sample { display: none !important; } }
+.psy-top3 li::marker { color: var(--cyan-hi); font-weight: 700; }
+
+/* ===== Board date sheet pages ===== */
+.ds-links { display: grid; gap: .5rem; padding-left: 1.2rem; }
+.ds-small { font-size: .9rem; color: var(--ink-2); }
+.ds-streams { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1rem; margin: 1.2rem 0 1rem; }
+.ds-stream { border: 1px solid var(--line); border-radius: 16px; padding: 1rem 1.1rem; }
+.ds-stream h3 { font-size: 1.05rem; margin: 0 0 .5rem; }
+.ds-stream ol { margin: 0; padding-left: 1.1rem; display: grid; gap: .35rem; font-size: .95rem; }
+.ds-gap { display: block; font-size: .82rem; color: var(--teal); }
+.ds-table td:first-child, .ds-table th:first-child { display: none; width: 2.4rem; }
+.ds-on .ds-table td:first-child, .ds-on .ds-table th:first-child { display: table-cell; }
+.ds-table td time, .ds-table td:last-child { white-space: nowrap; }
+.ds-pick { width: 1.15rem; height: 1.15rem; accent-color: var(--teal); cursor: pointer; }
+.ds-tool { background: var(--sky); border-radius: 16px; padding: 1rem 1.2rem; margin: 1rem 0; }
+.ds-tool p { margin: 0 0 .7rem; }
+.ds-tool-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; }
+.ds-note { font-size: .85rem; color: var(--ink-2); }
+.ds-ics:disabled { opacity: .6; cursor: not-allowed; }
+@media (max-width: 600px) {
+  .ds-table tr { display: grid !important; grid-template-columns: auto 5.4rem auto 1fr; gap: .15rem .6rem; align-items: start; padding: .6rem .9rem; margin-bottom: .5rem; }
+  .ds-table td { padding: 0; width: auto; }
+  .ds-table td::before { display: none !important; }
+  .ds-table td:nth-child(1) { grid-row: 1 / 3; grid-column: 1; align-self: center; display: none; }
+  .ds-on .ds-table td:nth-child(1) { display: block; }
+  .ds-table td:nth-child(2) { grid-row: 1 / 3; grid-column: 2; font-weight: 700; font-size: .92rem; }
+  .ds-table td:nth-child(3) { grid-column: 3 / 5; font-weight: 600; }
+  .ds-table td:nth-child(4), .ds-table td:nth-child(5) { grid-row: 2; font-size: .85rem; color: var(--ink-2); }
+  .ds-table td:nth-child(4) { grid-column: 3; } .ds-table td:nth-child(5) { grid-column: 4; }
+}

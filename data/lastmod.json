@@ -28,8 +28,8 @@
   "hash": "b870f20d5e10bcc45c991601ddfe595f"
  },
  "blog": {
-  "date": "2026-11-23",
-  "hash": "1dedf2378c2be0d47624661f2715deec"
+  "date": "2026-11-24",
+  "hash": "90f1590891b5d3358c517dfefb47c6cb"
  },
  "btech-cse-after-12th": {
   "date": "2026-11-20",
@@ -63,6 +63,18 @@
   "date": "2026-11-20",
   "hash": "3fe0eee62faa33858a96f3daa2100749"
  },
+ "cbse-class-10-date-sheet-2027": {
+  "date": "2026-11-24",
+  "hash": "b03d9298efe85185193fd41924f8e8f7"
+ },
+ "cbse-class-12-date-sheet-2027": {
+  "date": "2026-11-24",
+  "hash": "f98b1a768bfc4e71024e23c11bac3e0b"
+ },
+ "class-12-board-exams-2027": {
+  "date": "2026-11-24",
+  "hash": "7f2e1110bcf54a9445a2a91f80b616f2"
+ },
  "contact": {
   "date": "2026-11-23",
   "hash": "4fc307c15485ec66b2db88823214f13b"
@@ -84,8 +96,16 @@
   "hash": "567457654cf8b2540e19e316a414cb0d"
  },
  "exam-calendar": {
-  "date": "2026-11-23",
-  "hash": "ede611296406cf01282ec22d56bfb289"
+  "date": "2026-11-24",
+  "hash": "b8c547caf5107f2842f4f7d2507532ea"
+ },
+ "icse-date-sheet-2027": {
+  "date": "2026-11-24",
+  "hash": "ea673f8555e3b51fc8134caba7a89734"
+ },
+ "isc-date-sheet-2027": {
+  "date": "2026-11-24",
+  "hash": "498c16f6da4ced4086faa5e88a193df2"
  },
  "jee-main-2027-session-1-guide": {
   "date": "2026-11-20",
@@ -105,7 +125,7 @@
  },
  "psychometric-test": {
   "date": "2026-11-24",
-  "hash": "c2226d0e4102ba027715a9a4d94e6a09"
+  "hash": "68301c28a7001cf8db9dffb2fc00dcdc"
  },
  "questions-to-ask-a-university": {
   "date": "2026-11-20",
