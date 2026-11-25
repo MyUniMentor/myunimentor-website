@@ -156,7 +156,7 @@ META = {
 "MyUniMentor's in-school career fair: university stalls on the school campus, 12 schools in Dehradun and Saharanpur in October 2026. Watch the highlights."
 ],
 "network.html": [
-"Partner Schools & Universities | MyUniMentor",
+"Partner Universities & Schools | MyUniMentor",
 "12 partner schools in Dehradun and Saharanpur and {UNI_COUNT} partner universities, including UPES, Graphic Era, Chandigarh University, LPU and Tulas."
 ],
 "omgarg.html": [
@@ -743,10 +743,13 @@ def build_home():
     page('index.html', 'MyUniMentor | Career Counselling & University Admissions Guidance in Dehradun',
          'MyUniMentor offers free 1-on-1 career counselling for Class 11–12 students, free career seminars for schools in Dehradun and Saharanpur, and the School Career Guidance Summit with {UNI_COUNT} partner universities.',
          'Home', body, ORG_SCHEMA + WEBSITE_SCHEMA + faq_schema)
-STATE = {'Ambala': 'Haryana', 'Chandigarh': 'Chandigarh', 'Dehradun': 'Uttarakhand', 'Greater Noida': 'Uttar Pradesh', 'Landran': 'Punjab',
+STATE = {'Ambala': 'Haryana', 'Chandigarh': 'Chandigarh', 'Dehradun': 'Uttarakhand', 'Greater Noida': 'Uttar Pradesh', 'Gurugram': 'Haryana', 'Landran': 'Punjab',
          'Mohali': 'Punjab', 'Panipat': 'Haryana', 'Pune': 'Maharashtra', 'Phagwara': 'Punjab', 'Roorkee': 'Uttarakhand', 'Solan': 'Himachal Pradesh',
          'Sonipat': 'Haryana', 'Saharanpur': 'Uttar Pradesh', 'Haridwar': 'Uttarakhand'}
 def place(city): return f"{city}, {STATE[city]}" if city in STATE and STATE[city] != city else city
+
+# Network page: tab title follows the section in view (schools or universities)
+NET_TITLE_JS = "<script>(function(){var T={universities:'Partner Universities | MyUniMentor',schools:'Partner Schools | MyUniMentor'},d=document.title;function s(i){document.title=T[i]||d}function h(){s(location.hash.slice(1))}addEventListener('hashchange',h);h();if('IntersectionObserver'in window){var o=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting)s(x.target.id)})},{rootMargin:'-45% 0px -45% 0px'});['schools','universities'].forEach(function(i){var e=document.getElementById(i);e&&o.observe(e)})}})()</script>"
 
 def build_network():
     regions = ['Uttarakhand', 'Punjab & Chandigarh', 'Haryana', 'Uttar Pradesh', 'Other states']
@@ -821,8 +824,8 @@ def build_network():
     <div><h2>Want your school or university on this list?</h2><p>Seminars are free for schools. Universities can exhibit at the next Career Summit.</p></div>
     <div class="hero-actions"><a href="contact.html" class="btn btn-cyan btn-lg">Become a partner</a></div>
   </div>
-</section>'''
-    page('network.html', 'Our Network — Partner Schools & Universities | MyUniMentor',
+</section>''' + NET_TITLE_JS
+    page('network.html', 'Partner Universities & Schools | MyUniMentor',
          'MyUniMentor partners with 12 schools in Dehradun and Saharanpur and {UNI_COUNT} universities across India, including UPES, Graphic Era, Chandigarh University, LPU and Tulas University.',
          'Our network', body, crumbs_schema([("Home", ""), ("Our network", "network")]) + '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "CollectionPage", "url": "https://myunimentor.in/network", "name": "MyUniMentor partner schools and universities",
          "about": {"@id": "https://myunimentor.in/#org"}, "hasPart": [

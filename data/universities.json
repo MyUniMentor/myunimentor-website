@@ -157,5 +157,10 @@
   "name": "Uttaranchal University",
   "city": "Dehradun",
   "region": "Uttarakhand"
+ },
+ {
+  "name": "Sushant University",
+  "city": "Gurugram",
+  "region": "Haryana"
  }
 ]
