@@ -888,7 +888,7 @@ def build_about():
 </section>
 <section class="section founder-band">
   <div class="wrap founder-grid">
-    <figure class="founder-photo" data-reveal><img src="assets/img/om-garg.webp" alt="Om Garg, Founder of MyUniMentor" width="960" height="1200" loading="lazy"></figure>
+    <figure class="founder-photo" data-reveal><img src="assets/img/om-garg.webp" alt="Om Garg, Founder of MyUniMentor" width="640" height="800" loading="lazy"></figure>
     <div data-reveal style="--d:1">
       <h2>Our founder</h2>
       <blockquote>“When I was in school, nobody explained where a course actually leads. I had to research everything on my own.”</blockquote>
@@ -1153,7 +1153,7 @@ def build_profile():
               "worksFor": {"@type": "EducationalOrganization", "name": "MyUniMentor", "url": "https://myunimentor.in/"},
               "url": "https://myunimentor.in/omgarg",
               "image": [{"@type": "ImageObject", "@id": "https://myunimentor.in/omgarg#photo", "url": "https://myunimentor.in/assets/img/om-garg.jpg", "contentUrl": "https://myunimentor.in/assets/img/om-garg.jpg",
-                         "width": 960, "height": 1200, "caption": "Om Garg, Founder of MyUniMentor", "creditText": "MyUniMentor", "copyrightNotice": "© MyUniMentor Edtech LLP"}]
+                         "width": 640, "height": 800, "caption": "Om Garg, Founder of MyUniMentor", "creditText": "MyUniMentor", "copyrightNotice": "© MyUniMentor Edtech LLP"}]
                        + [f"https://myunimentor.in/assets/photos/{k}.webp" for k in OM_PHOTOS[:3]],
               "homeLocation": {"@type": "Place", "name": "Dehradun, Uttarakhand, India"},
               "address": {"@type": "PostalAddress", "addressLocality": "Dehradun", "addressRegion": "Uttarakhand", "addressCountry": "IN"},
@@ -1177,7 +1177,7 @@ def build_profile():
 <section class="profile-hero pf2" style="--rays:url(&quot;{rays_svg(19)}&quot;)">
   <div class="wrap profile-grid">
     <figure class="profile-photo">
-      <img src="assets/img/om-garg.webp" srcset="/assets/img/om-garg-sm.webp 480w, /assets/img/om-garg-md.webp 720w, /assets/img/om-garg.webp 960w" sizes="(max-width: 700px) 92vw, 440px" alt="Om Garg, Founder of MyUniMentor" width="960" height="1200" fetchpriority="high">
+      <img src="assets/img/om-garg.webp" srcset="/assets/img/om-garg-sm.webp 480w, /assets/img/om-garg.webp 640w" sizes="(max-width: 700px) 92vw, 440px" alt="Om Garg, Founder of MyUniMentor" width="640" height="800" fetchpriority="high">
       <figcaption class="pf-badge"><span class="live-dot"></span>Founder, MyUniMentor</figcaption>
     </figure>
     <div>
