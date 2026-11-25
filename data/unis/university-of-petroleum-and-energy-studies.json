@@ -1,0 +1,114 @@
+{
+ "slug": "university-of-petroleum-and-energy-studies",
+ "short": "UPES",
+ "official": "https://www.upes.ac.in",
+ "basics": {
+  "founded": "2003",
+  "type": "Private university, set up under the UPES Act, 2003 of Uttarakhand",
+  "ugc": "Recognised under Section 2(f) of the UGC Act, 1956",
+  "campus": "Two campuses in Dehradun: Bidholi (engineering, computer science, design, health sciences) and Kandoli (law, business, media, liberal studies)",
+  "other": "Law programmes recognised by the Bar Council of India; pharmacy programmes by the Pharmacy Council of India; selected B.Tech and MBA programmes accredited by NBA"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [
+   [
+    "University",
+    45
+   ],
+   [
+    "Law",
+    18
+   ],
+   [
+    "Management",
+    36
+   ],
+   [
+    "Engineering",
+    43
+   ]
+  ]
+ },
+ "naac": null,
+ "placements": {
+  "source": "NIRF 2025 data submitted by UPES",
+  "url": "https://www.nirfindia.org/nirfpdfcdn/2025/pdf/Overall/IR-O-U-0564.pdf",
+  "batch": "2023-24",
+  "rows": [
+   [
+    "4-year UG (e.g. B.Tech)",
+    1485,
+    1260,
+    650000
+   ],
+   [
+    "3-year UG (e.g. BBA, BCA, B.Sc)",
+    632,
+    382,
+    470000
+   ],
+   [
+    "5-year UG (e.g. integrated law)",
+    379,
+    312,
+    460000
+   ],
+   [
+    "2-year PG (e.g. MBA, M.Tech)",
+    596,
+    518,
+    730000
+   ]
+  ]
+ },
+ "admission": [
+  [
+   "B.Tech",
+   "50% in Class X and XII, with 50% in PCM",
+   "UPESEAT, JEE Main, board merit, SAT or CUET-UG. Up to 20% of seats go through JEE Main and board merit."
+  ],
+  [
+   "BBA",
+   "50% in Class X and XII",
+   "UPESMET-UG, UGAT, CUET or board marks"
+  ],
+  [
+   "5-year LL.B.",
+   "50% in Class X and XII",
+   "ULSAT, CLAT, board merit or CUET"
+  ],
+  [
+   "B.Des.",
+   "50% in Class X and XII, any stream",
+   "UPESDAT or NID, NIFT, UCEED, JEE Main, board merit or CUET-UG, then portfolio and interview"
+  ],
+  [
+   "B.Pharm.",
+   "50% in Class X and XII with PCB/PCM and English",
+   "UPESPAT, JEE Main, board merit, NEET or CUET"
+  ],
+  [
+   "BCA (Hons.), B.Com (Hons.), BA (Hons.)",
+   "50% in Class X and XII",
+   "Personal interview or CUET"
+  ]
+ ],
+ "admission_src": "https://www.upes.ac.in/admissions/eligibility-and-selection-criteria",
+ "scholarships": {
+  "year": "2026-27",
+  "text": "Merit scholarships on tuition fee: 10% to 30% based on Class 12 marks (30% for 95.01% and above). National exam scholarships go up to 100% (for example, JEE Main percentile 95.01 and above).",
+  "url": "https://www.upes.ac.in/admissions/scholarships"
+ },
+ "hostel": {
+  "text": "Separate hostels for boys and girls on both the Bidholi and Kandoli campuses, with meals.",
+  "url": "https://admission.upes.ac.in/portal/feel-home/modern-on-campus-hostels"
+ },
+ "fees": {
+  "text": "UPES publishes programme-wise, semester-wise fees on its fee structure page.",
+  "url": "https://www.upes.ac.in/admissions/fee-structure"
+ },
+ "checked": "2026-11-25",
+ "title": "UPES Dehradun: Admission 2027, Fees | MyUniMentor",
+ "desc": "UPES Dehradun admission 2027: NIRF 2025 rank 45, median B.Tech package ₹6.5 lakh (2023-24), UPESEAT, JEE and CUET routes, scholarships and hostels."
+}

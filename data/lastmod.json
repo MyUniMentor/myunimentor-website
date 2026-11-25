@@ -71,6 +71,10 @@
   "date": "2026-11-24",
   "hash": "0fd8df0cee7aea14ac95e51a8be50ead"
  },
+ "chandigarh-university": {
+  "date": "2026-11-25",
+  "hash": "7b0922c9c57e63616eaa286612a813eb"
+ },
  "class-12-board-exams-2027": {
   "date": "2026-11-24",
   "hash": "f288b35095c628c6989b048304bbb72b"
@@ -87,6 +91,10 @@
   "date": "2026-11-20",
   "hash": "3ca925a32f01eeb249adfb695e7be136"
  },
+ "dit-university": {
+  "date": "2026-11-25",
+  "hash": "1b48c53556b48df4156e9ede14412d87"
+ },
  "engineering-branches-explained": {
   "date": "2026-11-20",
   "hash": "194d6361bd616f92a2cb65754efd6659"
@@ -98,6 +106,10 @@
  "exam-calendar": {
   "date": "2026-11-24",
   "hash": "b8c547caf5107f2842f4f7d2507532ea"
+ },
+ "graphic-era-university": {
+  "date": "2026-11-25",
+  "hash": "a057f74ceca0747793d3fe00b2dc1295"
  },
  "icse-date-sheet-2027": {
   "date": "2026-11-24",
@@ -115,9 +127,13 @@
   "date": "2026-11-25",
   "hash": "ff31f24e60d804cf0588cdb5665dc766"
  },
+ "lovely-professional-university": {
+  "date": "2026-11-25",
+  "hash": "9a4b0b079a068725c901124e096559b8"
+ },
  "network": {
   "date": "2026-11-25",
-  "hash": "dbb961b9e5d34c0df049dcf34635c594"
+  "hash": "875fdcab86e123e7b21bfb8b970a7344"
  },
  "omgarg": {
   "date": "2026-11-23",
@@ -150,5 +166,13 @@
  "testimonials": {
   "date": "2026-11-23",
   "hash": "3f2cf72a635801b3f208f5396a14d542"
+ },
+ "university-of-petroleum-and-energy-studies": {
+  "date": "2026-11-25",
+  "hash": "f73c0455249fbc3a8a80581dc41ed3ed"
+ },
+ "uttaranchal-university": {
+  "date": "2026-11-25",
+  "hash": "df7c528b47da261bcc350e2468beba48"
  }
 }

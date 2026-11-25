@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Builds the MyUniMentor site from data/*.json into plain HTML pages.
 Add a school or university to the JSON files, drop its logo into assets/logos/, run this."""
-import json, re, html, os, math, sys
+import glob, json, re, html, os, math, sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 D = lambda f: json.load(open(os.path.join(ROOT, 'data', f), encoding='utf-8'))
@@ -760,7 +760,8 @@ def build_network():
         f'{"<p class=\'org-note\'>" + e(s["note"]) + "</p>" if s.get("note") else ""}</div></li>' for s in SCHOOLS)
     uni_cards = ''.join(
         f'<li class="org-card uni" data-reveal data-region="{e(u["region"])}" data-search="{e((u["name"] + " " + u.get("short", "") + " " + place(u["city"])).lower())}">{logo("universities", u, "logo logo-card")}'
-        f'<div class="org-body"><h3>{e(u["name"])}{(" <span class=\'short\'>(" + e(u["short"]) + ")</span>") if u.get("short") else ""}</h3><p class="org-meta">{e(place(u["city"]))}</p></div></li>' for u in UNIS)
+        f'<div class="org-body"><h3>{e(u["name"])}{(" <span class=\'short\'>(" + e(u["short"]) + ")</span>") if u.get("short") else ""}</h3><p class="org-meta">{e(place(u["city"]))}</p>'
+        f'{(chr(60) + "a class=" + chr(34) + "uni-more" + chr(34) + " href=" + chr(34) + slug(u["name"]) + ".html" + chr(34) + ">Admission, fees and placements" + chr(60) + "/a>") if slug(u["name"]) in UNI_PAGES else ""}</div></li>' for u in UNIS)
     region_btns = '<button class="fbtn" aria-pressed="true" data-filter="all">All</button>' + ''.join(f'<button class="fbtn" aria-pressed="false" data-filter="{e(r)}">{e(r)}</button>' for r in regions)
     lor_schools = [s for s in SCHOOLS if s.get('lor')]
     lors = ''.join(f'<li class="lor-item">{lor_card(s)}{lor_quote(s)}</li>' for s in lor_schools)
@@ -1299,7 +1300,7 @@ def page_text(fname):
 
 def build_llms_full():
     order = ['index', 'about', 'omgarg', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'testimonials', 'exam-calendar'] + (['career-check'] if SHOW_CAREER_CHECK else []) + (['psychometric-test'] if SHOW_PSY else []) + ['courses'] \
-            + [x['slug'] for x in COURSES] + [x['slug'] for x in POSTS] + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'contact']
+            + [x['slug'] for x in COURSES] + list(UNI_PAGES) + [x['slug'] for x in POSTS] + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'contact']
     out = ['# MyUniMentor: full site content', '', '> Plain-text copy of myunimentor.in for AI assistants and search engines. Source: https://myunimentor.in/', '']
     for o in order:
         f = o + '.html'
@@ -1311,7 +1312,7 @@ CC_LLMS_LINE = ('- [Free career check for Class 9–12](https://myunimentor.in/c
     (f"- [Career psychometric test for Class 9–12](https://myunimentor.in/psychometric-test): 25 minutes; interests (RIASEC), Big Five personality, six timed aptitude sections, situations and work values, matched to 24 career areas with Indian courses and entrance exams; ₹{PSY['price']} or free when three friends sign up\n" if SHOW_PSY else '')
 
 def build_seo_files():
-    urls = ['', 'about', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'omgarg', 'blog', 'contact', 'exam-calendar', 'testimonials'] + (['career-check'] if SHOW_CAREER_CHECK else []) + (['psychometric-test'] if SHOW_PSY else []) + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'courses'] + [x['slug'] for x in POSTS] + [x['slug'] for x in COURSES]
+    urls = ['', 'about', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'omgarg', 'blog', 'contact', 'exam-calendar', 'testimonials'] + (['career-check'] if SHOW_CAREER_CHECK else []) + (['psychometric-test'] if SHOW_PSY else []) + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'courses'] + [x['slug'] for x in POSTS] + [x['slug'] for x in COURSES] + list(UNI_PAGES)
     # lastmod: the date a page's content last really changed (asset version strings ignored), kept in data/lastmod.json
     import datetime as _dt
     today = (_dt.datetime.now(_dt.timezone.utc) + _dt.timedelta(hours=5, minutes=30)).date().isoformat()
@@ -1331,7 +1332,7 @@ def build_seo_files():
         ''.join(f'  <url><loc>https://myunimentor.in/{u}</loc>' + (f'<lastmod>{known[u]["date"]}</lastmod>' if u in known else '') + '</url>\n' for u in urls) + '</urlset>\n')
     open(os.path.join(ROOT, 'robots.txt'), 'w').write("User-agent: *\nAllow: /\n\n# Search engines and AI assistants are welcome to read and cite this site\n" +
         ''.join(f"User-agent: {x}\nAllow: /\n" for x in AI_BOTS) + "\nSitemap: https://myunimentor.in/sitemap.xml\n# Plain-text summaries for AI: https://myunimentor.in/llms.txt and https://myunimentor.in/llms-full.txt\n")
-    unis = '\n'.join(f'- {u["name"]}{" (" + u["short"] + ")" if u.get("short") else ""}, {u["city"]}' for u in UNIS)
+    unis = '\n'.join((f'- [{u["name"]}](https://myunimentor.in/{slug(u["name"])})' if slug(u["name"]) in UNI_PAGES else f'- {u["name"]}') + f'{" (" + u["short"] + ")" if u.get("short") else ""}, {u["city"]}' + (': admission 2027, NIRF rank, NAAC grade, median salary, fees and scholarships from official sources' if slug(u["name"]) in UNI_PAGES else '') for u in UNIS)
     schs = '\n'.join(f'- {s["name"]}, {s["city"]} ({s["board"]})' for s in SCHOOLS)
     GUIDES_MD = '\n'.join(f"- [{x['h1']}](https://myunimentor.in/{x['slug']}): {x['desc']}" for x in POSTS)
     COURSES_MD = '\n'.join(f"- [{x['name']} after 12th](https://myunimentor.in/{x['slug']}): {x['desc']}" for x in COURSES)
@@ -1793,6 +1794,124 @@ def build_guide_page():
          'Download MyUniMentor\'s free Class 12 Decision Guide: choose your stream and course, understand entrance exams, shortlist universities and plan your Class 12 year.', 'Resources', body,
          crumbs_schema([("Home", ""), ("Free guide", "free-guide")]))
 
+# ---------------- UNIVERSITY PAGES (partner universities: highlights + admission enquiry) ----------------
+# Facts live in data/unis/<slug>.json, each taken from the university's own website or its NIRF data, with the year.
+UNI_PAGES = {}
+for _f in sorted(glob.glob(os.path.join(ROOT, 'data/unis/*.json'))):
+    _j = json.load(open(_f, encoding='utf-8')); UNI_PAGES[_j['slug']] = _j
+WA = '917417557070'
+UNI_COURSES = ['B.Tech / B.E.', 'BBA', 'BCA', 'B.Com', 'Law (BA LLB / BBA LLB)', 'B.Des', 'B.Pharm', 'BA / B.Sc', 'MBA', 'Other']
+
+def lakh(n):
+    v = n / 100000
+    return f"₹{v:.2f}".rstrip('0').rstrip('.') + ' lakh'
+
+def uni_wa(name):
+    from urllib.parse import quote
+    return f"https://wa.me/{WA}?text=" + quote(f"Hi MyUniMentor, I want to enquire about admission to {name} for the course: ")
+
+def uni_form(u, d):
+    opts = ''.join(f'<option>{e(c)}</option>' for c in UNI_COURSES)
+    return f'''<form class="lead-form uni-form" data-form="counselling" data-msg="Thanks, your admission enquiry for {e(u['name'])} has been received. Our team will call you back." aria-label="Enquire for admission to {e(u['name'])}">
+  <input type="hidden" name="university" value="{e(u['name'])}"><input type="hidden" name="interest" value="Admission enquiry: {e(u['name'])}">
+  <div class="field"><label for="u-name">Student's name</label><input id="u-name" name="name" required autocomplete="name"></div>
+  <div class="field"><label for="u-phone">Phone (WhatsApp)</label><input id="u-phone" name="phone" type="tel" inputmode="tel" pattern="[0-9+ ]{{10,14}}" required autocomplete="tel"></div>
+  <div class="row">
+    <div class="field"><label for="u-class">Class</label><select id="u-class" name="class" required><option value="">Select</option><option>Class 11</option><option>Class 12</option><option>Class 12 passed</option><option>Graduate</option></select></div>
+    <div class="field"><label for="u-course">Course</label><select id="u-course" name="course" required><option value="">Select</option>{opts}</select></div>
+  </div>
+  <label class="consent"><input type="checkbox" name="consent" required><span>I agree to be contacted by MyUniMentor about this enquiry.</span></label>
+  <button class="btn btn-full btn-lg" type="submit">Enquire for admission</button>
+  <p class="form-status" role="status" aria-live="polite"></p>
+</form>'''
+
+def build_unis():
+    by_name = {slug(x['name']): x for x in UNIS}
+    for s_, d in UNI_PAGES.items():
+        u = by_name[s_]; name = u['name']; short = d.get('short') or u.get('short') or name
+        city = place(u['city']); b = d['basics']; nirf = d.get('nirf') or {}; naac = d.get('naac')
+        ranks = nirf.get('ranks', [])
+        rank_txt = ', '.join(f"{r} in {c}" for c, r in ranks)
+        if nirf.get('band'): rank_txt = (rank_txt + '; ' if rank_txt else '') + f"{nirf['band'][1]} band in {nirf['band'][0]}"
+        naac_txt = (f"Grade {naac['grade']}" + (f" ({naac['score']})" if naac.get('score') else '') + (f", awarded {naac['year']}" if naac.get('year') else '')) if naac else None
+        top = [('Founded', b['founded'].split(' (')[0]), ('NAAC', naac['grade']) if naac else ('UGC', 'Recognised'),
+               (f"NIRF {nirf.get('year', '')}".strip(), f"#{ranks[0][1]} {ranks[0][0]}" if ranks else '—'), ('Campus', u['city'])]
+        facts = ''.join(f'<div><dt>{k}</dt><dd>{e(str(v))}</dd></div>' for k, v in top)
+        glance = [('Type', b['type']), ('Recognition', b['ugc'])] + ([('NAAC accreditation', naac_txt)] if naac_txt else []) \
+            + ([(f"NIRF {nirf['year']} rank", rank_txt)] if rank_txt else []) + [('Campus', b['campus']), ('Also', b['other']),
+            ('Official website', f'<a href="{d["official"]}" target="_blank" rel="noopener">{e(d["official"].split("//")[1])}</a>')]
+        glance_html = '<div class="table-wrap"><table class="kv"><tbody>' + ''.join(f'<tr><th scope="row">{k}</th><td>{v if k == "Official website" else e(v)}</td></tr>' for k, v in glance) + '</tbody></table></div>'
+        pl = d.get('placements')
+        if pl:
+            rows = ''.join(f'<tr><td>{e(r[0])}</td><td>{r[1]:,}</td><td>{r[2]:,}</td><td><strong>{lakh(r[3])}</strong></td></tr>' for r in pl['rows'])
+            place_html = (f'<p>These are the figures {e(name)} itself reported to the Government of India for the NIRF rankings, for students who graduated in {pl["batch"]}. '
+                          f'The median is the middle salary: half of the placed students earned more than this and half earned less.</p>'
+                          f'<div class="table-wrap"><table><thead><tr><th>Programme level</th><th>Graduated</th><th>Placed</th><th>Median salary per year</th></tr></thead><tbody>{rows}</tbody></table></div>'
+                          f'<p class="src">Source: <a href="{pl["url"]}" target="_blank" rel="noopener">{e(pl["source"])}</a>, graduating batch {pl["batch"]}.</p>')
+            med = pl['rows'][0]
+        else:
+            place_html = (f'<p>Ask {e(name)} for placement figures for your course: how many students were placed, the median salary and the year. '
+                          f'Treat a single highest package as a headline, not a typical result. We can help you ask the right questions.</p>')
+            med = None
+        adm_rows = ''.join(f'<tr><td><strong>{e(p_)}</strong></td><td>{e(el)}</td><td>{e(r)}</td></tr>' for p_, el, r in d['admission'])
+        adm_html = (f'<div class="table-wrap"><table><thead><tr><th>Programme</th><th>Eligibility</th><th>How you get in</th></tr></thead><tbody>{adm_rows}</tbody></table></div>'
+                    f'<p class="src">Source: <a href="{d["admission_src"]}" target="_blank" rel="noopener">{e(short)} admissions</a>. Cut-offs and dates for 2027 can change; check them before you apply.</p>')
+        def sec(key, label):
+            x = d.get(key)
+            if not x: return ''
+            yr = f' ({e(x["year"])})' if x.get('year') and key != 'scholarships' else ''
+            return f'<p>{e(x["text"])}</p><p class="src">Source: <a href="{x["url"]}" target="_blank" rel="noopener">{e(short)} {label}</a>{yr}.</p>'
+        checked = nice_date(d['checked'])
+        wa = uni_wa(name)
+        others = [x for x in UNIS if slug(x['name']) in UNI_PAGES and slug(x['name']) != s_]
+        others.sort(key=lambda x: (x['region'] != u['region'], x['name']))
+        other_links = ''.join(f'<li><a href="{slug(x["name"])}.html">{e(x["name"])}</a></li>' for x in others[:5])
+        faqs = [(f"How do I get admission to {name} in 2027?", f"{e(d['admission'][0][0])}: {e(d['admission'][0][2])}. Eligibility: {e(d['admission'][0][1])}. MyUniMentor gives free admission guidance: <a href=\"#enquire\">send an enquiry</a> or WhatsApp +91 74175 57070.")]
+        if ranks: faqs.append((f"What is the NIRF ranking of {name}?", f"In NIRF {nirf['year']}, published by the Ministry of Education, {e(name)} was ranked {e(rank_txt)}."))
+        if naac: faqs.append((f"Is {name} NAAC accredited?", f"Yes. {e(name)} is accredited by NAAC with {e(naac_txt)}."))
+        if med: faqs.append((f"What is the average package at {name}?", f"Universities report the median salary to NIRF. For the {pl['batch']} batch, {e(name)} reported a median of {lakh(med[3])} a year for {e(med[0].split(' (')[0])} graduates; {med[2]:,} of {med[1]:,} graduates were placed."))
+        if d.get('fees'): faqs.append((f"What are the fees at {name}?", e(d['fees']['text'])))
+        if d.get('scholarships'): faqs.append((f"What scholarships does {name} offer?", e(d['scholarships']['text'])))
+        if d.get('hostel'): faqs.append((f"Does {name} have hostels?", e(d['hostel']['text'])))
+        faqs.append((f"Is MyUniMentor's admission help for {name} free?", f"Yes. {e(name)} is a MyUniMentor partner university, and our admission guidance is free for students: choosing the right course, checking eligibility and scholarships, and applying."))
+        faq_html, faq_schema = faq_block(faqs, f"{short}: common questions")
+        hero_extra = (f'<div class="uni-hero">{logo("universities", u, "logo logo-tile uni-logo")}<p class="uni-badge">MyUniMentor partner university · Free admission guidance</p></div>'
+                      f'<dl class="course-facts">{facts}</dl>'
+                      f'<div class="hero-actions uni-actions"><a href="#enquire" class="btn btn-cyan btn-lg">Enquire for admission</a><a href="{wa}" class="btn btn-outline-light btn-lg" target="_blank" rel="noopener">WhatsApp us</a></div>')
+        body = page_hero(f"{name}, {u['city']}", f"Admission 2027, courses, fees, placements and scholarships, from {e(short)}'s own website and NIRF data. Checked {checked}.", "Universities", hero_extra).replace(
+            '<a href="index.html">Home</a><span aria-hidden="true">/</span><span>Universities</span>', '<a href="index.html">Home</a><span aria-hidden="true">/</span><a href="network.html#universities">Partner universities</a><span aria-hidden="true">/</span><span>' + e(short) + '</span>') + f'''
+<section class="section article-section"><div class="wrap art-grid">
+  <article class="article">
+    <h2>{e(short)} at a glance</h2>{glance_html}
+    <h2>Placements at {e(short)}</h2>{place_html}
+    <h2>Courses and admission 2027</h2>{adm_html}
+    <h2>Fees</h2>{sec('fees', 'fee details')}
+    <h2>Scholarships</h2>{sec('scholarships', 'scholarships')}
+    <h2>Hostels</h2>{sec('hostel', 'hostel details')}
+    <div class="callout"><strong>How MyUniMentor helps</strong><p>{e(name)} is a MyUniMentor partner university. Our admission guidance is free: we help you pick the right course, check your eligibility and scholarship, compare it with other options, and apply. <a href="#enquire">Send an enquiry</a> or <a href="{wa}" target="_blank" rel="noopener">WhatsApp us</a>.</p></div>
+    <p class="src">Every figure on this page comes from {e(short)}'s official website or the data it submitted to NIRF (Ministry of Education), checked on {checked}. Fees and rules change each year, so confirm them with the university before paying.</p>
+  </article>
+  <aside class="art-aside">
+    <div class="aside-card uni-enquire" id="enquire"><strong>Enquire for admission</strong><p>Free admission guidance for {e(short)} from MyUniMentor.</p>{uni_form(u, d)}
+      <a class="btn btn-wa btn-full" href="{wa}" target="_blank" rel="noopener">WhatsApp: enquire about {e(short)}</a></div>
+    <div class="aside-card"><strong>Entrance exam dates 2027</strong><p>JEE, NEET, CUET, CLAT and more, in one calendar.</p><a class="btn btn-outline btn-full" href="exam-calendar.html">See the exam calendar</a></div>
+    <div class="aside-card"><strong>Other partner universities</strong><ul class="aside-links">{other_links}<li><a href="network.html#universities">All {len(UNIS)} partner universities</a></li></ul></div>
+  </aside>
+</div></section>
+{faq_html}
+{cta(f"Want to study at {e(short)}?", "Talk to a MyUniMentor counsellor about courses, eligibility and scholarships. Admission guidance is free for students.", "Enquire for admission", "#enquire")}'''
+        body = label_tables(body)
+        uni_ld = {"@context": "https://schema.org", "@type": "CollegeOrUniversity", "@id": f"https://myunimentor.in/{s_}#university", "name": name,
+                  "alternateName": [short] if short != name else [], "url": d['official'], "sameAs": [d['official']],
+                  "logo": f"https://myunimentor.in/assets/logos/universities/{s_}.webp",
+                  "address": {"@type": "PostalAddress", "addressLocality": u['city'], "addressRegion": STATE.get(u['city'], u['region']), "addressCountry": "IN"},
+                  "foundingDate": re.match(r'\d{4}', b['founded']).group(0)}
+        page_ld = {"@context": "https://schema.org", "@type": "WebPage", "@id": f"https://myunimentor.in/{s_}", "name": d['title'].replace(' | MyUniMentor', ''), "description": d['desc'],
+                   "about": {"@id": f"https://myunimentor.in/{s_}#university"}, "publisher": {"@id": "https://myunimentor.in/#org"}, "dateModified": d['checked'], "inLanguage": "en-IN"}
+        page(f"{s_}.html", d['title'], d['desc'], 'Our network', body,
+             crumbs_schema([("Home", ""), ("Partner universities", "network"), (short, s_)]) + faq_schema
+             + f'<script type="application/ld+json">{json.dumps(uni_ld, ensure_ascii=False)}</script><script type="application/ld+json">{json.dumps(page_ld, ensure_ascii=False)}</script>')
+
 if __name__ == '__main__':
-    build_home(); build_network(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_account(); build_admin(); build_test(); build_psy_landing(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
+    build_home(); build_network(); build_unis(); build_about(); build_services(); build_summit(); build_contact(); build_blog(); build_courses(); build_profile(); (build_privacy(), build_terms()) if SHOW_LEGAL else None; (build_career_check() if SHOW_CAREER_CHECK else None); build_404(); build_account(); build_admin(); build_test(); build_psy_landing(); build_exam_calendar(); build_cities(); build_testimonials(); (build_guide_page() if SHOW_GUIDE else None); build_seo_files(); build_llms_full()
     print('built', len(UNIS), 'universities,', len(SCHOOLS), 'schools')

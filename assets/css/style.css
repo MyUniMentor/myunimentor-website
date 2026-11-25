@@ -2156,3 +2156,29 @@ html.cc-printing .cc-guides { display: none !important; }
   .ds-table td:nth-child(4), .ds-table td:nth-child(5) { grid-row: 2; font-size: .85rem; color: var(--ink-2); }
   .ds-table td:nth-child(4) { grid-column: 3; } .ds-table td:nth-child(5) { grid-column: 4; }
 }
+
+/* ===== University pages ===== */
+.uni-hero { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; margin-top: 1.4rem; position: relative; z-index: 1; }
+.uni-hero .uni-logo { width: 190px; height: 92px; background: #fff; border-radius: 16px; padding: .6rem .9rem; display: grid; place-items: center; }
+.uni-hero .uni-logo img { width: 100%; height: 100%; object-fit: contain; }
+.uni-badge { margin: 0; padding: .45rem .9rem; border-radius: 99px; background: rgba(17,189,222,.14); border: 1px solid rgba(95,220,242,.35); color: #BFEFFA; font-weight: 600; font-size: .92rem; }
+.uni-actions { margin-top: 1.6rem; position: relative; z-index: 1; }
+.art-aside:has(.uni-enquire) { position: static; }
+.uni-enquire { border-color: #BFE3EE; box-shadow: 0 20px 40px -30px rgba(6,22,41,.5); }
+.uni-enquire .lead-form { display: grid; gap: .8rem; }
+.uni-enquire .row { grid-template-columns: 1fr 1fr; gap: .7rem; }
+.uni-enquire .consent { font-size: .82rem; }
+.btn-wa { background: #25D366; color: #06321A; border-color: #25D366; }
+.btn-wa:hover { background: #1EBE5A; border-color: #1EBE5A; color: #04240F; }
+table.kv th { width: 34%; text-align: left; font-weight: 600; color: var(--ink); vertical-align: top; }
+.article .src { font-size: .88rem; color: var(--ink-2); }
+.org-card .uni-more { margin-top: auto; padding-top: .5rem; font-weight: 600; font-size: .92rem; color: var(--teal); }
+.org-card .uni-more::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.org-card:has(.uni-more) { position: relative; }
+@media (max-width: 600px) { .uni-hero .uni-logo { width: 150px; height: 74px; } .uni-enquire .row { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .uni-hero + .course-facts { grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .table-wrap table.kv tr { display: grid !important; grid-template-columns: 36% 1fr; gap: .2rem .7rem; padding: .7rem .9rem; margin-bottom: .45rem; }
+  .table-wrap table.kv th, .table-wrap table.kv td { display: block; padding: 0; border: 0; width: auto; font-size: .92rem; }
+  .table-wrap table.kv td::before, .table-wrap table.kv th::before { display: none !important; }
+}

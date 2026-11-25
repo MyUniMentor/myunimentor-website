@@ -1,0 +1,95 @@
+{
+ "slug": "graphic-era-university",
+ "short": "GEU",
+ "official": "https://geu.ac.in",
+ "basics": {
+  "founded": "2008 (deemed university status; began as Graphic Era Institute of Technology)",
+  "type": "Deemed to be University under Section 3 of the UGC Act, 1956",
+  "ugc": "Deemed university status granted in 2008 under Section 3 of the UGC Act, 1956",
+  "campus": "Bell Road, Clement Town, Dehradun",
+  "other": "Several B.Tech programmes accredited by NBA"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [
+   [
+    "University",
+    48
+   ]
+  ]
+ },
+ "naac": {
+  "grade": "A+",
+  "year": "2022"
+ },
+ "placements": {
+  "source": "NIRF 2025 data submitted by Graphic Era University",
+  "url": "https://www.nirfindia.org/nirfpdfcdn/2025/pdf/Overall/IR-O-U-0555.pdf",
+  "batch": "2023-24",
+  "rows": [
+   [
+    "4-year UG (e.g. B.Tech)",
+    1072,
+    662,
+    650000
+   ],
+   [
+    "3-year UG (e.g. BBA, BCA, B.Sc)",
+    565,
+    233,
+    411000
+   ],
+   [
+    "2-year PG (e.g. MBA, M.Tech)",
+    686,
+    279,
+    650000
+   ]
+  ]
+ },
+ "admission": [
+  [
+   "B.Tech",
+   "Class 12 with Physics, Chemistry and Mathematics; minimum marks vary by branch",
+   "Merit in Class 12, JEE Main percentile or CUET scores"
+  ],
+  [
+   "BBA",
+   "Class 12 in any stream",
+   "Merit in the qualifying exam"
+  ],
+  [
+   "B.Des.",
+   "Class 12 pass",
+   "Graphic Era's entrance test or personal interview; UCEED, NID DAT or NIFT scores are also accepted"
+  ],
+  [
+   "MBA",
+   "Graduation",
+   "CAT, MAT, XAT, CMAT, GMAT or GECET, then personal interview"
+  ],
+  [
+   "Most other UG and PG courses",
+   "As per course",
+   "Merit in the qualifying exam"
+  ]
+ ],
+ "admission_src": "https://geu.ac.in/admissions/faq",
+ "scholarships": {
+  "year": "2026",
+  "text": "Merit scholarships on tuition fee for the whole course, based on qualifying-exam marks (kept each semester with SGPA 7 or above). GECET, Graphic Era's scholarship test, offers tuition waivers of up to 100%. Girls get an extra 10% on net tuition fee, and wards of defence personnel a 5% concession.",
+  "url": "https://geu.ac.in/admissions/scholarship"
+ },
+ "hostel": {
+  "text": "Separate hostels for boys and girls, with Wi-Fi and dining halls.",
+  "url": "https://geu.ac.in/lp/mba.html"
+ },
+ "fees": {
+  "text": "For the 2026 intake, first-year tuition is ₹2,13,800 per semester for B.Tech CSE (regular quota) and ₹90,000 per semester for BBA, before scholarships. Fees rise slightly each year.",
+  "url": "https://geu.ac.in/fee/btech-cse-reg-quota",
+  "year": "2026 intake"
+ },
+ "checked": "2026-11-25",
+ "title": "Graphic Era University: Admission 2027, Fees | MyUniMentor",
+ "desc": "Graphic Era University Dehradun: NAAC A+, NIRF 2025 rank 48, median B.Tech package ₹6.5 lakh, 2026 fees, scholarships and free admission guidance."
+}

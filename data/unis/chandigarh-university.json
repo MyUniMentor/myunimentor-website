@@ -1,0 +1,77 @@
+{
+ "slug": "chandigarh-university",
+ "short": "CU",
+ "official": "https://www.cuchd.in",
+ "basics": {
+  "founded": "2012",
+  "type": "Private university in Punjab",
+  "ugc": "UGC-recognised private university",
+  "campus": "Gharuan, Mohali (Punjab), on the Chandigarh–Ludhiana highway",
+  "other": "B.Arch approved by the Council of Architecture"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [
+   [
+    "University",
+    19
+   ],
+   [
+    "Engineering",
+    31
+   ],
+   [
+    "Management",
+    32
+   ],
+   [
+    "Pharmacy",
+    15
+   ],
+   [
+    "Architecture",
+    14
+   ]
+  ]
+ },
+ "naac": {
+  "grade": "A+",
+  "year": null
+ },
+ "placements": null,
+ "admission": [
+  [
+   "B.E. (engineering)",
+   "Class 12 with PCM",
+   "CUCET 2027 is compulsory"
+  ],
+  [
+   "B.Pharm and integrated law (BA LLB, BBA LLB, B.Com LLB)",
+   "Class 12",
+   "CUCET 2027 is compulsory"
+  ],
+  [
+   "Other UG programmes (BBA, BCA, B.Sc, BA etc.)",
+   "Class 12",
+   "Merit; CUCET is optional but needed for a scholarship"
+  ]
+ ],
+ "admission_src": "https://cucet.cuchd.in/after12th.php",
+ "scholarships": {
+  "year": "2027",
+  "text": "CUCET 2027 (Phase I, October 2026 to May 2027) scholarships: 100% for 90.01 to 100 marks, 50% for 80 to 90, 40% for 70 to 79.99, 30% for 60 to 69.99, 25% for 50 to 59.99 and 15% for 40 to 49.99.",
+  "url": "https://cucet.cuchd.in/"
+ },
+ "hostel": {
+  "text": "Separate hostels for boys and girls on campus, with mess, Wi-Fi, gym, laundry and a medical room.",
+  "url": "https://www.cuchd.in/student-services/hostel-facility.php"
+ },
+ "fees": {
+  "text": "Fee per semester for 2026-27: B.E. Computer Science and Engineering ₹1,46,000; BA LLB (Hons.) ₹1,05,000; BCA (Hons.) ₹78,000; B.Pharm ₹1,42,000; B.Arch ₹1,11,000.",
+  "url": "https://www.cuchd.in/mandatory-disclosure.php",
+  "year": "2026-27"
+ },
+ "checked": "2026-11-25",
+ "title": "Chandigarh University: Admission 2027, Fees | MyUniMentor",
+ "desc": "Chandigarh University admission 2027: NIRF 2025 rank 19, NAAC A+, CUCET routes and scholarships, 2026-27 fees per semester, hostels and free guidance."
+}

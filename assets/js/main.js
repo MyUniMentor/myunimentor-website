@@ -98,7 +98,7 @@ try { const r = new URLSearchParams(location.search).get('ref'); if (r && /^u[0-
     const data = new URLSearchParams(new FormData(form));
     data.append('form', form.dataset.form || 'enquiry'); data.append('page', location.pathname);
     const btn = form.querySelector('button[type=submit]'); if (btn) btn.disabled = true;
-    const done = () => { form.querySelector('.form-status').textContent = msg[form.dataset.form] || msg.partnership; if (btn) btn.disabled = false; if (form.dataset.form !== 'guide') form.reset(); };
+    const done = () => { form.querySelector('.form-status').textContent = form.dataset.msg || msg[form.dataset.form] || msg.partnership; if (btn) btn.disabled = false; if (form.dataset.form !== 'guide') form.reset(); };
     if (window.MUM_FORM_URL) fetch(window.MUM_FORM_URL, { method: 'POST', mode: 'no-cors', body: data }).then(done, done); else done();
   }));
 

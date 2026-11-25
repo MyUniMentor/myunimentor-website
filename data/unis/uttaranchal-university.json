@@ -1,0 +1,57 @@
+{
+ "slug": "uttaranchal-university",
+ "short": "UU",
+ "official": "https://uudoon.in",
+ "basics": {
+  "founded": "2013",
+  "type": "Private university under the Uttaranchal University Act, 2012 (Uttarakhand Act No. 11 of 2013)",
+  "ugc": "Recognised under Sections 2(f) and 12(B) of the UGC Act, 1956",
+  "campus": "On NH-72 (Premnagar), Dehradun",
+  "other": "Formed by merging Law College Dehradun, Uttaranchal Institute of Technology and Uttaranchal Institute of Management. Recognised by the Bar Council of India and Pharmacy Council of India; AICTE-approved"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [
+   [
+    "Pharmacy",
+    75
+   ]
+  ],
+  "band": [
+   "Engineering",
+   "201–300"
+  ]
+ },
+ "naac": {
+  "grade": "A+",
+  "year": null,
+  "score": "3.30 out of 4"
+ },
+ "placements": null,
+ "admission": [
+  [
+   "All UG programmes (B.Tech, BBA, law, pharmacy and more)",
+   "Class 12 as per programme (for example, B.Tech CSE needs Physics and Mathematics)",
+   "Online application, then document verification. Merit scholarships are based on Class 12 marks."
+  ]
+ ],
+ "admission_src": "https://uudoon.in/admissions/",
+ "scholarships": {
+  "year": "2026-27",
+  "text": "First-year merit scholarship on tuition: 30% for above 90%, 20% for 80–90% and 10% for 70–80% in the qualifying exam. Students from Uttarakhand and hill states get 25% of tuition fee; girls 5% and defence wards 5% of net tuition for the full programme. Only one scholarship applies.",
+  "url": "https://uudoon.in/admissions/"
+ },
+ "hostel": {
+  "text": "Single, double and triple rooms with meals and 24-hour security. For 2026-27, hostel and mess cost ₹92,000 to ₹1,30,000 a year depending on the room; separate flats for girls cost ₹95,000 to ₹1,35,000.",
+  "url": "https://www.uudoon.in/generate-fee-pdf.php?program=btech-cse&type=lateral",
+  "year": "2026-27"
+ },
+ "fees": {
+  "text": "For 2026-27, B.Tech ECE costs ₹2,04,846 to ₹2,65,056 a year (Uttarakhand quota) or ₹2,23,912 to ₹2,90,000 (all-India quota), depending on Class 12 marks. Each programme has its own fee sheet.",
+  "url": "https://www.uudoon.in/generate-fee-pdf.php?program=btech-ece&type=regular",
+  "year": "2026-27"
+ },
+ "checked": "2026-11-25",
+ "title": "Uttaranchal University: Admission 2027, Fees | MyUniMentor",
+ "desc": "Uttaranchal University Dehradun admission 2027: NAAC A+, NIRF 2025 pharmacy rank 75, 2026-27 fees, hostel costs, scholarships and free admission help."
+}

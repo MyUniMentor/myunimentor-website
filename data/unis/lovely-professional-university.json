@@ -1,0 +1,86 @@
+{
+ "slug": "lovely-professional-university",
+ "short": "LPU",
+ "official": "https://www.lpu.in",
+ "basics": {
+  "founded": "2005",
+  "type": "Private state university, set up under the Lovely Professional University Act, 2005 (Punjab Act 25 of 2005)",
+  "ugc": "Recognised under Sections 2(f) and 12(B) of the UGC Act, 1956",
+  "campus": "Single campus at Chaheru, Phagwara (Punjab)",
+  "other": "Approved by NCTE, PCI, COA and BCI; B.Sc. (Hons.) Agriculture accredited by ICAR"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [
+   [
+    "University",
+    31
+   ],
+   [
+    "Overall",
+    49
+   ],
+   [
+    "Law",
+    26
+   ]
+  ]
+ },
+ "naac": {
+  "grade": "A++",
+  "year": null,
+  "score": "3.68 out of 4"
+ },
+ "placements": {
+  "source": "NIRF 2025 management data submitted by LPU",
+  "url": "https://www.nirfindia.org/nirfpdfcdn/2025/pdf/Management/IR-M-U-0379.pdf",
+  "batch": "2023-24",
+  "rows": [
+   [
+    "MBA (2-year)",
+    625,
+    261,
+    677000
+   ]
+  ]
+ },
+ "admission": [
+  [
+   "B.Tech",
+   "60% aggregate in Class 12 with Physics, Mathematics and English (Chemistry or Biology for some branches)",
+   "LPUNEST; a few CSE programmes also need an interview"
+  ],
+  [
+   "Integrated law",
+   "Class 12 (CBSE, CISCE or state board)",
+   "LPUNEST (Integrated Law)"
+  ],
+  [
+   "MBA",
+   "55% in graduation",
+   "LPUNEST, CAT, XAT, MAT or CMAT"
+  ],
+  [
+   "Most other UG programmes",
+   "Class 12, as per programme",
+   "LPUNEST is the eligibility and scholarship test for most programmes; national tests such as JEE Main, NEET, UCEED, CAT and MAT count for some"
+  ]
+ ],
+ "admission_src": "https://www.lpu.in/admission/admissions.php",
+ "scholarships": {
+  "year": "2027",
+  "text": "Scholarships are based on LPUNEST scores, in categories set by cut-off marks (for B.Tech, tentative cut-offs are 300, 212 and 150 out of 400). LPU also has sports and talent scholarships through trials and auditions.",
+  "url": "https://www.lpu.in/nest/btech/"
+ },
+ "hostel": {
+  "text": "On-campus residential facilities; students apply for hostel, mess and transport while taking admission.",
+  "url": "https://www.lpu.in/nest/under-graduate/admission-process.php"
+ },
+ "fees": {
+  "text": "LPU publishes programme-wise fees with LPUNEST scholarship amounts on each programme's fee and scholarship page.",
+  "url": "https://www.lpu.in/admission/admissions.php"
+ },
+ "checked": "2026-11-25",
+ "title": "LPU Punjab: Admission 2027, Fees, Placements | MyUniMentor",
+ "desc": "Lovely Professional University (LPU) admission 2027: NAAC A++, NIRF 2025 rank 31, LPUNEST routes and scholarships, MBA median package and hostels."
+}

@@ -1,0 +1,74 @@
+{
+ "slug": "dit-university",
+ "short": "DITU",
+ "official": "https://www.dituniversity.edu.in",
+ "basics": {
+  "founded": "2013 as a university (began in 1998 as Dehradun Institute of Technology)",
+  "type": "Private state university under the DIT University Act (Uttarakhand Act No. 10 of 2012)",
+  "ugc": "UGC-recognised state private university",
+  "campus": "Mussoorie Diversion Road, Makkawala, Dehradun",
+  "other": "Programmes in engineering, architecture, pharmacy, management, sciences, design, liberal arts and nursing"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [
+   [
+    "Pharmacy",
+    83
+   ]
+  ]
+ },
+ "naac": {
+  "grade": "A",
+  "year": "2023",
+  "score": "3.19 out of 4"
+ },
+ "placements": {
+  "source": "NIRF 2025 engineering data submitted by DIT University",
+  "url": "https://www.dituniversity.edu.in/uploads/images/67af037769daa1739522935.pdf",
+  "batch": "2023-24",
+  "rows": [
+   [
+    "B.Tech (4-year)",
+    615,
+    310,
+    500000
+   ]
+  ]
+ },
+ "admission": [
+  [
+   "B.Tech",
+   "Class 12 with Physics and Mathematics (55–60% aggregate depending on branch)",
+   "Merit counselling on JEE Main rank, merit counselling on Class 12 marks, or direct admission for board toppers (10% of seats)"
+  ],
+  [
+   "B.Arch",
+   "As per Council of Architecture rules",
+   "NATA"
+  ],
+  [
+   "Other UG programmes",
+   "Class 12, as per programme",
+   "Merit in Class 12; CUET scores count for scholarships"
+  ]
+ ],
+ "admission_src": "https://www.dituniversity.edu.in/admissions/admission-procedure",
+ "scholarships": {
+  "year": "2026-27",
+  "text": "First-year merit scholarships on tuition: 100% for 95% and above in Class 12 (PCM/relevant subjects) or a JEE rank up to 50,000; 50% for 90–95% or JEE rank 50,001–80,000; 25% for 80–90% or JEE rank 80,001–1,00,000. There is also a 25% tuition scholarship for students from Uttarakhand and Himalayan states.",
+  "url": "https://www.dituniversity.edu.in/eligibility-detail/btech-computer-science-and-engineering"
+ },
+ "hostel": {
+  "text": "On-campus accommodation and transport; fees are listed on the university's hostel and transport fee page.",
+  "url": "https://www.dituniversity.edu.in"
+ },
+ "fees": {
+  "text": "For 2026-27, first-year fee for B.Tech CSE is ₹3,82,600 (two instalments of ₹1,91,300), before scholarships. Uttarakhand and Himalayan state students pay ₹3,22,826 after the 25% state scholarship.",
+  "url": "https://www.dituniversity.edu.in/eligibility-detail/btech-computer-science-and-engineering",
+  "year": "2026-27"
+ },
+ "checked": "2026-11-25",
+ "title": "DIT University Dehradun: Admission 2027, Fees | MyUniMentor",
+ "desc": "DIT University Dehradun admission 2027: NAAC A, median B.Tech package ₹5 lakh (2023-24), JEE and merit routes, 2026-27 fees and scholarships."
+}
