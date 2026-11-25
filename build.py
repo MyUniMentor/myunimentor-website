@@ -1159,7 +1159,8 @@ def build_profile():
               "address": {"@type": "PostalAddress", "addressLocality": "Dehradun", "addressRegion": "Uttarakhand", "addressCountry": "IN"},
               "nationality": {"@type": "Country", "name": "India"},
               "alumniOf": [{"@type": "EducationalOrganization", "name": "Olympus High", "address": "Dehradun"}, {"@type": "CollegeOrUniversity", "name": "Sridev Suman Uttarakhand University"}],
-              "hasCredential": [{"@type": "EducationalOccupationalCredential", "name": "Certification in applied AI", "recognizedBy": {"@type": "Organization", "name": x}} for x in ("Vanderbilt University", "IBM", "Lund University")],
+              "hasCredential": [{"@type": "EducationalOccupationalCredential", "name": n_, "credentialCategory": "certificate", "dateCreated": d_, "recognizedBy": {"@type": "Organization", "name": x}}
+                                for n_, x, d_ in (("Prompt Engineering for ChatGPT", "Vanderbilt University", "2025-05"), ("Generative AI: Introduction and Applications", "IBM", "2025-06"))],
               "knowsAbout": ["Career counselling", "University admissions in India", "Choosing a stream after Class 10", "Entrance exams (CUET, JEE, NEET, CLAT)", "Career guidance seminars"],
               "sameAs": ["https://www.linkedin.com/in/omgarg/", "https://www.instagram.com/theomgarg"]}
     ld = {"@context": "https://schema.org", "@type": "ProfilePage", "url": "https://myunimentor.in/omgarg", "name": "Om Garg", "dateModified": "2026-11-25T15:00:00+05:30", "primaryImageOfPage": {"@id": "https://myunimentor.in/omgarg#photo"}, "mainEntity": person}
@@ -1215,9 +1216,8 @@ def build_profile():
   <ul class="cred-list" data-reveal style="--d:1">
     <li class="cr-school"><i aria-hidden="true"></i><strong>Olympus High, Dehradun</strong><span>School alumnus</span></li>
     <li class="cr-uni"><i aria-hidden="true"></i><strong>Sridev Suman Uttarakhand University</strong><span>BBA, final year</span></li>
-    <li class="cr-cert"><i aria-hidden="true"></i><strong>Vanderbilt University</strong><span>Certification in applied AI</span></li>
-    <li class="cr-cert"><i aria-hidden="true"></i><strong>IBM</strong><span>Certification in applied AI</span></li>
-    <li class="cr-cert"><i aria-hidden="true"></i><strong>Lund University</strong><span>Certification in applied AI</span></li>
+    <li class="cr-cert"><i aria-hidden="true"></i><strong>Vanderbilt University</strong><span>Prompt Engineering for ChatGPT (2025)</span></li>
+    <li class="cr-cert"><i aria-hidden="true"></i><strong>IBM</strong><span>Generative AI: Introduction and Applications (2025)</span></li>
   </ul>
 </div></section>
 <section class="section tint"><div class="wrap split-grid">

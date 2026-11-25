@@ -440,11 +440,9 @@ Sessions for students, parents and schools.
 
 - Sridev Suman Uttarakhand University BBA, final year 
 
-- Vanderbilt University Certification in applied AI 
+- Vanderbilt University Prompt Engineering for ChatGPT (2025) 
 
-- IBM Certification in applied AI 
-
-- Lund University Certification in applied AI 
+- IBM Generative AI: Introduction and Applications (2025) 
 
 ## Recent sessions 
 Seminars and events Om has led with MyUniMentor. 
