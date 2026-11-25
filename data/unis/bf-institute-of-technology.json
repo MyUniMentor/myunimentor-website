@@ -1,0 +1,16 @@
+{
+ "slug": "bf-institute-of-technology", "short": "BFIT", "official": "https://www.bfitdoon.com",
+ "basics": {"founded": "2002", "type": "Private college group set up in 2002 by the Kartar Educational & Cultural Society; BFIT Technical Campus is approved by AICTE", "ugc": "Courses affiliated to HNB Garhwal (Central) University; BFIT Technical Campus affiliated to Uttarakhand Technical University",
+   "campus": "Chakrata Road, Sudhowala, Dehradun",
+   "other": "B.Tech (Civil, Mechanical, Electrical, ECE, CSE), BBA, BCA, B.Com, B.Sc IT, hotel management, agriculture (B.Sc Horticulture, Forestry) and life sciences"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["B.Tech", "Class 12 with Maths, 45% (40% for SC/ST)", "Class 12 percentage, AIBFEE (BFIT's entrance exam) or group discussion and interview"],
+   ["BBA, BCA, B.Com, B.Sc IT, BHM", "Class 12 (BCA needs Maths)", "Selection committee on merit and entrance"]],
+ "admission_src": "https://www.bfitdoon.com/course/computer-science-engineering-2/",
+ "scholarships": {"year": "", "text": "Scholarships for meritorious and deserving students, decided by the Kartar Educational & Cultural Society.", "url": "https://www.bfitdoon.com/admission/how-to-apply-admission/"},
+ "hostel": {"text": "On-campus residences; apply for a room online.", "url": "https://www.bfitdoon.com/boarding-accommodation/"},
+ "fees": {"text": "BFIT publishes a downloadable fee structure for each course. Ask us for the current fee for your course.", "url": "https://www.bfitdoon.com/academic/fee-structure/"},
+ "checked": "2026-11-25",
+ "title": "BFIT Dehradun: B.Tech, BBA Admission 2027 | MyUniMentor",
+ "desc": "BFIT Group of Institutions, Dehradun: B.Tech, BBA, BCA, hotel management and agriculture admission 2027, eligibility, entrance, scholarships and hostels."
+}

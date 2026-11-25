@@ -1848,7 +1848,8 @@ def build_unis():
         top = ([('Founded', b['founded'].split(' (')[0])] if b.get('founded') else []) + ([('NAAC', naac['grade'])] if naac else []) \
             + ([(f"NIRF {nirf['year']}", f"#{ranks[0][1]} {ranks[0][0]}")] if ranks else []) \
             + [('Campuses', u['campuses'].replace(', Uttarakhand', '')) if u.get('campuses') else ('Campus', u['city'])]
-        for extra in [('Type', 'Deemed university' if 'Deemed' in b['type'] else 'Private university'), ('UGC', 'Recognised'), ('Admission', '2027 open')]:
+        is_college = 'university' not in b['type'].lower()
+        for extra in [('Type', 'Deemed university' if 'Deemed' in b['type'] else 'Private college' if is_college else 'Private university'), ('Approved by', 'AICTE') if is_college else ('UGC', 'Recognised'), ('Admission', '2027 open')]:
             if len(top) < 4: top.insert(-1, extra)
         facts = ''.join(f'<div><dt>{k}</dt><dd>{e(str(v))}</dd></div>' for k, v in top)
         glance = [('Type', b['type']), ('Recognition', b['ugc'])] + ([('NAAC accreditation', naac_txt)] if naac_txt else []) \
@@ -1913,7 +1914,7 @@ def build_unis():
         if naac: hl.append((naac['grade'], 'NAAC grade'))
         if len(ranks) > 1 and len(hl) < 4: hl.append((f"#{ranks[1][1]}", f"NIRF {nirf['year']}, {ranks[1][0]}"))
         if b.get('founded') and len(hl) < 4: hl.append((b['founded'][:4], 'founded'))
-        hl_html = ('<div class="uni-stats">' + ''.join(f'<div><strong>{e(v)}</strong><span>{e(k)}</span></div>' for v, k in hl[:4]) + '</div>') if hl else ''
+        hl_html = ('<div class="uni-stats">' + ''.join(f'<div><strong>{e(v)}</strong><span>{e(k)}</span></div>' for v, k in hl[:4]) + '</div>') if len(hl) > 1 else ''
         tabs = [('overview', 'Overview'), ('placements', 'Placements'), ('admission', 'Admission'), ('fees', 'Fees'), ('scholarships', 'Scholarships'), ('hostel', 'Hostels')] \
             + ([('campus', 'Photos')] if gallery else []) + [('faq', 'FAQs')]
         tabs_html = '<nav class="uni-tabs" aria-label="On this page"><div class="wrap">' + ''.join(f'<a href="#{i}">{t}</a>' for i, t in tabs) + '<a class="uni-tab-cta" href="#enquire">Enquire</a></div></nav>'

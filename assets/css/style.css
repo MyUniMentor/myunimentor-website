@@ -2207,7 +2207,7 @@ table.kv th { width: 34%; text-align: left; font-weight: 600; color: var(--ink);
 .uni-tabs .uni-tab-cta:hover { background: var(--ink); color: #fff; }
 .uni-body [id], #faq { scroll-margin-top: 9rem; }
 .uni-body.section { padding-top: 2.6rem; }
-.uni-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .8rem; margin: 0 0 2.4rem; }
+.uni-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .8rem; margin: 0 0 2.4rem; }
 .uni-stats div { background: var(--card, #fff); border: 1px solid var(--line); border-radius: 20px; padding: 1.1rem 1.2rem 1rem; position: relative; overflow: hidden; }
 .uni-stats div::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--cyan); }
 .uni-stats strong { display: block; white-space: nowrap; font: 800 clamp(1.45rem, 1.1rem + .9vw, 1.9rem)/1.1 var(--f-display); color: var(--ink); letter-spacing: -.02em; }

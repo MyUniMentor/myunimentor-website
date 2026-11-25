@@ -1,0 +1,16 @@
+{
+ "slug": "roorkee-institute-of-technology", "short": "RIT Roorkee", "official": "https://ritroorkee.com",
+ "basics": {"founded": null, "type": "Private engineering college run by the Himalayan Charitable Trust, approved by AICTE", "ugc": "B.Tech, BBA and MBA degrees awarded by Veer Madho Singh Bhandari Uttarakhand Technical University; allied health affiliated to HNB Uttarakhand Medical Education University",
+   "campus": "Roorkee, Uttarakhand",
+   "other": "B.Tech (CSE, CSE AI & ML, ECE, Electrical, Civil, Mechanical), BBA, MBA, pharmacy and allied health"},
+ "nirf": null, "naac": {"grade": "A++", "year": null, "score": "CGPA 3.62, on NAAC's list of 14 August 2025"}, "placements": null,
+ "admission": [["B.Tech", "Class 12 with Physics, Chemistry and Maths, 50% (60% in PCM for Mechanical)", "Online entrance test in Physics, Chemistry and Maths, sometimes an interview; seats on merit. Lateral entry for diploma and B.Sc holders"],
+   ["BBA, MBA, allied health", "As per programme", "RIT admission process"]],
+ "admission_src": "https://ritroorkee.com/courses/b-tech-electrical-engineering/",
+ "scholarships": {"year": "2026-27", "text": "Scholarships for high scorers in JEE Main and Class 12, including the merit-based Founder's Scholarship, plus help with education loans.", "url": "https://ritroorkee.com/courses/b-tech-civil-engineering/"},
+ "hostel": {"text": "Hostel and mess cost ₹80,000 to ₹1,20,000 a year.", "url": "https://ritroorkee.com/is-rit-roorkee-good/", "year": "2026-27"},
+ "fees": {"text": "Annual tuition for 2026-27: B.Tech Civil and Mechanical ₹1,09,900, B.Tech CSE ₹1,59,900 and B.Tech CSE (AI & ML) ₹1,69,900.", "url": "https://ritroorkee.com/is-rit-roorkee-good/", "year": "2026-27"},
+ "checked": "2026-11-25",
+ "title": "RIT Roorkee: B.Tech Admission 2027, Fees | MyUniMentor",
+ "desc": "Roorkee Institute of Technology: NAAC A++ (3.62), B.Tech admission 2027 through its entrance test, 2026-27 fees, hostel costs, JEE and Class 12 scholarships."
+}

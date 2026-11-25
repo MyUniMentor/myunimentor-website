@@ -1,0 +1,15 @@
+{
+ "slug": "himalayan-institute-of-technology", "short": "HIT", "official": "https://hitdoon.com",
+ "basics": {"founded": null, "type": "Private college group with three campuses in Dehradun, approved by AICTE", "ugc": "Courses affiliated to Uttarakhand Technical University, HNB Garhwal (Central) University and Sri Dev Suman Uttarakhand University",
+   "campus": "Three campuses in Dehradun",
+   "other": "Hotel management (BHM, diploma), BBA, MBA, B.Sc Agriculture and Forestry, BCA, B.Sc IT, B.Com, B.Sc Biotech, M.Sc and M.Com"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["BHM, BBA, BCA, B.Com, B.Sc (Agriculture, Forestry, IT, Biotech)", "Class 12 as per the affiliating university", "Apply online; admission as per the affiliating university's rules"],
+   ["MBA, M.Sc, M.Com", "Graduation as per the affiliating university", "Apply online; admission as per the affiliating university's rules"]],
+ "admission_src": "https://hitdoon.com/submit",
+ "scholarships": null, "hostel": null,
+ "fees": {"text": "HIT shares course fees on enquiry. Ask us for the current fee for your course.", "url": "https://hitdoon.com/online-form"},
+ "checked": "2026-11-25",
+ "title": "HIT Dehradun: BHM, BBA, Agriculture Admission 2027",
+ "desc": "Himalayan Institute of Technology, Dehradun: hotel management, BBA, B.Sc Agriculture, BCA and MBA admission 2027, affiliations and free admission guidance."
+}
