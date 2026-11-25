@@ -333,6 +333,7 @@ def page(fname, title, desc, active, body, schema=''):
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon-v2.png"><link rel="manifest" href="site.webmanifest"><meta name="theme-color" content="#0E2540">
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/figtree-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+{'<link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>' if fname in ('account.html', 'test.html', 'admin.html') else ''}
 <link rel="stylesheet" href="assets/css/style.min.css?v={VER}">{'<link rel="stylesheet" href="assets/css/app.min.css?v={VER}">' if fname in NOINDEX else ''}
 <script type="speculationrules">{{"prefetch":[{{"where":{{"and":[{{"href_matches":"/*"}},{{"not":{{"href_matches":"/assets/*"}}}}]}},"eagerness":"moderate"}}]}}</script>
 </head>
