@@ -1,0 +1,16 @@
+{
+ "slug": "cgc-university", "short": "CGC University", "official": "https://www.cgcuniversity.in",
+ "basics": {"founded": "2025", "type": "State private university established by Punjab Act No. 11 of 2025, sponsored by the Chandigarh Educational Society", "ugc": "Recognised under Section 2(f) of the UGC Act, 1956",
+   "campus": "70-acre campus at Jhanjeri, Kharar, Mohali (Punjab)",
+   "other": "Grew out of Chandigarh Group of Colleges, Jhanjeri (founded 2012), which was accredited NAAC A+ (CGPA 3.46). Engineering, management, computing, law, liberal arts, health sciences, pharmacy and more"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["B.Tech", "Class 12 with Physics, Maths, Chemistry or another listed subject; 60% (55% for reserved categories)", "CGCUET (CGC University's entrance and scholarship test) is required for B.Tech CSE and its specialisations; JEE Main and CUET scores also count for scholarships"],
+   ["Other UG and PG programmes", "As per programme", "CGC University admission process; scholarships through CGCUET, JEE Main or CUET"]],
+ "admission_src": "https://www.cgcuniversity.in/course/btech/",
+ "scholarships": {"year": "2027-28", "text": "Scholarships of up to 100% on CGCUET score, JEE Main rank (B.Tech) or CUET percentile.", "url": "https://admissions.cgcuniversity.in/"},
+ "hostel": {"text": "On-campus hostels; the hostel fee includes mess charges, and residents can use the gym free.", "url": "https://www.cgcuniversity.in/faq"},
+ "fees": {"text": "CGC University lists fees programme-wise. Ask us for the current fee for your course.", "url": "https://www.cgcuniversity.in/course/btech/"},
+ "checked": "2026-11-25",
+ "title": "CGC University Mohali: Admission 2027, B.Tech | MyUniMentor",
+ "desc": "CGC University, Mohali (Jhanjeri): B.Tech admission through CGCUET, JEE Main or CUET, eligibility, scholarships up to 100%, hostels and free guidance."
+}

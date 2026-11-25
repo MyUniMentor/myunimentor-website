@@ -1,0 +1,18 @@
+{
+ "slug": "swami-rama-himalayan-university", "short": "SRHU", "official": "https://srhu.edu.in",
+ "basics": {"founded": "2013", "type": "Private university under Section 2(f) of the UGC Act, enacted by Uttarakhand Act No. 12 of 2013, promoted by the Himalayan Institute Hospital Trust", "ugc": "Recognised under Section 2(f) of the UGC Act, 1956",
+   "campus": "Swami Ram Nagar, Jolly Grant, Dehradun",
+   "other": "Medical (Himalayan Institute of Medical Sciences, with a 1,200-bed teaching hospital), nursing, pharmacy, allied health, sciences, engineering and management"},
+ "nirf": {"year": 2025, "ranks": [], "bands": [["University", "101–150"], ["Overall", "151–200"]]},
+ "naac": {"grade": "A+", "year": null}, "placements": null,
+ "admission": [["B.Tech CSE", "Class 12 with Physics, Maths and Chemistry/Computer Science/IT, 50% aggregate", "Apply online on the SRHU website; lateral entry to 2nd year with a diploma or B.Sc (50%)"],
+   ["B.Sc Nursing", "Class 12 with Physics, Chemistry, Biology and English; minimum age 17", "SRHU Nursing Entrance Examination (NEE-2026), then counselling"],
+   ["MBBS", "As per NEET rules", "NEET, through counselling"]],
+ "admission_src": "https://srhu.edu.in/hsst-b-tech-cse/",
+ "scholarships": {"year": "2026-27", "text": "Merit scholarships of up to 100% for Class 12 scores above 90%, with smaller merit scholarships from 70%. A merit-cum-means scheme gives 50% tuition support for family income below ₹5 lakh (minimum 70% marks).", "url": "https://srhu.edu.in/hsst-b-tech-cse/"},
+ "hostel": {"text": "Hostels are available on campus for students.", "url": "https://srhu.edu.in/admission/"},
+ "fees": {"text": "B.Tech CSE costs ₹9,35,640 for four years: ₹1,65,640 for the first semester and ₹1,10,000 for each semester after that.", "url": "https://srhu.edu.in/hsst-b-tech-cse/", "year": "2026 intake"},
+ "checked": "2026-11-25",
+ "title": "SRHU Dehradun: Admission 2027, Fees | MyUniMentor",
+ "desc": "Swami Rama Himalayan University, Jolly Grant, Dehradun: NAAC A+, NIRF 2025 university band 101–150, B.Tech, nursing and MBBS admission, fees, scholarships."
+}

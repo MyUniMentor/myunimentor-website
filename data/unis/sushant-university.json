@@ -1,0 +1,17 @@
+{
+ "slug": "sushant-university", "short": "Sushant", "official": "https://sushantuniversity.edu.in",
+ "basics": {"founded": "2012", "type": "Private university under the Haryana Private Universities Act, 2006 (formerly Ansal University)", "ugc": "UGC-recognised; NAAC accredited",
+   "campus": "Gurugram, Haryana",
+   "other": "Eight schools: architecture, design, law, management, hospitality, engineering, health sciences, and planning and development"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["B.Arch", "Class 12 with Physics and Maths plus one more listed subject, or a 10+3 diploma with Maths", "A recognised architecture aptitude test: NATA or JEE Main (Paper 2)"],
+   ["B.Tech CSE & AI (with Vedam School of Technology)", "Class 12 (2025 or 2026) with PCM, more than 50% in PCM and overall", "Sushant University admission process"],
+   ["Design, law, management, hospitality and other programmes", "As per programme", "Sushant University admission process"]],
+ "admission_src": "https://sushantuniversity.edu.in/school-of-art-and-architecture/programmes/undergraduate/bachelor-of-architecture-barch",
+ "scholarships": {"year": "2026", "text": "Merit scholarships from the second semester onwards, based on the previous semester's results, with a minimum CGPA of 7.0 and 75% attendance.", "url": "https://sushantuniversity.edu.in/academics/scholarship-scheme"},
+ "hostel": {"text": "Separate hostels for boys and girls on campus, with AC triple sharing and attached bathrooms, on a first-come, first-served basis.", "url": "https://sushantuniversity.edu.in/admin-assets/uploaddata/Final-SSR.pdf"},
+ "fees": {"text": "Sushant lists course fees programme-wise; hostel and mess are charged separately. Ask us for the current fee for your course.", "url": "https://sushantuniversity.edu.in/academic-partner/vedam"},
+ "checked": "2026-11-25",
+ "title": "Sushant University Gurugram: Admission 2027 | MyUniMentor",
+ "desc": "Sushant University, Gurugram (formerly Ansal University): B.Arch through NATA or JEE, B.Tech, design, law and management admission, scholarships, hostels."
+}

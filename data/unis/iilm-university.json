@@ -1,0 +1,17 @@
+{
+ "slug": "iilm-university", "short": "IILM", "official": "https://iilm.edu",
+ "basics": {"founded": null, "type": "Private university", "ugc": "UGC-recognised private university",
+   "campus": "Knowledge Park II, Greater Noida (Uttar Pradesh); IILM also has a university campus in Gurugram",
+   "other": "Management (BBA, MBA, PGDM), engineering (B.Tech CSE, ECE, AI & Robotics, IT, Mechanical), law, journalism, psychology and liberal arts"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["B.Tech (CSE, ECE, AI & Robotics, IT, ME)", "Class 12 with 50% (45% for SC/ST) in the required subject combination, passed without grace marks", "JEE or CUET rank, or IILM's online test and a personal interview"],
+   ["BBA, BA LL.B., BBA LL.B. and other UG", "Class 12 with 50%", "IILM's admission process and interview"],
+   ["MBA", "Graduation", "Shortlisting on CAT, MAT, XAT, CMAT or NMAT, then a personal interview"]],
+ "admission_src": "https://iilm.edu/greater-noida/eligibility/",
+ "scholarships": {"year": "2026", "text": "B.Tech merit scholarships of 10% to 30% of tuition based on JEE Main score, merit-cum-means tuition waivers for UG, a 20% sports scholarship, and MBA scholarships of up to 100% on CAT or XAT percentile. The 2026 scholarship deadline was 31 August.", "url": "https://iilm.edu/blog/iilm-university-fees-scholarships-financial-aid-a-complete-guide-2026/"},
+ "hostel": {"text": "Separate on-campus hostels for boys and girls.", "url": "https://iilm.edu/greater-noida/faq/"},
+ "fees": {"text": "IILM lists fees programme-wise. Ask us for the current fee for your course.", "url": "https://iilm.edu/blog/iilm-university-fees-scholarships-financial-aid-a-complete-guide-2026/"},
+ "checked": "2026-11-25",
+ "title": "IILM University Greater Noida: Admission 2027 | MyUniMentor",
+ "desc": "IILM University, Greater Noida: B.Tech, BBA, law and MBA admission 2027, eligibility, JEE-based scholarships, hostels and free admission guidance."
+}
