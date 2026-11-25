@@ -465,9 +465,10 @@ def hero_slides():
     imgs, dots = '', ''
     for i, (k, kind) in enumerate(picks):
         x = PHOTOS[k]; cap = f"{kind}, {x['school']}, {city.get(x['school'], '')}".rstrip(', ')
-        src = f"assets/photos/{k}-sm.webp"
-        imgs += (f'<img src="{src}" alt="" width="{x["tw"]}" height="{x["th"]}" fetchpriority="high" decoding="async" class="on" data-cap="{e(cap)}">' if i == 0
-                 else f'<img data-src="{src}" alt="" width="{x["tw"]}" height="{x["th"]}" decoding="async" data-cap="{e(cap)}">')
+        # hero crops (4:3.2, as displayed) at 480 and 720px; the first loads now, the rest one by one before they show
+        src = f"assets/photos/{k}-hero720.webp"; ss = f"assets/photos/{k}-hero480.webp 480w, {src} 720w"; sz = "(max-width: 900px) 92vw, 520px"
+        imgs += (f'<img src="{src}" srcset="{ss}" sizes="{sz}" alt="" width="720" height="576" fetchpriority="high" decoding="async" class="on" data-cap="{e(cap)}">' if i == 0
+                 else f'<img data-src="{src}" data-srcset="{ss}" sizes="{sz}" alt="" width="720" height="576" decoding="async" data-cap="{e(cap)}">')
         dots += f'<button class="hs-dot{" on" if i == 0 else ""}" aria-label="Photo {i + 1}" data-i="{i}"></button>'
     first = f"Career Summit, {PHOTOS[picks[0][0]]['school']}, {city.get(PHOTOS[picks[0][0]]['school'], '')}"
     return f'''<figure class="hero-photo hero-slides">{imgs}<figcaption><span class="live-dot"></span><span class="hs-cap">{e(first)}</span></figcaption><div class="hs-dots">{dots}</div></figure>'''

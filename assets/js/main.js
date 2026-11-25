@@ -263,15 +263,18 @@ try { const r = new URLSearchParams(location.search).get('ref'); if (r && /^u[0-
   const imgs = [...f.querySelectorAll('img')], dots = [...f.querySelectorAll('.hs-dot')], cap = f.querySelector('.hs-cap');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let i = 0, t;
-  const load = () => imgs.forEach(im => { if (im.dataset.src) { im.src = im.dataset.src; im.removeAttribute('data-src'); } });
+  // fetch a slide only when it is about to show (saves several photos on the first visit)
+  const one = im => { if (im && im.dataset.src) { if (im.dataset.srcset) { im.srcset = im.dataset.srcset; im.removeAttribute('data-srcset'); } im.src = im.dataset.src; im.removeAttribute('data-src'); } };
+  const load = () => one(imgs[(i + 1) % imgs.length]);
   const show = n => {
     i = (n + imgs.length) % imgs.length;
+    one(imgs[i]); one(imgs[(i + 1) % imgs.length]);
     imgs.forEach((im, j) => im.classList.toggle('on', j === i));
     dots.forEach((d, j) => d.classList.toggle('on', j === i));
     if (cap) cap.textContent = imgs[i].dataset.cap || '';
   };
   const play = () => { if (reduce) return; clearInterval(t); t = setInterval(() => show(i + 1), 4500); };
-  dots.forEach((d, j) => d.addEventListener('click', () => { load(); show(j); play(); }));
+  dots.forEach((d, j) => d.addEventListener('click', () => { show(j); play(); }));
   f.addEventListener('mouseenter', () => clearInterval(t)); f.addEventListener('mouseleave', play);
   addEventListener('load', () => setTimeout(() => { load(); play(); }, 1200));
 })();
