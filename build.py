@@ -1153,7 +1153,7 @@ def build_profile():
               "worksFor": {"@type": "EducationalOrganization", "name": "MyUniMentor", "url": "https://myunimentor.in/"},
               "url": "https://myunimentor.in/omgarg",
               "image": [{"@type": "ImageObject", "@id": "https://myunimentor.in/omgarg#photo", "url": "https://myunimentor.in/assets/img/om-garg.jpg", "contentUrl": "https://myunimentor.in/assets/img/om-garg.jpg",
-                         "width": 640, "height": 800, "caption": "Om Garg, Founder of MyUniMentor", "creditText": "MyUniMentor", "copyrightNotice": "© MyUniMentor Edtech LLP"}]
+                         "width": 640, "height": 800, "caption": "Om Garg, Founder of MyUniMentor", "creditText": "MyUniMentor", "copyrightNotice": "© MyUniMentor Edtech LLP", "creator": {"@id": "https://myunimentor.in/#org"}, "acquireLicensePage": "https://myunimentor.in/contact"}]
                        + [f"https://myunimentor.in/assets/photos/{k}.webp" for k in OM_PHOTOS[:3]],
               "homeLocation": {"@type": "Place", "name": "Dehradun, Uttarakhand, India"},
               "address": {"@type": "PostalAddress", "addressLocality": "Dehradun", "addressRegion": "Uttarakhand", "addressCountry": "IN"},
