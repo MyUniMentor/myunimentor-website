@@ -152,5 +152,10 @@
   "city": "Dehradun",
   "region": "Uttarakhand",
   "short": "UPES"
+ },
+ {
+  "name": "Uttaranchal University",
+  "city": "Dehradun",
+  "region": "Uttarakhand"
  }
 ]
