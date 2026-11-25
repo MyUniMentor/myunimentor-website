@@ -2258,3 +2258,16 @@ table.kv th { width: 34%; text-align: left; font-weight: 600; color: var(--ink);
 @media (prefers-reduced-motion: no-preference) { html:has(.uni-tabs) { scroll-behavior: smooth; } }
 /* While a student is answering the test or the career check, the Call/WhatsApp bar would cover Back and Next */
 body:has(.psy-stage) .mbar, body:has(.cc-stage) .mbar { display: none; }
+
+/* Spatial section: label the shape to rotate, hint under the question, worked example before the section */
+.psy-qhint { display: block; margin-top: .35rem; font: 500 .92rem/1.4 var(--f-body); color: var(--ink-2); }
+.psy-base { flex-direction: column; align-items: center; gap: .35rem; }
+.psy-base small { font-size: .8rem; font-weight: 700; color: var(--ink-2); }
+.psy-spa-ex { margin: 1rem 0 .4rem; padding: 1rem; border-radius: 16px; background: var(--sky); }
+.psy-spa-ex p { margin: 0 0 .8rem; font-size: .95rem; }
+.psy-spa-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+.psy-spa-row figure { margin: 0; background: #fff; border: 1.5px solid #DCE7EE; border-radius: 14px; padding: .5rem; text-align: center; color: var(--ink); }
+.psy-spa-row svg { width: 64px; height: 64px; }
+.psy-spa-row figcaption { font-size: .8rem; font-weight: 700; color: var(--ink-2); }
+.psy-spa-row .ok { border-color: #2E9E6A; } .psy-spa-row .ok figcaption { color: #1F7A50; }
+.psy-spa-row .no { border-color: #E59A90; } .psy-spa-row .no figcaption { color: #B3402F; }

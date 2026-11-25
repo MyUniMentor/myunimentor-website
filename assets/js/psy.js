@@ -141,6 +141,11 @@ const SPA_SHAPES = [
   { c: [[0, 0], [1, 0], [2, 0], [2, 1], [3, 1], [1, 2]], ok: 2, opts: [['f', 0], ['f', 1], ['t', 1], ['f', 3]] }
 ].map(s => ({ c: s.c, opts: s.opts.map(([m, k]) => m === 't' ? turn(s.c, k) : turn(flip(s.c), k)), a: s.opts.findIndex(o => o[0] === 't') }));
 
+// Worked example shown before the spatial section: what "rotated" means, and why a mirror image is wrong
+const SPA_EX = [[0, 0], [0, 1], [0, 2], [1, 2]];
+const SPA_EXAMPLE = `<div class="psy-spa-ex"><p>In each question you see a shape in a box. Exactly one answer is the <b>same shape, just rotated</b>, like turning a card on a table. The others are <b>mirror images</b>: they look alike, but no amount of turning makes them match.</p>
+  <div class="psy-spa-row"><figure>${cellsSvg(SPA_EX)}<figcaption>Shape</figcaption></figure><figure class="ok">${cellsSvg(turn(SPA_EX, 1))}<figcaption>Rotated: correct</figcaption></figure><figure class="no">${cellsSvg(flip(SPA_EX))}<figcaption>Mirror: wrong</figcaption></figure></div></div>`;
+
 const APT = [
   { k: 'num', n: 'Numerical reasoning', what: 'working with numbers, percentages, ratios and data', time: 150,
     tip: 'Do 10 minutes of mental maths and table-or-graph questions every day.',
@@ -171,7 +176,7 @@ const APT = [
       { q: 'Which figure comes next?', seq: [F.nest('sq', 'tl'), F.nest('ci', 'bl'), F.nest('sq', 'br'), F.nest('ci', 'tr')], o: [F.nest('ci', 'tl'), F.nest('sq', 'tl'), F.nest('sq', 'tr'), F.nest('sq', 'bl')], a: 1 }] },
   { k: 'spa', n: 'Spatial reasoning', what: 'picturing shapes and turning them in your mind', time: 120,
     tip: 'Sketch objects from different angles, try 3D puzzles, or learn a free 3D design app.',
-    items: SPA_SHAPES.map(s => ({ q: 'Which shape is the first one, only turned? (Turned, never flipped.)', base: cellsSvg(s.c), o: s.opts.map(cellsSvg), a: s.a })) },
+    items: SPA_SHAPES.map(s => ({ q: 'Which answer is the shape in the box, just rotated?<span class="psy-qhint">Spin it around in your mind. A mirror image does not count.</span>', base: cellsSvg(s.c), o: s.opts.map(cellsSvg), a: s.a })) },
   { k: 'mec', n: 'Mechanical reasoning', what: 'understanding gears, levers, forces and machines', time: 120,
     tip: 'Take things apart (safely) and connect what you see with your Physics chapters on force and motion.',
     items: [
@@ -491,14 +496,14 @@ function aptitude() {
   if (S.left[sec.k] == null) S.left[sec.k] = sec.time;
   if (S.step < 0 || S.left[sec.k] <= 0 && S.step < 0) {
     const first = S.sec === 0 ? `<p class="psy-k">Part 3 of 6 · six timed sections</p><h2>Aptitude</h2><p>${PARTS[2].intro}</p><hr>` : '';
-    frame(`<div class="psy-intro">${first}<p class="psy-k">Section ${S.sec + 1} of ${APT_ALL.length}</p><h3>${sec.n}</h3><p>Tests ${sec.what}. ${sec.k === 'spd' ? `You will see pairs of codes. Tap <b>Same</b> if they match exactly, <b>Different</b> if they don’t. Go as fast as you can without mistakes. Wrong answers count against you. Keys: S = same, D = different.` : `${sec.items.length} questions.`}</p>
+    frame(`<div class="psy-intro">${first}<p class="psy-k">Section ${S.sec + 1} of ${APT_ALL.length}</p><h3>${sec.n}</h3><p>Tests ${sec.what}. ${sec.k === 'spd' ? `You will see pairs of codes. Tap <b>Same</b> if they match exactly, <b>Different</b> if they don’t. Go as fast as you can without mistakes. Wrong answers count against you. Keys: S = same, D = different.` : `${sec.items.length} questions.`}</p>${sec.k === 'spa' ? SPA_EXAMPLE : ''}
       <p class="psy-time">Time: ${mmss(sec.time)}</p><button type="button" class="btn btn-cyan btn-lg psy-begin">Start the timer</button></div>`, { nav: false, count: `Aptitude · section ${S.sec + 1} of ${APT_ALL.length}`, bar: S.sec / APT_ALL.length * 100 });
     ROOT.querySelector('.psy-begin').addEventListener('click', () => { S.step = 0; save(); render(); });
     return;
   }
   if (sec.k === 'spd') return speed();
   const i = Math.min(S.step, sec.items.length - 1), it = sec.items[i], ans = S.apt[sec.k] = S.apt[sec.k] || [], cur = ans[i];
-  const fig = it.seq ? `<div class="psy-seq">${it.seq.map(f => `<span>${svg(f)}</span>`).join('')}<span class="psy-qm">?</span></div>` : it.base ? `<div class="psy-seq psy-base"><span>${it.base}</span></div>` : it.fig ? `<div class="psy-mfig">${it.fig}</div>` : '';
+  const fig = it.seq ? `<div class="psy-seq">${it.seq.map(f => `<span>${svg(f)}</span>`).join('')}<span class="psy-qm">?</span></div>` : it.base ? `<div class="psy-seq psy-base"><span>${it.base}</span><small>This shape</small></div>` : it.fig ? `<div class="psy-mfig">${it.fig}</div>` : '';
   const pic = !!(it.seq || it.base);
   frame(`<div class="psy-q"><p class="psy-stmt psy-stmt-s">${it.q}</p>${fig}
     <div class="psy-choices${pic ? ' psy-pics' : ''}">${it.o.map((o, v) => `<button type="button" class="psy-opt${cur === v ? ' on' : ''}" data-v="${v}"><i aria-hidden="true">${'ABCD'[v]}</i>${pic ? (o.startsWith('<svg') ? o : svg(o)) : o}</button>`).join('')}</div>
