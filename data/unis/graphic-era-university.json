@@ -15,12 +15,21 @@
    [
     "University",
     48
+   ],
+   [
+    "Engineering",
+    52
+   ],
+   [
+    "Overall",
+    72
    ]
   ]
  },
  "naac": {
   "grade": "A+",
-  "year": "2022"
+  "year": "2022",
+  "score": "3.29 out of 4, valid until 27 August 2027"
  },
  "placements": {
   "source": "NIRF 2025 data submitted by Graphic Era University",

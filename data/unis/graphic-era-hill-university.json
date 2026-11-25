@@ -1,0 +1,45 @@
+{
+ "slug": "graphic-era-hill-university",
+ "short": "GEHU",
+ "official": "https://gehu.ac.in",
+ "basics": {
+  "founded": "2011",
+  "type": "Private university under Uttarakhand Act No. 12 of 2011, run by the Graphic Era Educational Society",
+  "ugc": "Recognised under Section 2(f) of the UGC Act, 1956",
+  "campus": "Three campuses: Dehradun (Bell Road, Clement Town), Bhimtal (Sat Tal Road, Nainital) and Haldwani (Bareilly Road)",
+  "other": "AICTE-approved technical programmes; CSE, ME and ECE at Bhimtal accredited by NBA. Graphic Era Hill University is separate from Graphic Era (Deemed to be University)"
+ },
+ "nirf": null,
+ "naac": null,
+ "placements": null,
+ "admission": [
+  [
+   "B.Tech",
+   "Class 12 with Physics, Chemistry and Mathematics",
+   "Merit in Class 12 (PCM), JEE Main percentile or CUET score; GECET is needed for some technical courses"
+  ],
+  [
+   "Most other UG and PG programmes",
+   "Class 12 or graduation, as per course",
+   "Merit in the qualifying exam; GECET for scholarships"
+  ]
+ ],
+ "admission_src": "https://www.gehu.ac.in/lp/admissions/",
+ "scholarships": {
+  "year": "2026",
+  "text": "Merit scholarships for the whole course, based on Class 12 marks, JEE Main percentile or CUET score (for B.Tech CSE at Dehradun, ₹6,000 to ₹45,000 per semester). GECET can give up to 100% tuition waiver. Girls get 10% extra, hill-state domiciles a 25% concession and defence wards 5%.",
+  "url": "https://gehu.ac.in/fee/ddn/btech-cse"
+ },
+ "hostel": {
+  "text": "Student accommodation on the Dehradun and Bhimtal campuses.",
+  "url": "https://gehu.ac.in/"
+ },
+ "fees": {
+  "text": "For the 2026 intake, first-year tuition for B.Tech CSE is ₹2,03,700 per semester at Dehradun for all-India students (₹1,52,775 for Uttarakhand students) and ₹1,27,100 per semester at Bhimtal, before scholarships. Each campus and course has its own fee sheet.",
+  "url": "https://gehu.ac.in/fee",
+  "year": "2026 intake"
+ },
+ "checked": "2026-11-25",
+ "title": "Graphic Era Hill University: Admission 2027 | MyUniMentor",
+ "desc": "Graphic Era Hill University (GEHU) Dehradun, Bhimtal and Haldwani: admission 2027, B.Tech routes, 2026 fees, scholarships and free admission guidance."
+}

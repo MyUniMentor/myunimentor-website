@@ -1,15 +1,15 @@
 {
  "": {
   "date": "2026-11-25",
-  "hash": "b45ca7feae45e64d91ae02d2447531db"
+  "hash": "aabe88cf4879144bb3d8637b48d542ef"
  },
  "about": {
   "date": "2026-11-25",
-  "hash": "402543eb128d1ad3aa8edebf4ad9cf28"
+  "hash": "5fe5ca7dd86059c69421a3dd5e0a2d54"
  },
  "bba-after-12th": {
   "date": "2026-11-25",
-  "hash": "fbc46fbca1d64f04d228f4b20ac3469d"
+  "hash": "f409e4ac7fcc7e8c4b2b357c6f594994"
  },
  "bba-vs-bcom": {
   "date": "2026-11-20",
@@ -17,15 +17,15 @@
  },
  "bca-after-12th": {
   "date": "2026-11-25",
-  "hash": "128c8e95b8cdccae157ec2909a612486"
+  "hash": "e9c6876934f6f0a204f7abcc93004cc4"
  },
  "bcom-hons-after-12th": {
   "date": "2026-11-25",
-  "hash": "aae60d61bdc428d0484beb406b0d51cb"
+  "hash": "176db6ef4cb8f6a0e4988d2461983a51"
  },
  "bdes-after-12th": {
   "date": "2026-11-25",
-  "hash": "757f59cc2bffcb8d4a3b52ede7e2d1c8"
+  "hash": "d94eed6e51d02e01f0d30bcc2b0ca03a"
  },
  "blog": {
   "date": "2026-11-24",
@@ -33,7 +33,7 @@
  },
  "btech-cse-after-12th": {
   "date": "2026-11-25",
-  "hash": "dc650c371c04111820df64db754f7a5a"
+  "hash": "c07614b97b8871bb26cf941de35a7f82"
  },
  "career-check": {
   "date": "2026-11-24",
@@ -41,11 +41,11 @@
  },
  "career-counselling-dehradun": {
   "date": "2026-11-25",
-  "hash": "be6c08bdd7e38ba475ac284a43173e8c"
+  "hash": "ebddac82563f4b2ed8d3deb3823d94ab"
  },
  "career-counselling-rishikesh": {
   "date": "2026-11-25",
-  "hash": "b7d30e78344d5aa22ddb05539c20db51"
+  "hash": "7a4b2f9b0598a6f5aac26c5d9ca41442"
  },
  "career-counselling-roorkee": {
   "date": "2026-11-23",
@@ -53,11 +53,11 @@
  },
  "career-counselling-saharanpur": {
   "date": "2026-11-25",
-  "hash": "df3e23876f879522897d640fa4349ad7"
+  "hash": "09fe366ed16f17f9d1c9fc290579f80e"
  },
  "career-summit": {
   "date": "2026-11-25",
-  "hash": "90c2af036f8dcf8da70eab5330e65520"
+  "hash": "cd27c43ee529ac825364fcd6221abee5"
  },
  "careers-after-pcb-beyond-mbbs": {
   "date": "2026-11-20",
@@ -73,7 +73,7 @@
  },
  "chandigarh-university": {
   "date": "2026-11-25",
-  "hash": "7b0922c9c57e63616eaa286612a813eb"
+  "hash": "407b7f0fd99446f8b4e2e57f9336cc20"
  },
  "class-12-board-exams-2027": {
   "date": "2026-11-24",
@@ -93,7 +93,7 @@
  },
  "dit-university": {
   "date": "2026-11-25",
-  "hash": "1b48c53556b48df4156e9ede14412d87"
+  "hash": "8a6e05f3648f2b9f3ce7dba5e2f732d5"
  },
  "engineering-branches-explained": {
   "date": "2026-11-20",
@@ -107,9 +107,13 @@
   "date": "2026-11-24",
   "hash": "b8c547caf5107f2842f4f7d2507532ea"
  },
+ "graphic-era-hill-university": {
+  "date": "2026-11-25",
+  "hash": "97aa60702df69f94b98720dd0ba44869"
+ },
  "graphic-era-university": {
   "date": "2026-11-25",
-  "hash": "a057f74ceca0747793d3fe00b2dc1295"
+  "hash": "216069424e01983961b2d5322088ad5d"
  },
  "icse-date-sheet-2027": {
   "date": "2026-11-24",
@@ -125,15 +129,15 @@
  },
  "law-after-12th": {
   "date": "2026-11-25",
-  "hash": "ff31f24e60d804cf0588cdb5665dc766"
+  "hash": "f599502bfce1b4b9d406ddbdd62be2df"
  },
  "lovely-professional-university": {
   "date": "2026-11-25",
-  "hash": "9a4b0b079a068725c901124e096559b8"
+  "hash": "dc5f70a5396326776499a32f8cdc294a"
  },
  "network": {
   "date": "2026-11-25",
-  "hash": "875fdcab86e123e7b21bfb8b970a7344"
+  "hash": "e84ad0b96669940f59bab37af4f8a0a4"
  },
  "omgarg": {
   "date": "2026-11-23",
@@ -157,7 +161,7 @@
  },
  "services-universities": {
   "date": "2026-11-25",
-  "hash": "bd63fdad90c4a8bfd286991bd6647386"
+  "hash": "c609fff117711383bbf6e140c322735a"
  },
  "stream-after-class-10": {
   "date": "2026-11-20",
@@ -169,10 +173,10 @@
  },
  "university-of-petroleum-and-energy-studies": {
   "date": "2026-11-25",
-  "hash": "f73c0455249fbc3a8a80581dc41ed3ed"
+  "hash": "cd84287809c15e1ac68ea2643d2b1319"
  },
  "uttaranchal-university": {
   "date": "2026-11-25",
-  "hash": "df7c528b47da261bcc350e2468beba48"
+  "hash": "11c99537e6541188ce397beb155c8d26"
  }
 }

@@ -162,5 +162,12 @@
   "name": "Sushant University",
   "city": "Gurugram",
   "region": "Haryana"
+ },
+ {
+  "name": "Graphic Era Hill University",
+  "short": "GEHU",
+  "city": "Dehradun",
+  "region": "Uttarakhand",
+  "campuses": "Dehradun, Bhimtal and Haldwani, Uttarakhand"
  }
 ]

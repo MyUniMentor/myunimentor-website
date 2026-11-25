@@ -759,8 +759,8 @@ def build_network():
         f'<p class="org-tags"><span class="tag">Career Summit 2026</span>{"<span class=\'tag tag-lor\'>Letter of recommendation</span>" if s.get("lor") else ""}</p>'
         f'{"<p class=\'org-note\'>" + e(s["note"]) + "</p>" if s.get("note") else ""}</div></li>' for s in SCHOOLS)
     uni_cards = ''.join(
-        f'<li class="org-card uni" data-reveal data-region="{e(u["region"])}" data-search="{e((u["name"] + " " + u.get("short", "") + " " + place(u["city"])).lower())}">{logo("universities", u, "logo logo-card")}'
-        f'<div class="org-body"><h3>{e(u["name"])}{(" <span class=\'short\'>(" + e(u["short"]) + ")</span>") if u.get("short") else ""}</h3><p class="org-meta">{e(place(u["city"]))}</p>'
+        f'<li class="org-card uni" data-reveal data-region="{e(u["region"])}" data-search="{e((u["name"] + " " + u.get("short", "") + " " + place(u["city"]) + " " + u.get("campuses", "")).lower())}">{logo("universities", u, "logo logo-card")}'
+        f'<div class="org-body"><h3>{e(u["name"])}{(" <span class=\'short\'>(" + e(u["short"]) + ")</span>") if u.get("short") else ""}</h3><p class="org-meta">{e(u.get("campuses") or place(u["city"]))}</p>'
         f'{(chr(60) + "a class=" + chr(34) + "uni-more" + chr(34) + " href=" + chr(34) + slug(u["name"]) + ".html" + chr(34) + ">Admission, fees and placements" + chr(60) + "/a>") if slug(u["name"]) in UNI_PAGES else ""}</div></li>' for u in UNIS)
     region_btns = '<button class="fbtn" aria-pressed="true" data-filter="all">All</button>' + ''.join(f'<button class="fbtn" aria-pressed="false" data-filter="{e(r)}">{e(r)}</button>' for r in regions)
     lor_schools = [s for s in SCHOOLS if s.get('lor')]
@@ -1834,8 +1834,11 @@ def build_unis():
         rank_txt = ', '.join(f"{r} in {c}" for c, r in ranks)
         if nirf.get('band'): rank_txt = (rank_txt + '; ' if rank_txt else '') + f"{nirf['band'][1]} band in {nirf['band'][0]}"
         naac_txt = (f"Grade {naac['grade']}" + (f" ({naac['score']})" if naac.get('score') else '') + (f", awarded {naac['year']}" if naac.get('year') else '')) if naac else None
-        top = [('Founded', b['founded'].split(' (')[0]), ('NAAC', naac['grade']) if naac else ('UGC', 'Recognised'),
-               (f"NIRF {nirf.get('year', '')}".strip(), f"#{ranks[0][1]} {ranks[0][0]}" if ranks else '—'), ('Campus', u['city'])]
+        top = [('Founded', b['founded'].split(' (')[0])] + ([('NAAC', naac['grade'])] if naac else []) \
+            + ([(f"NIRF {nirf['year']}", f"#{ranks[0][1]} {ranks[0][0]}")] if ranks else []) \
+            + [('Campuses', u['campuses'].replace(', Uttarakhand', '')) if u.get('campuses') else ('Campus', u['city'])]
+        for extra in [('Type', 'Deemed university' if 'Deemed' in b['type'] else 'Private university'), ('UGC', 'Recognised')]:
+            if len(top) < 4: top.insert(-1, extra)
         facts = ''.join(f'<div><dt>{k}</dt><dd>{e(str(v))}</dd></div>' for k, v in top)
         glance = [('Type', b['type']), ('Recognition', b['ugc'])] + ([('NAAC accreditation', naac_txt)] if naac_txt else []) \
             + ([(f"NIRF {nirf['year']} rank", rank_txt)] if rank_txt else []) + [('Campus', b['campus']), ('Also', b['other']),
@@ -1878,7 +1881,7 @@ def build_unis():
         hero_extra = (f'<div class="uni-hero">{logo("universities", u, "logo logo-tile uni-logo")}<p class="uni-badge">MyUniMentor partner university · Free admission guidance</p></div>'
                       f'<dl class="course-facts">{facts}</dl>'
                       f'<div class="hero-actions uni-actions"><a href="#enquire" class="btn btn-cyan btn-lg">Enquire for admission</a><a href="{wa}" class="btn btn-outline-light btn-lg" target="_blank" rel="noopener">WhatsApp us</a></div>')
-        body = page_hero(f"{name}, {u['city']}", f"Admission 2027, courses, fees, placements and scholarships, from {e(short)}'s own website and NIRF data. Checked {checked}.", "Universities", hero_extra).replace(
+        body = page_hero(name if u.get('campuses') else f"{name}, {u['city']}", f"Admission 2027, courses, fees, placements and scholarships, from {e(short)}'s own website and NIRF data. Checked {checked}.", "Universities", hero_extra).replace(
             '<a href="index.html">Home</a><span aria-hidden="true">/</span><span>Universities</span>', '<a href="index.html">Home</a><span aria-hidden="true">/</span><a href="network.html#universities">Partner universities</a><span aria-hidden="true">/</span><span>' + e(short) + '</span>') + f'''
 <section class="section article-section"><div class="wrap art-grid">
   <article class="article">
