@@ -1167,7 +1167,7 @@ def build_profile():
     sess = ''.join(f'<li data-reveal style="--d:{i}"><span class="when">{a}</span><strong>{b_}</strong><span class="what">{c}</span></li>' for i, (a, b_, c) in enumerate(sessions))
     topics = ["Choosing the right stream after Class 10", "Courses and careers after Class 12", "Entrance exams and how to plan for them", "How to choose the right university", "Sessions for parents on supporting their child's choice"]
     faq_html, faq_schema = faq_block([
-        ("Who is Om Garg?", "Om Garg is the founder of MyUniMentor, a career counselling and admissions guidance organisation based in Dehradun, Uttarakhand. A BBA graduate and Olympus High alumnus, he has guided over 10,000 students, delivered 100+ career seminars and counselled 500+ students one-on-one."),
+        ("Who is Om Garg?", "Om Garg is the founder of MyUniMentor, a career counselling and admissions guidance organisation based in Dehradun, Uttarakhand. A BBA student at Sridev Suman Uttarakhand University and an Olympus High alumnus, he has guided over 10,000 students, delivered 100+ career seminars and counselled 500+ students one-on-one."),
         ("What does Om Garg do?", "Om leads MyUniMentor and works directly with Class 11–12 students and parents on choosing a stream, a course and a university. He also speaks at schools and runs the School Career Guidance Summit."),
         ("Where is Om Garg based?", "Om is based in Dehradun, Uttarakhand, and works with students across India, online and in person."),
         ("How can I invite Om Garg to my school?", "Send an invitation through the MyUniMentor contact page or WhatsApp +91 74175 57070. Career seminars are free for schools.")], "About Om Garg")
@@ -1214,7 +1214,7 @@ def build_profile():
   <div data-reveal><h2>Education and certifications</h2></div>
   <ul class="cred-list" data-reveal style="--d:1">
     <li class="cr-school"><i aria-hidden="true"></i><strong>Olympus High, Dehradun</strong><span>School alumnus</span></li>
-    <li class="cr-uni"><i aria-hidden="true"></i><strong>Sridev Suman Uttarakhand University</strong><span>BBA graduate</span></li>
+    <li class="cr-uni"><i aria-hidden="true"></i><strong>Sridev Suman Uttarakhand University</strong><span>BBA, final year</span></li>
     <li class="cr-cert"><i aria-hidden="true"></i><strong>Vanderbilt University</strong><span>Certification in applied AI</span></li>
     <li class="cr-cert"><i aria-hidden="true"></i><strong>IBM</strong><span>Certification in applied AI</span></li>
     <li class="cr-cert"><i aria-hidden="true"></i><strong>Lund University</strong><span>Certification in applied AI</span></li>
