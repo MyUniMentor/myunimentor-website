@@ -31,6 +31,10 @@
   "date": "2026-11-25",
   "hash": "d94eed6e51d02e01f0d30bcc2b0ca03a"
  },
+ "bennett-university": {
+  "date": "2026-11-25",
+  "hash": "4b3228eb8f22d58edc227df9a92d5adb"
+ },
  "bf-institute-of-technology": {
   "date": "2026-11-25",
   "hash": "a8f463292fde96450076a0d3b6e73532"
@@ -157,7 +161,7 @@
  },
  "iilm-university": {
   "date": "2026-11-25",
-  "hash": "c2d1aadbeebac7552d9549019ec0efb8"
+  "hash": "15f2596b08187e7cc7fbdf73d6d5440c"
  },
  "ims-unison-university": {
   "date": "2026-11-25",
@@ -169,7 +173,7 @@
  },
  "jaypee-university-of-information-technology": {
   "date": "2026-11-25",
-  "hash": "4e5c310806c799d27e04a7110e6932a6"
+  "hash": "f833ec86752dfa40f1043b409db0533e"
  },
  "jee-main-2027-session-1-guide": {
   "date": "2026-11-20",
@@ -193,11 +197,11 @@
  },
  "mit-world-peace-university": {
   "date": "2026-11-25",
-  "hash": "1648944593522684b53ea6a280e9d2be"
+  "hash": "ca5287de90f46f42dda97405d42cb96d"
  },
  "network": {
   "date": "2026-11-25",
-  "hash": "e7957256a8723044ee17eec70a74a9ad"
+  "hash": "b0dbf27335ce92dec32363ea4c84394a"
  },
  "o-p-jindal-global-university": {
   "date": "2026-11-25",
@@ -241,7 +245,7 @@
  },
  "sharda-university": {
   "date": "2026-11-25",
-  "hash": "79fe04a57b0d6e20d0784336fce2626c"
+  "hash": "de8cb746f6749f8ab943d3819883635d"
  },
  "siddhartha-group-of-institutions": {
   "date": "2026-11-25",
