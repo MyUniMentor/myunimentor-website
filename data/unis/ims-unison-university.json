@@ -1,0 +1,16 @@
+{
+ "slug": "ims-unison-university", "short": "IUU", "official": "https://www.iuu.ac",
+ "basics": {"founded": null, "type": "Private university in Uttarakhand", "ugc": "UGC-recognised state private university",
+   "campus": "Dehradun, Uttarakhand",
+   "other": "Five schools: management and liberal arts (B.Com, BBA, BA, MBA), law (BA LL.B., BBA LL.B., LL.B., LL.M.), computer applications (BCA), hospitality and mass communication"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["BBA, B.Com, BA, BCA", "Class 12 with 45% and English (5% relaxation for Uttarakhand SC/ST/OBC)", "Merit on qualifying-exam marks, then a personal interview"],
+   ["5-year BA LL.B. / BBA LL.B. (Hons.)", "Class 12 with 45% and English; under 20 years of age on 1 July", "Merit on qualifying-exam marks"]],
+ "admission_src": "https://www.iuu.ac/admission-process-ims-unison-university-dehradun-uttarakhand",
+ "scholarships": {"year": "2026", "text": "Scholarships on merit, domicile, diversity and other grounds, including 25% tuition for the whole programme for students domiciled in Uttarakhand, Himachal Pradesh, J&K, Ladakh and the North-East, on a first-come basis.", "url": "https://www.iuu.ac/ballb-bballb-admission-dehradun/"},
+ "hostel": null,
+ "fees": {"text": "IUU lists fees on its programmes and fee page. Ask us for the current fee for your course.", "url": "https://www.iuu.ac/programs-and-fee-ims-unison-university-dehradun-uttrakhand"},
+ "checked": "2026-11-25",
+ "title": "IMS Unison University Dehradun: Admission 2027",
+ "desc": "IMS Unison University, Dehradun: BBA, BCA, B.Com and law (BA LL.B., BBA LL.B.) admission 2027 on merit, eligibility, domicile scholarships and free guidance."
+}

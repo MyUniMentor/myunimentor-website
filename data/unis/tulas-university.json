@@ -1,0 +1,16 @@
+{
+ "slug": "tulas-university", "short": "Tulas", "official": "https://tulas.edu.in",
+ "basics": {"founded": null, "type": "Private university, formerly Tula's Institute (AICTE-approved since 2006; trust founded 2004)", "ugc": "UGC-recognised; AICTE-approved",
+   "campus": "Dhoolkot, Selaqui, Chakrata Road, Dehradun",
+   "other": "B.Tech (CSE, AI & ML, Data Science, Cyber Security, Civil, Mechanical, ECE, EEE), MBA, BBA, BCA, MCA, B.Pharm, law and B.Sc Agriculture; Mechanical accredited by NBA"},
+ "nirf": null, "naac": {"grade": "A+", "year": null}, "placements": null,
+ "admission": [["B.Tech", "Class 12 with Physics, Maths and one listed subject, 45% (40% reserved); some branches ask 60% in PCM", "Valid JEE Main, state CET or university entrance test score; lateral entry for diploma holders"],
+   ["BBA, BCA and other UG", "Class 12 in the relevant stream", "Tulas admission process"]],
+ "admission_src": "https://tulas.edu.in/courses/btech-electrical-and-electronics-engineering",
+ "scholarships": {"year": "2026-27", "text": "A student diversity scholarship on tuition for all-India students, plus merit scholarships by Class 12 marks in four bands from 60% to above 91%.", "url": "https://tulas.edu.in/courses/btech-civil-engineering"},
+ "hostel": {"text": "On-campus hostels; hostel fee is paid along with the academic fee.", "url": "https://tulas.edu.in/download-e-prospectus/"},
+ "fees": {"text": "Tulas publishes a semester-wise fee table on each B.Tech page. Ask us for the current fee for your course.", "url": "https://tulas.edu.in/courses/btech-civil-engineering"},
+ "checked": "2026-11-25",
+ "title": "Tulas University Dehradun: Admission 2027 | MyUniMentor",
+ "desc": "Tulas University, Dehradun (formerly Tula's Institute): NAAC A+, B.Tech, MBA and other admission 2027, eligibility, merit scholarships, hostels."
+}

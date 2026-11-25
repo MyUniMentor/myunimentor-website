@@ -1,0 +1,17 @@
+{
+ "slug": "quantum-university", "short": "Quantum", "official": "https://quantumuniversity.edu.in",
+ "basics": {"founded": "2017", "type": "Private university in Uttarakhand", "ugc": "UGC-recognised; programmes approved by AICTE, PCI, BCI and NCTE",
+   "campus": "Roorkee, Uttarakhand",
+   "other": "Engineering (including B.Tech ECE with L&T), computer applications, business, pharmacy, health sciences, agriculture and more"},
+ "nirf": null, "naac": {"grade": "A+", "year": null}, "placements": null,
+ "admission": [["B.Tech (Hons.)", "Class 12 with Physics, Maths and Chemistry/Biology/Computer Science and English; 55% in the three subjects (50% reserved)", "Q-CARE (Quantum's entrance-cum-scholarship exam), JEE Main, UKSEE, CUET UG or Class 12 merit"],
+   ["BBA, BCA, B.Com, BA, B.Sc", "Class 12 pass", "Direct admission on Class 12 marks"],
+   ["MBA", "Graduation with 50%", "CAT, CMAT, MAT, XAT or NMAT scores preferred"]],
+ "admission_src": "https://quantumuniversity.edu.in/blog/top-university/quantum-university-roorkee-admission-complete-guide-to-eligibility-fees-application-process",
+ "scholarships": {"year": "2026", "text": "Scholarships of up to 100% on tuition through Q-CARE, with scholarships on JEE Main and CUET scores.", "url": "https://quantumuniversity.edu.in/blog/top-university/planning-to-join-quantum-university"},
+ "hostel": {"text": "On-campus hostels with AC and non-AC options.", "url": "https://quantumuniversity.edu.in/downloads/Fee_Structure/Quantum_School_of_Technology.pdf"},
+ "fees": {"text": "First-year fee for B.Tech (Hons.) CSE in 2026 is ₹1,64,500 for Uttarakhand domicile students and ₹1,69,500 for others, plus a one-time ₹5,000 registration charge.", "url": "https://quantumuniversity.edu.in/downloads/Fee_Structure/Quantum_School_of_Technology.pdf", "year": "2026"},
+ "checked": "2026-11-25",
+ "title": "Quantum University Roorkee: Admission 2027 | MyUniMentor",
+ "desc": "Quantum University, Roorkee: NAAC A+, B.Tech admission through Q-CARE, JEE Main, CUET or Class 12 merit, 2026 fees, scholarships up to 100%, hostels."
+}

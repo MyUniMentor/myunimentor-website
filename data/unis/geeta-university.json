@@ -1,0 +1,16 @@
+{
+ "slug": "geeta-university", "short": "Geeta University", "official": "https://geetauniversity.edu.in",
+ "basics": {"founded": "2022", "type": "State private university, set up in 2022 by the Geeta Group of Institutions (running since 1985)", "ugc": "UGC-recognised; AICTE-approved programmes; member of the Association of Indian Universities",
+   "campus": "40-acre campus in Panipat, Haryana (Delhi NCR)",
+   "other": "70+ programmes in engineering, management, law, pharmacy, computer applications, sciences and education"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["B.Tech CSE and specialisations", "Class 12 with Physics and Maths, 55% aggregate (10% relaxation for SC/ST/EWS)", "Merit in the qualifying exam; Geeta University does not hold an admission test"],
+   ["BBA, BCA and other UG", "Class 12 pass (40–50% depending on programme)", "Merit in the qualifying exam"]],
+ "admission_src": "https://geetauniversity.edu.in/programs/school-of-computer-science-and-engineering/btech-cse",
+ "scholarships": {"year": "2026", "text": "Up to 100% tuition scholarship through GUTS (Geeta University Test of Scholarship), plus merit scholarships on Class 12 marks and national entrance exam scores. GUTS can be added on top of other scholarships.", "url": "https://geetauniversity.edu.in/scholarships"},
+ "hostel": {"text": "Separate hostels for boys and girls with round-the-clock security.", "url": "https://geetauniversity.edu.in/blog/bed-in-panipat-haryana/"},
+ "fees": {"text": "Geeta University lists fees programme-wise. Ask us for the current fee for your course.", "url": "https://geetauniversity.edu.in/programs/school-of-computer-science-and-engineering/btech-cse"},
+ "checked": "2026-11-25",
+ "title": "Geeta University Panipat: Admission 2027 | MyUniMentor",
+ "desc": "Geeta University, Panipat: B.Tech, BBA and other admission 2027 on Class 12 merit, GUTS scholarship up to 100%, hostels and free admission guidance."
+}

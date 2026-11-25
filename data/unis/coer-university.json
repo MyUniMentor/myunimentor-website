@@ -1,0 +1,17 @@
+{
+ "slug": "coer-university", "short": "COER University", "official": "https://coeruniversity.ac.in",
+ "basics": {"founded": "2021", "type": "State private university approved by the Government of Uttarakhand in 2021; began in 1998 as College of Engineering Roorkee (Seth Roshan Lal Jain Trust)", "ugc": "UGC-recognised state private university",
+   "campus": "7th km, Roorkee–Haridwar Road, Vardhmanpuram, Roorkee (Haridwar district)",
+   "other": "Roorkee's first private engineering college (1998). Engineering, computer applications, management, commerce, pharmacy and diplomas"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["B.Tech CSE and CSE specialisations", "Class 12 with PCM, 50% (45% for SC/ST)", "Merit-based admission"],
+   ["B.Tech Civil, Electrical, Mechanical", "Class 12 with Physics, Maths and one listed subject, 45% (40% reserved)", "Merit-based; lateral entry through UKSEE or a B.Sc with Maths"],
+   ["B.Pharm, D.Pharm", "Class 12 with Physics and Chemistry, plus Maths or Biology", "Merit-based admission"]],
+ "admission_src": "https://coeruniversity.ac.in/college-of-smart-computing/admissions",
+ "scholarships": {"year": "2026", "text": "A scholarship test with 100% for first place, 50% for ranks 2–11, 30% for ranks 12–21 and 25% for all other participants, plus a single girl child scholarship.", "url": "https://coeruniversity.ac.in/uploads/2026/02/16_page_brochure_feb-2026.pdf"},
+ "hostel": {"text": "On-campus hostels with a separate hostel enquiry desk.", "url": "https://coeruniversity.ac.in/uploads/2026/02/16_page_brochure_feb-2026.pdf"},
+ "fees": {"text": "For B.Tech Mechanical (2026-27), years two to four cost ₹1,10,200 a year: ₹81,400 tuition, ₹20,000 academic services and ₹8,800 examination. Ask us for the fee for your course.", "url": "https://coeruniversity.ac.in/dashboards/Mechanical_Engineering/", "year": "2026-27"},
+ "checked": "2026-11-25",
+ "title": "COER University Roorkee: Admission 2027, Fees | MyUniMentor",
+ "desc": "COER University, Roorkee (formerly College of Engineering Roorkee): B.Tech, pharmacy and other admission 2027, eligibility, scholarship test, fees, hostels."
+}
