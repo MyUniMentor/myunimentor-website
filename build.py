@@ -132,7 +132,7 @@ FOOTER = '''<footer class="site-footer">
 
 META = {
 "index.html": [
-"Career Counsellor for Students Across India | MyUniMentor",
+"MyUniMentor | Career Counsellor for Students Across India",
 "Talk to a career counsellor free: one-on-one, online or in person, anywhere in India. Help with your stream, course, entrance exams and university admissions."
 ],
 "about.html": [
@@ -629,7 +629,7 @@ def build_home():
   <div class="hero-bg" aria-hidden="true"><span class="sun"></span><span class="blob b1"></span><span class="blob b2"></span></div>
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="pill"><span class="dot"></span>Career guidance for Class 11–12 students</p>
+      <p class="pill"><span class="dot"></span>MyUniMentor: career guidance for Class 11–12 students</p>
       <h1 class="words">{words("Right guidance. Right fit. Right university.")}</h1>
       <p class="hero-sub">Choosing a stream, course and university is one of the biggest decisions a student makes — yet most still make it on hearsay. MyUniMentor brings honest, expert career guidance to students across India, one-on-one and in schools, so every student decides with clarity.</p>
       <div class="hero-actions">
