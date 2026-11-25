@@ -5,6 +5,8 @@ exclude:
   - build.py
   - content_blog.py
   - content_courses.py
+  - content_boards.py
+  - data_boards.py
   - data
   - tools
   - src

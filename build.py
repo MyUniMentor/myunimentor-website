@@ -47,7 +47,7 @@ ACCOUNT_TEST = False   # True builds /account even when SHOW_ACCOUNTS is off (hi
 ACCOUNT = {'authUrl': 'https://script.google.com/macros/s/AKfycbzKTnZKtIM1WRjTqRlmwSk7ZIHSqvNP3pi4nhvsLKx3mP7x7zVyR7kWnPshJho_RV1mpw/exec', 'firebase': {
     'apiKey': 'AIzaSyAI8nojG3Q_4VlkKqN2B2nH1UlJZFkG_Go', 'authDomain': 'myunimentor-web.firebaseapp.com', 'projectId': 'myunimentor-web',
     'storageBucket': 'myunimentor-web.firebasestorage.app', 'messagingSenderId': '817646080151', 'appId': '1:817646080151:web:343bcb2c1b62d9a2d699d2'}}
-NOINDEX = {'account.html', 'admin.html', 'test.html'}
+NOINDEX = {'account.html', 'admin.html', 'test.html', '404.html'}
 SHOW_PSY = True        # ₹99 psychometric test: landing page /psychometric-test, the test itself at /test (noindex)
 PSY = {'price': 99, 'payLive': False}   # payLive: True only after Razorpay is activated and its keys are in the accounts Apps Script
 
@@ -302,6 +302,13 @@ def head_social(fname, title, schema):
         art = (f'<meta property="article:published_time" content="{pub.group(1)}">' if pub else '') + (f'<meta property="article:modified_time" content="{mod.group(1)}">' if mod else '') + f'<meta property="article:section" content="{e(og_kicker(slug))}">'
     return img, alt, art
 
+# Content Security Policy (meta, since GitHub Pages cannot send headers): only our own files, Firebase, Apps Script and Razorpay may load
+CSP = ("default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://checkout.razorpay.com; "
+       "style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; "
+       "connect-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleapis.com https://www.gstatic.com https://*.razorpay.com https://*.firebaseio.com wss://*.firebaseio.com; "
+       "frame-src https://*.razorpay.com https://*.firebaseapp.com; form-action 'self' https://script.google.com; "
+       "base-uri 'self'; object-src 'none'; upgrade-insecure-requests")
+
 def page(fname, title, desc, active, body, schema=''):
     title, desc = META.get(fname, (title, desc))
     img, img_alt, art = head_social(fname, title, schema)
@@ -310,6 +317,7 @@ def page(fname, title, desc, active, body, schema=''):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="{CSP}"><meta name="referrer" content="strict-origin-when-cross-origin">
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">{'<meta name="robots" content="noindex, nofollow">' if fname in NOINDEX else '<meta name="robots" content="max-image-preview:large, max-snippet:-1, max-video-preview:-1">'}
 <link rel="canonical" href="https://myunimentor.in/{'' if fname == 'index.html' else fname.replace('.html', '')}">
@@ -1300,7 +1308,7 @@ def page_text(fname):
 
 def build_llms_full():
     order = ['index', 'about', 'omgarg', 'services-students', 'services-schools', 'services-universities', 'career-summit', 'network', 'testimonials', 'exam-calendar'] + (['career-check'] if SHOW_CAREER_CHECK else []) + (['psychometric-test'] if SHOW_PSY else []) + ['courses'] \
-            + [x['slug'] for x in COURSES] + list(UNI_PAGES) + [x['slug'] for x in POSTS] + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'contact']
+            + [x['slug'] for x in COURSES] + list(UNI_PAGES) + [x['slug'] for x in POSTS] + ['career-counselling-dehradun', 'career-counselling-saharanpur', 'career-counselling-roorkee', 'career-counselling-rishikesh', 'contact']
     out = ['# MyUniMentor: full site content', '', '> Plain-text copy of myunimentor.in for AI assistants and search engines. Source: https://myunimentor.in/', '']
     for o in order:
         f = o + '.html'
@@ -1384,6 +1392,8 @@ def build_seo_files():
 {COURSES_MD}
 - [Career counselling in Dehradun](https://myunimentor.in/career-counselling-dehradun)
 - [Career counselling in Saharanpur](https://myunimentor.in/career-counselling-saharanpur)
+- [Career counselling in Roorkee](https://myunimentor.in/career-counselling-roorkee): online counselling now; school programmes planned for 2027
+- [Career counselling in Rishikesh](https://myunimentor.in/career-counselling-rishikesh): online counselling now; school programmes planned for 2027
 - [Testimonials](https://myunimentor.in/testimonials)
 - [Contact](https://myunimentor.in/contact)
 """)
@@ -1625,7 +1635,7 @@ def build_404():
   <p class="page-sub">Even the best plans need a little guidance. Let's get you back on track.</p>
   <div class="hero-actions"><a href="index.html" class="btn btn-cyan btn-lg">Go to the homepage</a><a href="contact.html" class="btn btn-outline-light btn-lg">Talk to a counsellor</a></div>
 </div></section>'''
-    page('404.html', 'Page not found | MyUniMentor', 'This page could not be found.', '', body)
+    page('404.html', 'Page not found | MyUniMentor', 'This page could not be found. Go back to the MyUniMentor home page, find a course guide or book free career counselling.', '', body)
 
 EXAMS = D('exams.json')
 CITIES = D('cities.json')
@@ -1881,9 +1891,11 @@ def build_unis():
             return f'<p>{e(x["text"])}</p><p class="src">Source: {e(short)} {label}{yr}.</p>'
         checked = nice_date(d['checked'])
         wa = uni_wa(name)
-        others = [x for x in UNIS if slug(x['name']) in UNI_PAGES and slug(x['name']) != s_]
-        others.sort(key=lambda x: (x['region'] != u['region'], x['name']))
-        other_links = ''.join(f'<li><a href="{slug(x["name"])}.html">{e(x["name"])}</a></li>' for x in others[:5])
+        # the next six partner pages in a fixed ring (same region first), so every page gets links from its neighbours
+        ring = sorted([x for x in UNIS if slug(x['name']) in UNI_PAGES], key=lambda x: (x['region'], x['name']))
+        i_ = next(i for i, x in enumerate(ring) if slug(x['name']) == s_)
+        others = [ring[(i_ + k) % len(ring)] for k in range(1, 7)]
+        other_links = ''.join(f'<li><a href="{slug(x["name"])}.html">{e(x["name"])}</a></li>' for x in others)
         faqs = [(f"How do I get admission to {name} in 2027?", f"{e(d['admission'][0][0])}: {e(d['admission'][0][2])}. Eligibility: {e(d['admission'][0][1])}. MyUniMentor gives free admission guidance: <a href=\"#enquire\">send an enquiry</a> or WhatsApp +91 74175 57070.")]
         if rank_txt: faqs.append((f"What is the NIRF ranking of {name}?", f"In NIRF {nirf['year']}, published by the Ministry of Education, {e(name)} was ranked {e(rank_txt)}."))
         if naac: faqs.append((f"Is {name} NAAC accredited?", f"Yes. {e(name)} is accredited by NAAC with {e(naac_txt)}."))

@@ -1,16 +1,46 @@
 {
- "slug": "haridwar-university", "short": "Haridwar University", "official": "https://huroorkee.ac.in",
- "basics": {"founded": null, "type": "Private university, formerly Roorkee College of Engineering", "ugc": "UGC-recognised state private university; AICTE-approved B.Tech",
-   "campus": "20-acre campus on the Ganga Canal, about 5 km from Roorkee",
-   "other": "Engineering (CSE, AI & ML, ECE, Civil, Mechanical, EEE), computer applications, commerce, business, pharmacy and allied health sciences"},
- "nirf": null, "naac": null, "placements": null,
- "admission": [["B.Tech (Hons.)", "Class 12 with Physics, Maths and Chemistry/Computer Science, 45% (40% reserved)", "HUAET (Haridwar University's admission test) or other eligible routes; lateral entry for diploma holders in CSE, AI & ML and ECE"],
-   ["BCA, B.Com, business, pharmacy, allied health", "As per programme", "Haridwar University admission process"]],
+ "slug": "haridwar-university",
+ "short": "Haridwar University",
+ "official": "https://huroorkee.ac.in",
+ "basics": {
+  "founded": null,
+  "type": "Private university, formerly Roorkee College of Engineering",
+  "ugc": "UGC-recognised state private university; AICTE-approved B.Tech",
+  "campus": "20-acre campus on the Ganga Canal, about 5 km from Roorkee",
+  "other": "Engineering (CSE, AI & ML, ECE, Civil, Mechanical, EEE), computer applications, commerce, business, pharmacy and allied health sciences"
+ },
+ "nirf": null,
+ "naac": null,
+ "placements": null,
+ "admission": [
+  [
+   "B.Tech (Hons.)",
+   "Class 12 with Physics, Maths and Chemistry/Computer Science, 45% (40% reserved)",
+   "HUAET (Haridwar University's admission test) or other eligible routes; lateral entry for diploma holders in CSE, AI & ML and ECE"
+  ],
+  [
+   "BCA, B.Com, business, pharmacy, allied health",
+   "As per programme",
+   "Haridwar University admission process"
+  ]
+ ],
  "admission_src": "https://huroorkee.ac.in/Overview",
- "scholarships": {"year": "2026-27", "text": "25% of first-year tuition for Uttarakhand domicile students and for girls (2026 and 2027 Class 12 pass-outs), with merit scholarships on marks and JEE or CUET percentiles. Only one scholarship per student.", "url": "https://huroorkee.ac.in/admission/fees-scholarships"},
- "hostel": {"text": "Separate hostels for boys and girls. Hostel fee, including mess and laundry, is ₹85,000 a year for a normal room, ₹95,000 semi-deluxe and ₹1,05,000 deluxe AC.", "url": "https://huroorkee.ac.in/admission/fees-scholarships", "year": "2027-28"},
- "fees": {"text": "For 2026-27, B.Tech (Hons.) CSE tuition is ₹62,000 a year, with a first-year total of ₹1,32,000; B.Tech AI & ML costs ₹1,62,000 in the first year.", "url": "https://huroorkee.ac.in/blog/is-haridwar-university-good", "year": "2026-27"},
+ "scholarships": {
+  "year": "2026 intake",
+  "text": "25% of first-year tuition for Uttarakhand domicile students and for girls (2026 and 2027 Class 12 pass-outs), with merit scholarships on marks and JEE or CUET percentiles. Only one scholarship per student.",
+  "url": "https://huroorkee.ac.in/admission/fees-scholarships"
+ },
+ "hostel": {
+  "text": "Separate hostels for boys and girls. Hostel fee, including mess and laundry, is ₹85,000 a year for a normal room, ₹95,000 semi-deluxe and ₹1,05,000 deluxe AC.",
+  "url": "https://huroorkee.ac.in/admission/fees-scholarships",
+  "year": "2027 intake"
+ },
+ "fees": {
+  "text": "For the 2026 intake, B.Tech (Hons.) CSE tuition is ₹62,000 a year, with a first-year total of ₹1,32,000; B.Tech AI & ML costs ₹1,62,000 in the first year.",
+  "url": "https://huroorkee.ac.in/blog/is-haridwar-university-good",
+  "year": "2026 intake"
+ },
  "checked": "2026-11-25",
  "title": "Haridwar University Roorkee: Admission 2027, Fees",
- "desc": "Haridwar University, Roorkee (formerly Roorkee College of Engineering): B.Tech admission, 2026-27 fees, hostel fees, scholarships and free guidance."
+ "desc": "Haridwar University, Roorkee (formerly Roorkee College of Engineering): B.Tech admission, 2026 fees, hostel fees, scholarships and free guidance."
 }

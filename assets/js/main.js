@@ -88,14 +88,19 @@ try { const r = new URLSearchParams(location.search).get('ref'); if (r && /^u[0-
   $$('[data-tab="partner"]').forEach(a => { const h = a.getAttribute('href'); if (h === 'contact.html' || h === '/contact') a.setAttribute('href', h + '#partner'); });
 
   // Lead forms — connected to email, Google Sheet and WhatsApp alerts at launch
+  // Spam guard: a hidden field people never see, and a minimum time on the page; bots that trip either get a quiet "thanks"
+  const bornAt = Date.now();
+  $$('.lead-form').forEach(form => { const hp = document.createElement('input'); hp.type = 'text'; hp.name = 'website'; hp.tabIndex = -1; hp.autocomplete = 'off'; hp.setAttribute('aria-hidden', 'true'); hp.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;opacity:0'; form.appendChild(hp); });
   $$('.lead-form').forEach(form => form.addEventListener('submit', e => {
     e.preventDefault();
     if (!form.checkValidity()) { form.reportValidity(); return; }
+    const hp = form.querySelector('input[name=website]');
+    if ((hp && hp.value) || Date.now() - bornAt < 2500) { form.querySelector('.form-status').textContent = form.dataset.msg || 'Thanks — your request has been received.'; form.reset(); return; }
     const msg = { counselling: 'Thanks — your session request has been received. Our team will call you back.',
       partnership: 'Thanks — your enquiry has been received. Our team will get in touch.',
       testimonial: 'Thank you for sharing your story. We will contact you before publishing anything.',
       guide: 'Thanks! Your guide is ready.' };
-    const data = new URLSearchParams(new FormData(form));
+    const data = new URLSearchParams(new FormData(form)); data.delete('website');
     data.append('form', form.dataset.form || 'enquiry'); data.append('page', location.pathname);
     const btn = form.querySelector('button[type=submit]'); if (btn) btn.disabled = true;
     const done = () => { form.querySelector('.form-status').textContent = form.dataset.msg || msg[form.dataset.form] || msg.partnership; if (btn) btn.disabled = false; if (form.dataset.form !== 'guide') form.reset(); };

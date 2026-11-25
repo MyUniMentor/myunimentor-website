@@ -1,15 +1,43 @@
 {
- "slug": "dev-bhoomi-uttarakhand-university", "short": "DBUU", "official": "https://www.dbuu.ac.in",
- "basics": {"founded": null, "type": "Private university in Uttarakhand", "ugc": "UGC-recognised state private university",
-   "campus": "Dehradun, Uttarakhand",
-   "other": "Engineering, management, medical and allied health (including B.PT), agriculture, design, hotel management, journalism, pharmacy, nursing and diplomas"},
- "nirf": null, "naac": null, "placements": null,
- "admission": [["UG programmes (B.Tech, BBA, B.Des and others)", "Class 12 as per programme; B.Des needs 50% in any stream", "Apply online or offline; DBUU-CET gives scholarships and same-day admission with counselling"],
-   ["PG programmes", "Graduation as per programme", "Apply online or offline; DBUU-CET for scholarships"]],
+ "slug": "dev-bhoomi-uttarakhand-university",
+ "short": "DBUU",
+ "official": "https://www.dbuu.ac.in",
+ "basics": {
+  "founded": null,
+  "type": "Private university in Uttarakhand",
+  "ugc": "UGC-recognised state private university",
+  "campus": "Dehradun, Uttarakhand",
+  "other": "Engineering, management, medical and allied health (including B.PT), agriculture, design, hotel management, journalism, pharmacy, nursing and diplomas"
+ },
+ "nirf": null,
+ "naac": null,
+ "placements": null,
+ "admission": [
+  [
+   "UG programmes (B.Tech, BBA, B.Des and others)",
+   "Class 12 as per programme; B.Des needs 50% in any stream",
+   "Apply online or offline; DBUU-CET gives scholarships and same-day admission with counselling"
+  ],
+  [
+   "PG programmes",
+   "Graduation as per programme",
+   "Apply online or offline; DBUU-CET for scholarships"
+  ]
+ ],
  "admission_src": "https://apply.dbuu.ac.in/dbuucet",
- "scholarships": {"year": "2026-27", "text": "Up to 100% tuition scholarship through DBUU-CET, merit scholarships for students with 50% or more in Class 12, extra scholarships of up to 5% for girls, sports and defence candidates, and domicile, defence and need-based support.", "url": "https://www.dbuu.ac.in/admission/scholarship.php"},
- "hostel": {"text": "On-campus hostels, with a gym, sports facilities and transport.", "url": "https://www.dbuu.ac.in/life-at-dbuu/dbuu-facilities.php"},
- "fees": {"text": "DBUU lists fees programme-wise. Ask us for the current fee for your course.", "url": "https://www.dbuu.ac.in/admission/admission-process.php"},
+ "scholarships": {
+  "year": "2026 intake",
+  "text": "Up to 100% tuition scholarship through DBUU-CET, merit scholarships for students with 50% or more in Class 12, extra scholarships of up to 5% for girls, sports and defence candidates, and domicile, defence and need-based support.",
+  "url": "https://www.dbuu.ac.in/admission/scholarship.php"
+ },
+ "hostel": {
+  "text": "On-campus hostels, with a gym, sports facilities and transport.",
+  "url": "https://www.dbuu.ac.in/life-at-dbuu/dbuu-facilities.php"
+ },
+ "fees": {
+  "text": "DBUU lists fees programme-wise. Ask us for the current fee for your course.",
+  "url": "https://www.dbuu.ac.in/admission/admission-process.php"
+ },
  "checked": "2026-11-25",
  "title": "Dev Bhoomi Uttarakhand University: Admission 2027",
  "desc": "Dev Bhoomi Uttarakhand University (DBUU), Dehradun: admission 2027, DBUU-CET scholarship of up to 100%, eligibility, hostels and free admission guidance."

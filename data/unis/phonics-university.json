@@ -1,16 +1,45 @@
 {
- "slug": "phonics-university", "short": "Phonics", "official": "https://phonicsuniversity.ac.in",
- "basics": {"founded": null, "type": "Private university in Uttarakhand (Phonics group, running since 2009)", "ugc": "UGC-recognised; approved by the Government of Uttarakhand and AICTE",
-   "campus": "22-acre campus on Haridwar Road, Roorkee",
-   "other": "150+ programmes: engineering, nursing, sciences, computer applications, management and more"},
- "nirf": null, "naac": null, "placements": null,
- "admission": [["B.Tech", "Class 12 with PCM, 45%", "Merit, JEE Main, or PUET (Phonics University's entrance test)"],
-   ["B.Sc Nursing", "Class 12 with Physics, Chemistry, Biology and English, 45% (40% reserved); minimum age 17", "CUET, PUET or NEET"],
-   ["BBA, B.Sc IT and other UG", "Class 12 with 45% (40% reserved)", "Merit, PUET or CUET"]],
+ "slug": "phonics-university",
+ "short": "Phonics",
+ "official": "https://phonicsuniversity.ac.in",
+ "basics": {
+  "founded": null,
+  "type": "Private university in Uttarakhand (Phonics group, running since 2009)",
+  "ugc": "UGC-recognised; approved by the Government of Uttarakhand and AICTE",
+  "campus": "22-acre campus on Haridwar Road, Roorkee",
+  "other": "150+ programmes: engineering, nursing, sciences, computer applications, management and more"
+ },
+ "nirf": null,
+ "naac": null,
+ "placements": null,
+ "admission": [
+  [
+   "B.Tech",
+   "Class 12 with PCM, 45%",
+   "Merit, JEE Main, or PUET (Phonics University's entrance test)"
+  ],
+  [
+   "B.Sc Nursing",
+   "Class 12 with Physics, Chemistry, Biology and English, 45% (40% reserved); minimum age 17",
+   "CUET, PUET or NEET"
+  ],
+  [
+   "BBA, B.Sc IT and other UG",
+   "Class 12 with 45% (40% reserved)",
+   "Merit, PUET or CUET"
+  ]
+ ],
  "admission_src": "https://phonicsuniversity.ac.in/b-sc-nursing/",
- "scholarships": {"year": "2026-27", "text": "100% for a JEE Main rank up to 50,000 or more than 95% in Class 12, 80% for 85–94.9%, and 50% for 75–84.9%.", "url": "https://landing.phonicsuniversity.ac.in/"},
+ "scholarships": {
+  "year": "2026 intake",
+  "text": "100% for a JEE Main rank up to 50,000 or more than 95% in Class 12, 80% for 85–94.9%, and 50% for 75–84.9%.",
+  "url": "https://landing.phonicsuniversity.ac.in/"
+ },
  "hostel": null,
- "fees": {"text": "Phonics University lists fees programme-wise. Ask us for the current fee for your course.", "url": "https://landing.phonicsuniversity.ac.in/"},
+ "fees": {
+  "text": "Phonics University lists fees programme-wise. Ask us for the current fee for your course.",
+  "url": "https://landing.phonicsuniversity.ac.in/"
+ },
  "checked": "2026-11-25",
  "title": "Phonics University Roorkee: Admission 2027",
  "desc": "Phonics University, Roorkee: B.Tech, nursing, BBA and other admission 2027, eligibility, scholarships up to 100% on JEE rank or Class 12 marks, free guidance."

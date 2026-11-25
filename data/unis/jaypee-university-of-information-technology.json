@@ -1,16 +1,48 @@
 {
- "slug": "jaypee-university-of-information-technology", "short": "JUIT", "official": "https://www.juit.ac.in",
- "basics": {"founded": "2002", "type": "State private university, the first in Himachal Pradesh (H.P. State Legislature Act No. 14 of 2002)", "ugc": "Approved by UGC under Section 2(f) of the UGC Act",
-   "campus": "Waknaghat, Kandaghat, Solan (Himachal Pradesh)",
-   "other": "B.Tech in AI & Data Science, AI & Machine Learning, Biotechnology, Bioinformatics, Civil, CSE and its specialisations, ECE and IT; Biotechnology accredited by NBA"},
- "nirf": {"year": 2025, "ranks": [], "band": ["Engineering", "201–300"]},
- "naac": null, "placements": null,
- "admission": [["B.Tech (2026-27)", "60% aggregate in Class 12 (55% for SC/ST); merit counts Physics, Maths and one more high-scoring subject", "Merit through JEE Main 2026 or Class 12 marks, then counselling. Half of the 855 seats are filled on Class 12 marks."]],
+ "slug": "jaypee-university-of-information-technology",
+ "short": "JUIT",
+ "official": "https://www.juit.ac.in",
+ "basics": {
+  "founded": "2002",
+  "type": "State private university, the first in Himachal Pradesh (H.P. State Legislature Act No. 14 of 2002)",
+  "ugc": "Approved by UGC under Section 2(f) of the UGC Act",
+  "campus": "Waknaghat, Kandaghat, Solan (Himachal Pradesh)",
+  "other": "B.Tech in AI & Data Science, AI & Machine Learning, Biotechnology, Bioinformatics, Civil, CSE and its specialisations, ECE and IT; Biotechnology accredited by NBA"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [],
+  "band": [
+   "Engineering",
+   "201–300"
+  ]
+ },
+ "naac": null,
+ "placements": null,
+ "admission": [
+  [
+   "B.Tech (2026 intake)",
+   "60% aggregate in Class 12 (55% for SC/ST); merit counts Physics, Maths and one more high-scoring subject",
+   "Merit through JEE Main 2026 or Class 12 marks, then counselling. Half of the 855 seats are filled on Class 12 marks."
+  ]
+ ],
  "admission_src": "https://www.juit.ac.in/admissions_all/BTechplus2admissionprocedure_2026.pdf",
- "scholarships": {"year": "2026-27", "text": "First-year merit scholarship of 20% to 40% of tuition for Class 12 scores from 60% to above 90% (not for CSE, its specialisations, AI-ML, AI-DS and IT); kept with a CGPA of 7.0. A merit-cum-means waiver of one semester's tuition a year is open to all B.Tech students with family income below ₹8 lakh.", "url": "https://www.juit.ac.in/admissions_all/BTechplus2admissionprocedure_2026.pdf"},
- "hostel": {"text": "Optional hostel at ₹84,000 a semester; a single room adds ₹8,000 a semester.", "url": "https://www.juit.ac.in/admissions_all/BTechplus2admissionprocedure_2026.pdf", "year": "2026-27"},
- "fees": {"text": "B.Tech tuition is ₹1,64,550 a semester (general category), plus one-time admission charges of ₹25,000 and refundable caution money of ₹20,000.", "url": "https://www.juit.ac.in/admissions_all/BTechplus2admissionprocedure_2026.pdf", "year": "2026-27"},
+ "scholarships": {
+  "year": "2026 intake",
+  "text": "First-year merit scholarship of 20% to 40% of tuition for Class 12 scores from 60% to above 90% (not for CSE, its specialisations, AI-ML, AI-DS and IT); kept with a CGPA of 7.0. A merit-cum-means waiver of one semester's tuition a year is open to all B.Tech students with family income below ₹8 lakh.",
+  "url": "https://www.juit.ac.in/admissions_all/BTechplus2admissionprocedure_2026.pdf"
+ },
+ "hostel": {
+  "text": "Optional hostel at ₹84,000 a semester; a single room adds ₹8,000 a semester.",
+  "url": "https://www.juit.ac.in/admissions_all/BTechplus2admissionprocedure_2026.pdf",
+  "year": "2026 intake"
+ },
+ "fees": {
+  "text": "B.Tech tuition is ₹1,64,550 a semester (general category), plus one-time admission charges of ₹25,000 and refundable caution money of ₹20,000.",
+  "url": "https://www.juit.ac.in/admissions_all/BTechplus2admissionprocedure_2026.pdf",
+  "year": "2026 intake"
+ },
  "checked": "2026-11-25",
  "title": "JUIT Waknaghat: B.Tech Admission 2027, Fees | MyUniMentor",
- "desc": "Jaypee University of Information Technology, Waknaghat (Solan): B.Tech admission through JEE Main or Class 12 marks, 2026-27 fees, scholarships and hostel."
+ "desc": "Jaypee University of Information Technology, Waknaghat (Solan): B.Tech admission through JEE Main or Class 12 marks, 2026 fees, scholarships and hostel."
 }

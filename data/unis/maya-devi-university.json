@@ -1,16 +1,45 @@
 {
- "slug": "maya-devi-university", "short": "MDU", "official": "https://maya.edu.in",
- "basics": {"founded": null, "type": "Private university in Uttarakhand, formerly Maya Group of Colleges", "ugc": "UGC-recognised state private university; B.Pharm approved by PCI",
-   "campus": "Selaqui, Chakrata Road, Dehradun",
-   "other": "Engineering, pharmacy, nursing (B.Sc, GNM, ANM), paramedical and allied health, agriculture, management, hotel management and education"},
- "nirf": null, "naac": null, "placements": null,
- "admission": [["B.Tech", "Class 12 with Physics, Chemistry and Maths, 45% (40% for SC/ST)", "Maya Devi University admission process; MDUCET and JEE Main scores count for scholarships"],
-   ["B.Pharm", "Class 12 with PCB or PCM and English, 50% (45% SC/ST); minimum age 17", "Admission process; lateral entry for D.Pharm holders"],
-   ["B.Sc Nursing", "Class 12 with PCB and English, 45–50%; minimum age 17", "Maya Devi University admission process"]],
+ "slug": "maya-devi-university",
+ "short": "MDU",
+ "official": "https://maya.edu.in",
+ "basics": {
+  "founded": null,
+  "type": "Private university in Uttarakhand, formerly Maya Group of Colleges",
+  "ugc": "UGC-recognised state private university; B.Pharm approved by PCI",
+  "campus": "Selaqui, Chakrata Road, Dehradun",
+  "other": "Engineering, pharmacy, nursing (B.Sc, GNM, ANM), paramedical and allied health, agriculture, management, hotel management and education"
+ },
+ "nirf": null,
+ "naac": null,
+ "placements": null,
+ "admission": [
+  [
+   "B.Tech",
+   "Class 12 with Physics, Chemistry and Maths, 45% (40% for SC/ST)",
+   "Maya Devi University admission process; MDUCET and JEE Main scores count for scholarships"
+  ],
+  [
+   "B.Pharm",
+   "Class 12 with PCB or PCM and English, 50% (45% SC/ST); minimum age 17",
+   "Admission process; lateral entry for D.Pharm holders"
+  ],
+  [
+   "B.Sc Nursing",
+   "Class 12 with PCB and English, 45–50%; minimum age 17",
+   "Maya Devi University admission process"
+  ]
+ ],
  "admission_src": "https://maya.edu.in/best-b-pharma-colleges-in-dehradun-uttarakhand.php",
- "scholarships": {"year": "2025", "text": "Tuition scholarships of 10% to 50% on MDUCET score (65% to 95% and above), on JEE Main percentile, and on NEET rank for pharmacy, allied health and agriculture; plus a merit-cum-means scholarship for Uttarakhand domicile students. Scholarships above 50% need an interview.", "url": "https://admission.maya.edu.in/"},
+ "scholarships": {
+  "year": "2025",
+  "text": "Tuition scholarships of 10% to 50% on MDUCET score (65% to 95% and above), on JEE Main percentile, and on NEET rank for pharmacy, allied health and agriculture; plus a merit-cum-means scholarship for Uttarakhand domicile students. Scholarships above 50% need an interview.",
+  "url": "https://admission.maya.edu.in/"
+ },
  "hostel": null,
- "fees": {"text": "MDU publishes a 2027-28 fee structure for each programme. Ask us for the current fee for your course.", "url": "https://maya.edu.in/best-b-pharma-colleges-in-dehradun-uttarakhand.php"},
+ "fees": {
+  "text": "MDU publishes a fee structure for the 2027 intake for each programme. Ask us for the current fee for your course.",
+  "url": "https://maya.edu.in/best-b-pharma-colleges-in-dehradun-uttarakhand.php"
+ },
  "checked": "2026-11-25",
  "title": "Maya Devi University Dehradun: Admission 2027",
  "desc": "Maya Devi University, Selaqui, Dehradun: B.Tech, B.Pharm and nursing admission 2027, eligibility, MDUCET and JEE scholarships and free admission guidance."

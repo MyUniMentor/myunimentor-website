@@ -1,16 +1,58 @@
 {
- "slug": "sharda-university", "short": "Sharda", "official": "https://www.sharda.ac.in",
- "basics": {"founded": "2009", "type": "Private university established by an Act of the Uttar Pradesh State Legislature (14 of 2009)", "ugc": "UGC-approved programmes",
-   "campus": "Greater Noida (Delhi NCR), Uttar Pradesh",
-   "other": "14 schools including engineering, management, media, law, agriculture, pharmacy, medical and dental; B.Tech CSE, EEE, ECE, Mechanical, Biotech and Civil accredited by NBA up to 2027"},
- "nirf": {"year": 2025, "ranks": [["University", 87]], "band": ["Engineering", "101–150"]},
- "naac": {"grade": "A+", "year": null}, "placements": null,
- "admission": [["B.Tech", "60% in Class 10; 70% aggregate in Class 12 with 60% in PCM (or Computer Science/PCB for Biotechnology) and 50% in Maths", "SUAT (online test) followed by a personal interview, or JEE Main All India Rank up to 3 lakh"],
-   ["Most other UG and PG programmes", "As per programme", "SUAT, Sharda University's admission test, or accepted national tests"]],
+ "slug": "sharda-university",
+ "short": "Sharda",
+ "official": "https://www.sharda.ac.in",
+ "basics": {
+  "founded": "2009",
+  "type": "Private university established by an Act of the Uttar Pradesh State Legislature (14 of 2009)",
+  "ugc": "UGC-approved programmes",
+  "campus": "Greater Noida (Delhi NCR), Uttar Pradesh",
+  "other": "14 schools including engineering, management, media, law, agriculture, pharmacy, medical and dental; B.Tech CSE, EEE, ECE, Mechanical, Biotech and Civil accredited by NBA up to 2027"
+ },
+ "nirf": {
+  "year": 2025,
+  "ranks": [
+   [
+    "University",
+    87
+   ]
+  ],
+  "band": [
+   "Engineering",
+   "101–150"
+  ]
+ },
+ "naac": {
+  "grade": "A+",
+  "year": null
+ },
+ "placements": null,
+ "admission": [
+  [
+   "B.Tech",
+   "60% in Class 10; 70% aggregate in Class 12 with 60% in PCM (or Computer Science/PCB for Biotechnology) and 50% in Maths",
+   "SUAT (online test) followed by a personal interview, or JEE Main All India Rank up to 3 lakh"
+  ],
+  [
+   "Most other UG and PG programmes",
+   "As per programme",
+   "SUAT, Sharda University's admission test, or accepted national tests"
+  ]
+ ],
  "admission_src": "https://admissions.sharda.ac.in/btech/?ef_id=:G:s",
- "scholarships": {"year": "2026-27", "text": "Merit scholarships of up to 100% through SUAT, continued on attendance, progress and conduct.", "url": "https://admissions.sharda.ac.in/SUAT/"},
- "hostel": {"text": "On-campus residences with AC, non-AC and apartment options.", "url": "https://www.sharda.ac.in/admissions/"},
- "fees": {"text": "Sharda lists programme fees on each programme's admission page. Ask us for the current fee for your course.", "url": "https://admissions.sharda.ac.in/btech/?ef_id=:G:s"},
+ "scholarships": {
+  "year": "2026 intake",
+  "text": "Merit scholarships of up to 100% through SUAT, continued on attendance, progress and conduct.",
+  "url": "https://admissions.sharda.ac.in/SUAT/"
+ },
+ "hostel": {
+  "text": "On-campus residences with AC, non-AC and apartment options.",
+  "url": "https://www.sharda.ac.in/admissions/"
+ },
+ "fees": {
+  "text": "Sharda lists programme fees on each programme's admission page. Ask us for the current fee for your course.",
+  "url": "https://admissions.sharda.ac.in/btech/?ef_id=:G:s"
+ },
  "checked": "2026-11-25",
  "title": "Sharda University: Admission 2027, Fees | MyUniMentor",
  "desc": "Sharda University, Greater Noida: NAAC A+, NIRF 2025 rank 87, B.Tech admission through SUAT or JEE Main, up to 100% scholarships, hostels and free guidance."
