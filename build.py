@@ -8,6 +8,8 @@ D = lambda f: json.load(open(os.path.join(ROOT, 'data', f), encoding='utf-8'))
 UNIS = sorted(D('universities.json'), key=lambda u: u['name'].lower().replace('the ', ''))
 SCHOOLS = sorted(D('schools.json'), key=lambda s: s['name'].lower().replace('the ', '', 1) if s['name'].startswith('The ') else s['name'].lower())
 SCHOOLS = sorted(D('schools.json'), key=lambda s: s['name'].lower())
+# Counts used in text: f-strings get the number, plain strings get a {TOKEN} that page() fills in
+UNI_COUNT, SCHOOL_COUNT, CITY_COUNT = len(UNIS), len(SCHOOLS), len({s['city'] for s in SCHOOLS})
 e = html.escape
 
 def slug(name):
@@ -60,7 +62,7 @@ NAV = [
         ('For universities', 'services-universities.html', 'Admission and outreach support')]),
     ('Career Summit', 'career-summit.html', None),
     ('Our network', 'network.html', [
-        ('Partner schools', 'network.html#schools', '12 schools in Dehradun and Saharanpur'),
+        ('Partner schools', 'network.html#schools', '{SCHOOL_COUNT} schools in Dehradun and Saharanpur'),
         ('Partner universities', 'network.html#universities', '{UNI_COUNT} universities across India'),
         ('Letters of recommendation', 'network.html#lors', 'What our schools say'),
         ('Testimonials', 'testimonials.html', 'Students, parents and schools')]),
@@ -157,7 +159,7 @@ META = {
 ],
 "network.html": [
 "Partner Universities & Schools | MyUniMentor",
-"12 partner schools in Dehradun and Saharanpur and {UNI_COUNT} partner universities, including UPES, Graphic Era, Chandigarh University, LPU and Tulas."
+"{SCHOOL_COUNT} partner schools in Dehradun and Saharanpur and {UNI_COUNT} partner universities, including UPES, Graphic Era, Chandigarh University, LPU and Tulas."
 ],
 "omgarg.html": [
 "Om Garg | Founder of MyUniMentor, Career Counsellor",
@@ -352,7 +354,7 @@ def page(fname, title, desc, active, body, schema=''):
 </body>
 </html>
 '''
-    open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER).replace('{UNI_COUNT}', str(len(UNIS))))))
+    open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(slim_html(clean_urls(doc.replace('{VER}', VER).replace('{UNI_COUNT}', str(len(UNIS))).replace('{SCHOOL_COUNT}', str(len(SCHOOLS))).replace('{CITY_COUNT}', str(len({s['city'] for s in SCHOOLS}))))))
 
 WEBSITE_SCHEMA = '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebSite", "@id": "https://myunimentor.in/#website", "name": "MyUniMentor", "alternateName": ["My Uni Mentor"], "url": "https://myunimentor.in/", "inLanguage": "en-IN", "publisher": {"@id": "https://myunimentor.in/#org"}}) + '</script>'
 ORG_SCHEMA = '''<script type="application/ld+json">{"@context":"https://schema.org","@type":"EducationalOrganization","@id":"https://myunimentor.in/#org","name":"MyUniMentor","alternateName":["My Uni Mentor","MyUniMentor Edtech LLP"],"description":"Career counselling and university admissions guidance for students across India, online and in person. Based in Dehradun, Uttarakhand.","disambiguatingDescription":"Indian career counselling and admissions guidance organisation at myunimentor.in, run by MyUniMentor Edtech LLP, Dehradun.","foundingDate":"2026","legalName":"MyUniMentor Edtech LLP","url":"https://myunimentor.in/","logo":"https://myunimentor.in/assets/img/logo-dark.png","slogan":"Right Guidance. Right Fit. Right University.","email":"info@myunimentor.in","telephone":"+91-7417557070","address":{"@type":"PostalAddress","addressLocality":"Dehradun","addressRegion":"Uttarakhand","postalCode":"248001","addressCountry":"IN"},"founder":{"@type":"Person","@id":"https://myunimentor.in/omgarg#person","name":"Om Garg","jobTitle":"Founder","url":"https://myunimentor.in/omgarg"},"areaServed":[{"@type":"Country","name":"India"},{"@type":"City","name":"Dehradun"},{"@type":"City","name":"Saharanpur"}],"knowsAbout":["Career counselling","Online career counselling","Psychometric career assessment","University admissions in India","Choosing a stream after Class 10","Entrance exams: JEE, NEET, CUET, CLAT","School career fairs"],"sameAs":["https://www.instagram.com/myunimentor.in","https://www.facebook.com/p/My-Uni-Mentor-61595547407499/","https://www.linkedin.com/company/myunimentor/","https://share.google/ocON7keUcOY0Q2Gak"]}</script>'''
@@ -564,7 +566,7 @@ HOME_FAQ = [
 def facts_block():
     rows = [("What we do", "Career counselling and admissions guidance for Class 11–12 students"), ("Founded", "2026, by Om Garg"),
             ("Based in", "Dehradun, Uttarakhand"), ("Reach", "Students across India, online and in person"), ("Universities", "{UNI_COUNT} partner universities across India"),
-            ("Schools", "12 partner schools in Dehradun and Saharanpur"), ("Flagship event", "School Career Guidance Summit (first edition: October 2026)"),
+            ("Schools", "{SCHOOL_COUNT} partner schools in Dehradun and Saharanpur"), ("Flagship event", "School Career Guidance Summit (first edition: October 2026)"),
             ("Next", "In 2027, we plan to expand to Rishikesh, Roorkee, Srinagar and Garhwal"), ("Contact", '+91 74175 57070, <a href="mailto:info@myunimentor.in">info@myunimentor.in</a>')]
     return '<dl class="facts">' + ''.join(f'<div data-reveal style="--d:{i % 4}"><dt>{a}</dt><dd>{b}</dd></div>' for i, (a, b) in enumerate(rows)) + '</dl>'
 
@@ -652,7 +654,7 @@ def build_home():
         </ol>
       </div>
       <div class="glass float f1"><strong data-count="{len(UNIS)}">{len(UNIS)}</strong><span>partner universities</span></div>
-      <div class="glass float f2"><strong data-count="12">12</strong><span>partner schools</span></div>
+      <div class="glass float f2"><strong data-count="{SCHOOL_COUNT}">{SCHOOL_COUNT}</strong><span>partner schools</span></div>
       <div class="glass float f3"><p><span class="tick"></span>Seminars are free for schools</p><p><span class="tick"></span>Free 1-on-1 counselling for students</p></div>
     </div>
   </div>
@@ -691,7 +693,7 @@ def build_home():
   <div class="wrap impact-grid">
     <div class="impact-row" data-reveal>
       <h2>MyUniMentor, so far</h2>
-      <dl class="stats"><div><dt>Partner schools</dt><dd data-count="12">12</dd></div><div><dt>Partner universities</dt><dd data-count="29">29</dd></div><div><dt>Cities, across Uttarakhand and Uttar Pradesh</dt><dd data-count="2">2</dd></div></dl>
+      <dl class="stats"><div><dt>Partner schools</dt><dd data-count="{SCHOOL_COUNT}">{SCHOOL_COUNT}</dd></div><div><dt>Partner universities</dt><dd data-count="{UNI_COUNT}">{UNI_COUNT}</dd></div><div><dt>Cities, across Uttarakhand and Uttar Pradesh</dt><dd data-count="{CITY_COUNT}">{CITY_COUNT}</dd></div></dl>
     </div>
     <div class="impact-row" data-reveal>
       <h2>Our founder's track record</h2>
@@ -725,7 +727,7 @@ def build_home():
 <section class="section trust">
   <div class="wrap">
     <div class="section-head row-head" data-reveal>
-      <div><h2>Trusted by 12 schools</h2><p>Career guidance delivered on campus across Dehradun and Saharanpur.</p></div>
+      <div><h2>Trusted by {SCHOOL_COUNT} schools</h2><p>Career guidance delivered on campus across Dehradun and Saharanpur.</p></div>
       <a class="btn btn-outline" href="network.html#schools">See our network</a>
     </div>
     <div class="trust-grid">
@@ -785,7 +787,7 @@ def build_network():
     <h1>Our network</h1>
     <p class="page-sub">The schools where we guide students, and the universities we bring to them. Every name here is a partner we have worked with.</p>
     <div class="jump">
-      <a href="#schools"><strong>12</strong><span>Partner schools</span></a>
+      <a href="#schools"><strong>{len(SCHOOLS)}</strong><span>Partner schools</span></a>
       <a href="#universities"><strong>{len(UNIS)}</strong><span>Partner universities</span></a>
       <a href="#testimonials"><strong>{len(TESTIMONIALS)}</strong><span>Student stories</span></a>
     </div>
@@ -839,7 +841,7 @@ def build_network():
   </div>
 </section>''' + NET_TITLE_JS
     page('network.html', 'Partner Universities & Schools | MyUniMentor',
-         'MyUniMentor partners with 12 schools in Dehradun and Saharanpur and {UNI_COUNT} universities across India, including UPES, Graphic Era, Chandigarh University, LPU and Tulas University.',
+         'MyUniMentor partners with {SCHOOL_COUNT} schools in Dehradun and Saharanpur and {UNI_COUNT} universities across India, including UPES, Graphic Era, Chandigarh University, LPU and Tulas University.',
          'Our network', body, crumbs_schema([("Home", ""), ("Our network", "network")]) + '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "CollectionPage", "url": "https://myunimentor.in/network", "name": "MyUniMentor partner schools and universities",
          "about": {"@id": "https://myunimentor.in/#org"}, "hasPart": [
              {"@type": "ItemList", "name": "Partner schools", "numberOfItems": len(SCHOOLS), "itemListElement": [{"@type": "ListItem", "position": i + 1, "item": {"@type": "School", "name": x["name"], "address": {"@type": "PostalAddress", "addressLocality": x["city"], "addressCountry": "IN"}}} for i, x in enumerate(SCHOOLS)]},
@@ -961,7 +963,7 @@ def build_services():
         [("Are seminars free for schools?", "Yes. Career guidance seminars for Class 11–12 students are free of cost for schools."),
          ("How long does the Career Summit take?", "Each school visit is completed within 2.5 hours, including stall setup."),
          ("What does the school need to provide?", "The main stage and audio-visual setup. MyUniMentor handles the universities and the programme."),
-         ("Which schools have you worked with?", 'We have worked with 12 schools in Dehradun and Saharanpur. See the full list on our <a href="network.html#schools">network page</a>.')],
+         ("Which schools have you worked with?", 'We have worked with {SCHOOL_COUNT} schools in Dehradun and Saharanpur. See the full list on our <a href="network.html#schools">network page</a>.')],
         ("Invite MyUniMentor to your school", "Career seminars are free for schools.", "Send an enquiry", "#enquire"), 'partner',
         'Free Career Guidance Seminars & Career Fairs for Schools | MyUniMentor',
         'MyUniMentor offers free career guidance seminars for Class 11–12 and the School Career Guidance Summit, an in-school career fair, for schools in Dehradun and Saharanpur.',
@@ -970,7 +972,7 @@ def build_services():
 
     service_page('services-universities.html', 'For universities', 'Admission and outreach support for universities',
         'Meet serious Class 11–12 students where they already are — inside their schools — through one partner.',
-        'Reach students through their schools', 'MyUniMentor works with 12 schools across Dehradun and Saharanpur. Partner universities meet their Class 11–12 students at the School Career Guidance Summit and through our admission-season outreach.',
+        'Reach students through their schools', 'MyUniMentor works with {SCHOOL_COUNT} schools across Dehradun and Saharanpur. Partner universities meet their Class 11–12 students at the School Career Guidance Summit and through our admission-season outreach.',
         ['A stall at the School Career Guidance Summit in our partner schools', 'Focused, school-sized fairs, so your stall gets real attention', 'Reach students across Dehradun and Saharanpur through one partner', 'Admission-season outreach support', 'Expanding to Rishikesh, Roorkee, Srinagar and Garhwal in 2027'],
         [("Enquire", "Tell us which cities and schools you want to reach."), ("Choose your participation", "Pick the schools and dates that suit your admission plans."),
          ("Meet students", "Your team meets Class 11–12 students at your stall on campus."), ("Stay in touch", "Admission-season outreach support through the cycle.")],
@@ -1320,7 +1322,7 @@ def build_llms_full():
         f = o + '.html'
         if os.path.exists(os.path.join(ROOT, f)):
             out += [f'\n\n---\n# Page: https://myunimentor.in/{"" if o == "index" else o}\n', page_text(f)]
-    open(os.path.join(ROOT, 'llms-full.txt'), 'w', encoding='utf-8').write(('\n'.join(out) + '\n').replace('{UNI_COUNT}', str(len(UNIS))))
+    open(os.path.join(ROOT, 'llms-full.txt'), 'w', encoding='utf-8').write(('\n'.join(out) + '\n').replace('{UNI_COUNT}', str(len(UNIS))).replace('{SCHOOL_COUNT}', str(len(SCHOOLS))))
 
 CC_LLMS_LINE = ('- [Free career check for Class 9–12](https://myunimentor.in/career-check): questions adapt to the student\'s stream and answers\n' if SHOW_CAREER_CHECK else '') + \
     (f"- [Career psychometric test for Class 9–12](https://myunimentor.in/psychometric-test): 25 minutes; interests (RIASEC), Big Five personality, six timed aptitude sections, situations and work values, matched to 24 career areas with Indian courses and entrance exams; ₹{PSY['price']} or free when three friends sign up\n" if SHOW_PSY else '')
