@@ -2182,3 +2182,71 @@ table.kv th { width: 34%; text-align: left; font-weight: 600; color: var(--ink);
   .table-wrap table.kv th, .table-wrap table.kv td { display: block; padding: 0; border: 0; width: auto; font-size: .92rem; }
   .table-wrap table.kv td::before, .table-wrap table.kv th::before { display: none !important; }
 }
+/* University pages: photo hero, stats, section tabs, cards */
+.uni-top { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 3rem; align-items: center; }
+.uni-page-hero h1 { font-size: clamp(2.2rem, 1.4rem + 3vw, 3.6rem); }
+.uni-main .uni-hero { margin-top: 0; margin-bottom: 1.2rem; }
+.uni-main .page-sub { max-width: 34rem; }
+.uni-main .course-facts { grid-template-columns: repeat(2, 1fr); max-width: 34rem; margin-top: 1.6rem; }
+.uni-actions { display: flex; flex-wrap: wrap; gap: .7rem; align-items: center; }
+.uni-actions .save-btn { margin-top: 0; padding: .95rem 1.1rem; }
+.uni-photo { margin: 0; position: relative; z-index: 1; border-radius: 28px; overflow: hidden; aspect-ratio: 4 / 3.4; box-shadow: 0 40px 80px -40px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.12); transform: rotate(1.2deg); }
+.uni-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.uni-photo figcaption { position: absolute; left: 1rem; bottom: 1rem; right: 1rem; padding: .55rem .85rem; border-radius: 12px; background: rgba(6,22,41,.72); backdrop-filter: blur(6px); color: #fff; font-size: .88rem; font-weight: 600; width: fit-content; }
+.uni-photo-empty { background: #fff var(--dots); background-size: 18px 18px; display: grid; place-content: center; justify-items: center; text-align: center; padding: 2rem; gap: .9rem; }
+.uni-logo-big { width: min(78%, 300px); aspect-ratio: 1.6; display: grid; place-items: center; }
+.uni-logo-big img { width: 100%; height: 100%; object-fit: contain; }
+.uni-photo-empty p { margin: 0; color: var(--ink); font-weight: 600; max-width: 22rem; }
+.uni-photo-empty .uni-photo-tag { margin-top: .4rem; padding: .35rem .8rem; border-radius: 99px; background: var(--night); color: var(--cyan-hi); font-size: .82rem; }
+.uni-tabs { position: sticky; top: var(--hdr-h, 78px); z-index: 30; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.uni-tabs .wrap { display: flex; gap: .3rem; overflow-x: auto; scrollbar-width: none; padding-block: .55rem; align-items: center; }
+.uni-tabs .wrap::-webkit-scrollbar { display: none; }
+.uni-tabs a { flex: none; padding: .5rem .85rem; border-radius: 99px; color: var(--ink-2); font-weight: 600; font-size: .93rem; text-decoration: none; }
+.uni-tabs a:hover, .uni-tabs a:focus-visible { background: var(--sky); color: var(--ink); }
+.uni-tabs .uni-tab-cta { margin-left: auto; background: var(--night); color: #fff; }
+.uni-tabs .uni-tab-cta:hover { background: var(--ink); color: #fff; }
+.uni-body [id], #faq { scroll-margin-top: 9rem; }
+.uni-body.section { padding-top: 2.6rem; }
+.uni-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .8rem; margin: 0 0 2.4rem; }
+.uni-stats div { background: var(--card, #fff); border: 1px solid var(--line); border-radius: 20px; padding: 1.1rem 1.2rem 1rem; position: relative; overflow: hidden; }
+.uni-stats div::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--cyan); }
+.uni-stats strong { display: block; white-space: nowrap; font: 800 clamp(1.45rem, 1.1rem + .9vw, 1.9rem)/1.1 var(--f-display); color: var(--ink); letter-spacing: -.02em; }
+.uni-stats span { display: block; margin-top: .35rem; color: var(--ink-2); font-size: .88rem; line-height: 1.35; }
+.meter { display: block; height: 6px; width: 80px; margin-top: .35rem; border-radius: 9px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; background: linear-gradient(90deg, var(--teal), var(--cyan)); border-radius: inherit; }
+.uni-cards { display: grid; gap: 1rem; margin: 2.6rem 0 0; }
+.uni-card { display: grid; grid-template-columns: 52px 1fr; gap: 1.1rem; background: var(--card, #fff); border: 1px solid var(--line); border-radius: 22px; padding: 1.4rem 1.5rem; }
+.uni-card h2 { margin: .3rem 0 .5rem; font-size: 1.3rem; }
+.uni-card p { margin: 0 0 .5rem; }
+.uni-card .src { margin: 0; }
+.uni-ico { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; background: var(--sky); color: var(--teal); }
+.uni-gallery { margin-top: 2.6rem; }
+.uni-gal { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; }
+.uni-gal img { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 18px; display: block; }
+.uni-help { margin-top: 2.6rem; background: var(--night); color: #DCEAF3; border-radius: 28px; padding: 2rem 2rem 2.2rem; background-image: radial-gradient(circle at 100% 0, rgba(17,189,222,.28), transparent 55%); }
+.uni-help h2 { color: #fff; margin-top: 0; }
+.uni-help ol { list-style: none; counter-reset: s; padding: 0; margin: 1.2rem 0 1.6rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.uni-help li { counter-increment: s; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 1rem 1.1rem; }
+.uni-help li::before { content: counter(s); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--cyan); color: var(--night); font-weight: 800; margin-bottom: .6rem; }
+.uni-help li strong { display: block; color: #fff; margin-bottom: .25rem; }
+.uni-help li span { font-size: .93rem; line-height: 1.45; }
+.uni-help .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+.article .uni-help .btn { text-decoration: none; }
+.article .uni-help .btn-wa { color: #06321A; }
+.uni-help + .src { margin-top: 1.2rem; }
+.uni-help .btn:not(.btn-wa) { background: var(--cyan); color: var(--night); border-color: var(--cyan); }
+@media (max-width: 900px) {
+  .uni-top { grid-template-columns: 1fr; gap: 2rem; }
+  .uni-photo { transform: none; aspect-ratio: 16 / 10; }
+  .uni-top > figure.uni-photo { order: -1; }
+  .uni-photo-empty { aspect-ratio: auto; padding: 1.4rem; }
+  .uni-logo-big { width: min(60%, 220px); }
+  .uni-help ol { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .uni-main .course-facts { grid-template-columns: 1fr 1fr; }
+  .uni-card { grid-template-columns: 1fr; gap: .6rem; padding: 1.2rem; }
+  .uni-help { padding: 1.5rem 1.2rem; border-radius: 22px; }
+  .uni-stats { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: no-preference) { html:has(.uni-tabs) { scroll-behavior: smooth; } }

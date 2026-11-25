@@ -744,7 +744,7 @@ def build_home():
          'MyUniMentor offers free 1-on-1 career counselling for Class 11–12 students, free career seminars for schools in Dehradun and Saharanpur, and the School Career Guidance Summit with {UNI_COUNT} partner universities.',
          'Home', body, ORG_SCHEMA + WEBSITE_SCHEMA + faq_schema)
 STATE = {'Ambala': 'Haryana', 'Chandigarh': 'Chandigarh', 'Dehradun': 'Uttarakhand', 'Greater Noida': 'Uttar Pradesh', 'Gurugram': 'Haryana', 'Landran': 'Punjab',
-         'Mohali': 'Punjab', 'Panipat': 'Haryana', 'Pune': 'Maharashtra', 'Phagwara': 'Punjab', 'Roorkee': 'Uttarakhand', 'Solan': 'Himachal Pradesh',
+         'Mohali': 'Punjab', 'Panipat': 'Haryana', 'Pune': 'Maharashtra', 'Phagwara': 'Punjab', 'Rajpura': 'Punjab', 'Roorkee': 'Uttarakhand', 'Solan': 'Himachal Pradesh',
          'Sonipat': 'Haryana', 'Saharanpur': 'Uttar Pradesh', 'Haridwar': 'Uttarakhand'}
 def place(city): return f"{city}, {STATE[city]}" if city in STATE and STATE[city] != city else city
 
@@ -1825,6 +1825,16 @@ def uni_form(u, d):
   <p class="form-status" role="status" aria-live="polite"></p>
 </form>'''
 
+ICO_FEE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12M6 9h12M13 20 6 13h3a4 4 0 0 0 0-9"/></svg>'
+ICO_SCH = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 10-10-5-10 5 10 5 10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>'
+ICO_HOS = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>'
+UNI_PHOTO_SIZE = {}
+for _p in glob.glob('assets/img/unis/*.webp'):
+    try:
+        from PIL import Image as _I
+        UNI_PHOTO_SIZE[_p] = _I.open(_p).size
+    except Exception: pass
+
 def build_unis():
     by_name = {slug(x['name']): x for x in UNIS}
     for s_, d in UNI_PAGES.items():
@@ -1832,21 +1842,21 @@ def build_unis():
         city = place(u['city']); b = d['basics']; nirf = d.get('nirf') or {}; naac = d.get('naac')
         ranks = nirf.get('ranks', [])
         rank_txt = ', '.join(f"{r} in {c}" for c, r in ranks)
-        if nirf.get('band'): rank_txt = (rank_txt + '; ' if rank_txt else '') + f"{nirf['band'][1]} band in {nirf['band'][0]}"
+        bands = nirf.get('bands') or ([nirf['band']] if nirf.get('band') else [])
+        if bands: rank_txt = (rank_txt + '; ' if rank_txt else '') + ', '.join(f"{bd[1]} band in {bd[0]}" for bd in bands)
         naac_txt = (f"Grade {naac['grade']}" + (f" ({naac['score']})" if naac.get('score') else '') + (f", awarded {naac['year']}" if naac.get('year') else '')) if naac else None
-        top = [('Founded', b['founded'].split(' (')[0])] + ([('NAAC', naac['grade'])] if naac else []) \
+        top = ([('Founded', b['founded'].split(' (')[0])] if b.get('founded') else []) + ([('NAAC', naac['grade'])] if naac else []) \
             + ([(f"NIRF {nirf['year']}", f"#{ranks[0][1]} {ranks[0][0]}")] if ranks else []) \
             + [('Campuses', u['campuses'].replace(', Uttarakhand', '')) if u.get('campuses') else ('Campus', u['city'])]
-        for extra in [('Type', 'Deemed university' if 'Deemed' in b['type'] else 'Private university'), ('UGC', 'Recognised')]:
+        for extra in [('Type', 'Deemed university' if 'Deemed' in b['type'] else 'Private university'), ('UGC', 'Recognised'), ('Admission', '2027 open')]:
             if len(top) < 4: top.insert(-1, extra)
         facts = ''.join(f'<div><dt>{k}</dt><dd>{e(str(v))}</dd></div>' for k, v in top)
         glance = [('Type', b['type']), ('Recognition', b['ugc'])] + ([('NAAC accreditation', naac_txt)] if naac_txt else []) \
-            + ([(f"NIRF {nirf['year']} rank", rank_txt)] if rank_txt else []) + [('Campus', b['campus']), ('Also', b['other']),
-            ('Official website', f'<a href="{d["official"]}" target="_blank" rel="noopener">{e(d["official"].split("//")[1])}</a>')]
-        glance_html = '<div class="table-wrap"><table class="kv"><tbody>' + ''.join(f'<tr><th scope="row">{k}</th><td>{v if k == "Official website" else e(v)}</td></tr>' for k, v in glance) + '</tbody></table></div>'
+            + ([(f"NIRF {nirf['year']} rank", rank_txt)] if rank_txt else []) + [('Campus', b['campus']), ('Also', b['other'])]
+        glance_html = '<div class="table-wrap"><table class="kv"><tbody>' + ''.join(f'<tr><th scope="row">{k}</th><td>{e(v)}</td></tr>' for k, v in glance) + '</tbody></table></div>'
         pl = d.get('placements')
         if pl:
-            rows = ''.join(f'<tr><td>{e(r[0])}</td><td>{r[1]:,}</td><td>{r[2]:,}</td><td><strong>{lakh(r[3])}</strong></td></tr>' for r in pl['rows'])
+            rows = ''.join(f'<tr><td>{e(r[0])}</td><td>{r[1]:,}</td><td>{r[2]:,}<span class="meter" aria-hidden="true"><i style="width:{round(100*r[2]/r[1]) if r[1] else 0}%"></i></span></td><td><strong>{lakh(r[3])}</strong></td></tr>' for r in pl['rows'])
             place_html = (f'<p>These are the figures {e(name)} itself reported to the Government of India for the NIRF rankings, for students who graduated in {pl["batch"]}. '
                           f'The median is the middle salary: half of the placed students earned more than this and half earned less.</p>'
                           f'<div class="table-wrap"><table><thead><tr><th>Programme level</th><th>Graduated</th><th>Placed</th><th>Median salary per year</th></tr></thead><tbody>{rows}</tbody></table></div>'
@@ -1858,19 +1868,21 @@ def build_unis():
             med = None
         adm_rows = ''.join(f'<tr><td><strong>{e(p_)}</strong></td><td>{e(el)}</td><td>{e(r)}</td></tr>' for p_, el, r in d['admission'])
         adm_html = (f'<div class="table-wrap"><table><thead><tr><th>Programme</th><th>Eligibility</th><th>How you get in</th></tr></thead><tbody>{adm_rows}</tbody></table></div>'
-                    f'<p class="src">Source: <a href="{d["admission_src"]}" target="_blank" rel="noopener">{e(short)} admissions</a>. Cut-offs and dates for 2027 can change; check them before you apply.</p>')
+                    f'<p class="src">Source: {e(short)} admission rules. Cut-offs and dates for 2027 can change; check them before you apply.</p>')
+        def card(key, label, title, icon):
+            return f'<div class="uni-card" id="{key}"><span class="uni-ico" aria-hidden="true">{icon}</span><div><h2>{title}</h2>{sec(key, label)}</div></div>'
         def sec(key, label):
             x = d.get(key)
-            if not x: return ''
+            if not x: return f'<p>{e(short)} has not published {label} for 2027 that we could check yet. <a href="#enquire">Ask us</a> and we will find out for you.</p>'
             yr = f' ({e(x["year"])})' if x.get('year') and key != 'scholarships' else ''
-            return f'<p>{e(x["text"])}</p><p class="src">Source: <a href="{x["url"]}" target="_blank" rel="noopener">{e(short)} {label}</a>{yr}.</p>'
+            return f'<p>{e(x["text"])}</p><p class="src">Source: {e(short)} {label}{yr}.</p>'
         checked = nice_date(d['checked'])
         wa = uni_wa(name)
         others = [x for x in UNIS if slug(x['name']) in UNI_PAGES and slug(x['name']) != s_]
         others.sort(key=lambda x: (x['region'] != u['region'], x['name']))
         other_links = ''.join(f'<li><a href="{slug(x["name"])}.html">{e(x["name"])}</a></li>' for x in others[:5])
         faqs = [(f"How do I get admission to {name} in 2027?", f"{e(d['admission'][0][0])}: {e(d['admission'][0][2])}. Eligibility: {e(d['admission'][0][1])}. MyUniMentor gives free admission guidance: <a href=\"#enquire\">send an enquiry</a> or WhatsApp +91 74175 57070.")]
-        if ranks: faqs.append((f"What is the NIRF ranking of {name}?", f"In NIRF {nirf['year']}, published by the Ministry of Education, {e(name)} was ranked {e(rank_txt)}."))
+        if rank_txt: faqs.append((f"What is the NIRF ranking of {name}?", f"In NIRF {nirf['year']}, published by the Ministry of Education, {e(name)} was ranked {e(rank_txt)}."))
         if naac: faqs.append((f"Is {name} NAAC accredited?", f"Yes. {e(name)} is accredited by NAAC with {e(naac_txt)}."))
         if med: faqs.append((f"What is the average package at {name}?", f"Universities report the median salary to NIRF. For the {pl['batch']} batch, {e(name)} reported a median of {lakh(med[3])} a year for {e(med[0].split(' (')[0])} graduates; {med[2]:,} of {med[1]:,} graduates were placed."))
         if d.get('fees'): faqs.append((f"What are the fees at {name}?", e(d['fees']['text'])))
@@ -1878,20 +1890,58 @@ def build_unis():
         if d.get('hostel'): faqs.append((f"Does {name} have hostels?", e(d['hostel']['text'])))
         faqs.append((f"Is MyUniMentor's admission help for {name} free?", f"Yes. {e(name)} is a MyUniMentor partner university, and our admission guidance is free for students: choosing the right course, checking eligibility and scholarships, and applying."))
         faq_html, faq_schema = faq_block(faqs, f"{short}: common questions")
-        hero_extra = (f'<div class="uni-hero">{logo("universities", u, "logo logo-tile uni-logo")}<p class="uni-badge">MyUniMentor partner university · Free admission guidance</p></div>'
+        faq_html = faq_html.replace('<section class="section', '<section id="faq" class="section', 1)
+        photos = sorted(glob.glob(f'assets/img/unis/{s_}-[0-9].webp'))
+        def pic(p, i, cls, sizes):
+            sm = p.replace('.webp', '-sm.webp'); w, h = UNI_PHOTO_SIZE.get(p, (1200, 800))
+            src = f' srcset="{sm} 640w, {p} 1200w" sizes="{sizes}"' if os.path.exists(sm) else ''
+            lazy = 'fetchpriority="high"' if i == 0 else 'loading="lazy"'
+            return f'<img class="{cls}" src="{p}"{src} width="{w}" height="{h}" alt="{e(name)} campus, photo {i + 1}" {lazy} decoding="async">'
+        if photos:
+            side = f'<figure class="uni-photo">{pic(photos[0], 0, "", "(max-width: 900px) 100vw, 560px")}<figcaption>{e(b["campus"])}</figcaption></figure>'
+        else:
+            side = (f'<div class="uni-photo uni-photo-empty">{logo("universities", u, "logo uni-logo-big")}'
+                    f'<p>{e(b["campus"])}</p><p class="uni-photo-tag">MyUniMentor partner university</p></div>')
+        gallery = ('<section class="uni-gallery" id="campus" aria-label="Campus photos"><h2>Campus photos</h2><div class="uni-gal">'
+                   + ''.join(pic(p, i + 1, '', '(max-width: 700px) 100vw, 380px') for i, p in enumerate(photos[1:]))
+                   + f'</div><p class="src">Photos: {e(short)}.</p></section>') if len(photos) > 1 else ''
+        hl = []
+        if med: hl.append((lakh(med[3]), f"median salary, {med[0].split(' (')[0]} ({pl['batch']})"))
+        if med: hl.append((f"{round(100 * med[2] / med[1])}%", f"of {med[1]:,} {med[0].split(' (')[0]} graduates placed"))
+        if ranks: hl.append((f"#{ranks[0][1]}", f"NIRF {nirf['year']}, {ranks[0][0]}"))
+        elif bands: hl.append((bands[0][1], f"NIRF {nirf['year']} band, {bands[0][0]}"))
+        if naac: hl.append((naac['grade'], 'NAAC grade'))
+        if len(ranks) > 1 and len(hl) < 4: hl.append((f"#{ranks[1][1]}", f"NIRF {nirf['year']}, {ranks[1][0]}"))
+        if b.get('founded') and len(hl) < 4: hl.append((b['founded'][:4], 'founded'))
+        hl_html = ('<div class="uni-stats">' + ''.join(f'<div><strong>{e(v)}</strong><span>{e(k)}</span></div>' for v, k in hl[:4]) + '</div>') if hl else ''
+        tabs = [('overview', 'Overview'), ('placements', 'Placements'), ('admission', 'Admission'), ('fees', 'Fees'), ('scholarships', 'Scholarships'), ('hostel', 'Hostels')] \
+            + ([('campus', 'Photos')] if gallery else []) + [('faq', 'FAQs')]
+        tabs_html = '<nav class="uni-tabs" aria-label="On this page"><div class="wrap">' + ''.join(f'<a href="#{i}">{t}</a>' for i, t in tabs) + '<a class="uni-tab-cta" href="#enquire">Enquire</a></div></nav>'
+        hero_extra = (f'<div class="uni-hero">{logo("universities", u, "logo logo-tile uni-logo") if photos else ""}<p class="uni-badge">MyUniMentor partner university · Free admission guidance</p></div>'
                       f'<dl class="course-facts">{facts}</dl>'
                       f'<div class="hero-actions uni-actions"><a href="#enquire" class="btn btn-cyan btn-lg">Enquire for admission</a><a href="{wa}" class="btn btn-outline-light btn-lg" target="_blank" rel="noopener">WhatsApp us</a></div>')
         body = page_hero(name if u.get('campuses') else f"{name}, {u['city']}", f"Admission 2027, courses, fees, placements and scholarships, from {e(short)}'s own website and NIRF data. Checked {checked}.", "Universities", hero_extra).replace(
+            '<section class="page-hero"', '<section class="page-hero uni-page-hero"').replace('<div class="wrap">\n    <nav class="crumbs"', '<div class="wrap uni-top"><div class="uni-main">\n    <nav class="crumbs"', 1).replace(
+            hero_extra + '\n  </div>', hero_extra + f'</div>{side}\n  </div>', 1).replace(
             '<a href="index.html">Home</a><span aria-hidden="true">/</span><span>Universities</span>', '<a href="index.html">Home</a><span aria-hidden="true">/</span><a href="network.html#universities">Partner universities</a><span aria-hidden="true">/</span><span>' + e(short) + '</span>') + f'''
-<section class="section article-section"><div class="wrap art-grid">
+{tabs_html}
+<section class="section article-section uni-body"><div class="wrap art-grid">
   <article class="article">
-    <h2>{e(short)} at a glance</h2>{glance_html}
-    <h2>Placements at {e(short)}</h2>{place_html}
-    <h2>Courses and admission 2027</h2>{adm_html}
-    <h2>Fees</h2>{sec('fees', 'fee details')}
-    <h2>Scholarships</h2>{sec('scholarships', 'scholarships')}
-    <h2>Hostels</h2>{sec('hostel', 'hostel details')}
-    <div class="callout"><strong>How MyUniMentor helps</strong><p>{e(name)} is a MyUniMentor partner university. Our admission guidance is free: we help you pick the right course, check your eligibility and scholarship, compare it with other options, and apply. <a href="#enquire">Send an enquiry</a> or <a href="{wa}" target="_blank" rel="noopener">WhatsApp us</a>.</p></div>
+    {hl_html}
+    <h2 id="overview">{e(short)} at a glance</h2>{glance_html}
+    <h2 id="placements">Placements at {e(short)}</h2>{place_html}
+    <h2 id="admission">Courses and admission 2027</h2>{adm_html}
+    <div class="uni-cards">
+    {card('fees', 'fee details', 'Fees', ICO_FEE)}
+    {card('scholarships', 'scholarships', 'Scholarships', ICO_SCH)}
+    {card('hostel', 'hostel details', 'Hostels', ICO_HOS)}
+    </div>
+    {gallery}
+    <section class="uni-help" aria-label="How MyUniMentor helps"><h2>How MyUniMentor helps, for free</h2>
+      <ol><li><strong>Pick the right course</strong><span>We match {e(short)}'s programmes to your marks, interests and budget.</span></li>
+      <li><strong>Check eligibility and scholarship</strong><span>We confirm the cut-off, the entrance route and the scholarship you can get.</span></li>
+      <li><strong>Apply with confidence</strong><span>We help with the form, documents and dates, and compare {e(short)} with your other options.</span></li></ol>
+      <div class="hero-actions"><a href="#enquire" class="btn btn-lg">Send an enquiry</a><a href="{wa}" class="btn btn-wa btn-lg" target="_blank" rel="noopener">WhatsApp us</a></div></section>
     <p class="src">Every figure on this page comes from {e(short)}'s official website or the data it submitted to NIRF (Ministry of Education), checked on {checked}. Fees and rules change each year, so confirm them with the university before paying.</p>
   </article>
   <aside class="art-aside">
@@ -1908,7 +1958,8 @@ def build_unis():
                   "alternateName": [short] if short != name else [], "url": d['official'], "sameAs": [d['official']],
                   "logo": f"https://myunimentor.in/assets/logos/universities/{s_}.webp",
                   "address": {"@type": "PostalAddress", "addressLocality": u['city'], "addressRegion": STATE.get(u['city'], u['region']), "addressCountry": "IN"},
-                  "foundingDate": re.match(r'\d{4}', b['founded']).group(0)}
+                  **({"foundingDate": re.match(r'\d{4}', b['founded']).group(0)} if b.get('founded') else {}),
+                  **({"image": [f"https://myunimentor.in/{p}" for p in photos]} if photos else {})}
         page_ld = {"@context": "https://schema.org", "@type": "WebPage", "@id": f"https://myunimentor.in/{s_}", "name": d['title'].replace(' | MyUniMentor', ''), "description": d['desc'],
                    "about": {"@id": f"https://myunimentor.in/{s_}#university"}, "publisher": {"@id": "https://myunimentor.in/#org"}, "dateModified": d['checked'], "inLanguage": "en-IN"}
         page(f"{s_}.html", d['title'], d['desc'], 'Our network', body,

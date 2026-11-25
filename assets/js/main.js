@@ -366,7 +366,7 @@ function autoplay(el, tick, ms = 3800) {
     try { localStorage.setItem('mum-saved', JSON.stringify(s.slice(-60))); } catch (x) {}
     paint();
   });
-  paint(); hero.appendChild(b);
+  paint(); (hero.querySelector('.uni-actions') || hero).appendChild(b);
 })();
 
 /* Header: show "My account" once someone has logged in on this device */

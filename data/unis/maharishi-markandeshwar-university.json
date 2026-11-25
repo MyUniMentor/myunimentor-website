@@ -1,0 +1,18 @@
+{
+ "slug": "maharishi-markandeshwar-university", "short": "MM(DU)", "official": "https://www.mmumullana.org",
+ "basics": {"founded": null, "type": "Deemed to be University under Section 3 of the UGC Act, 1956 (Maharishi Markandeshwar Trust, since 1993)", "ugc": "Deemed university under Section 3 of the UGC Act, 1956",
+   "campus": "Ambala–Yamunanagar Highway, Mullana, Ambala (Haryana)",
+   "other": "Medical (MBBS), dental, nursing, physiotherapy, pharmacy, engineering, law, management and hotel management. Approved by AICTE, Bar Council of India, Pharmacy Council of India and Indian Nursing Council"},
+ "nirf": {"year": 2025, "ranks": [["University", 85], ["Medical", 33]]},
+ "naac": {"grade": "A++", "year": null, "score": "3.53 out of 4, valid until 20 December 2026"}, "placements": null,
+ "admission": [["B.Tech", "Class 12 with English, Physics and Maths; MM(DU) cut-off 60%", "Merit on CUET or JEE Main scores or Class 12 marks, then counselling"],
+   ["MBBS", "As per NEET rules", "NEET 2026 through MCC deemed-university counselling (mcc.nic.in)"],
+   ["BBA, BCA, B.Pharm, BPT, B.Sc Nursing, integrated law", "Class 12 with 40–50% depending on programme and category", "Merit-based admission and counselling"]],
+ "admission_src": "https://www.mmumullana.org/wp-content/uploads/2026/04/MM(DU)%20Information%20Booklet%20(2026-27).pdf",
+ "scholarships": {"year": "2026-27", "text": "Merit-based scholarships as per MM(DU) policy, continued on attendance, results and conduct.", "url": "https://www.mmumullana.org/international-students/international-students-faqs/"},
+ "hostel": {"text": "Hostel places for more than 7,000 students on campus. For MBBS (2025-26), a twin-sharing AC hostel with mess cost ₹2,50,000 a year.", "url": "https://mmimsr.mmumullana.org/downloads/Information-for-MBBS-2025-26.pdf", "year": "2025-26"},
+ "fees": {"text": "The application fee for 2026-27 is ₹1,200. Course fees are listed programme-wise; ask us for the current fee for your course.", "url": "https://www.mmumullana.org/wp-content/uploads/2026/04/MM(DU)%20Information%20Booklet%20(2026-27).pdf", "year": "2026-27"},
+ "checked": "2026-11-25",
+ "title": "MM University Mullana: Admission 2027, Fees | MyUniMentor",
+ "desc": "Maharishi Markandeshwar (Deemed to be University), Mullana: NAAC A++, NIRF 2025 university rank 85, medical rank 33, B.Tech and MBBS admission, hostels."
+}

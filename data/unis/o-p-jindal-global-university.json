@@ -1,0 +1,16 @@
+{
+ "slug": "o-p-jindal-global-university", "short": "JGU", "official": "https://jgu.edu.in",
+ "basics": {"founded": "2009", "type": "Non-profit Institution of Eminence Deemed to be University, established by the Government of Haryana", "ugc": "Recognised by the UGC; Institution of Eminence (2020)",
+   "campus": "Fully residential campus in Sonipat, Haryana (Delhi NCR)",
+   "other": "12 schools: law, business, international affairs, public policy, liberal arts, journalism, design and architecture, banking and finance, environment, psychology, languages and public health. No management, donation or NRI quota"},
+ "nirf": null, "naac": null, "placements": null,
+ "admission": [["5-year B.A./B.B.A./B.Com LL.B. (Hons.)", "Class 12 in any stream", "Merit in LSAT—India only"],
+   ["BBA (Hons.), B.Com and other UG programmes", "Class 12 in any stream", "Three rounds: Class 10 and 12 marks with a supplemental application, an entrance score (JSAT 50% or more, CUET or UGAT 60 percentile, SAT 1100 or ACT 27), then a faculty interview"]],
+ "admission_src": "https://jgu.edu.in/view-all-requirements",
+ "scholarships": {"year": "2026", "text": "Merit-cum-means scholarships that waive tuition, based on family income, Class 12 marks, the entrance score and the interview. They are limited and given first-come, first-served.", "url": "https://jgu.edu.in/jsgp/admissions/bsc-ba-economic-hons-1"},
+ "hostel": {"text": "JGU is a fully residential campus, so students live on campus.", "url": "https://admissions.jgu.edu.in/"},
+ "fees": {"text": "Tuition for the JGBS Immersive BBA (2026 intake) is ₹5,00,000 a year, with ₹1,25,000 paid to confirm the seat and a 10% yearly revision. Fees differ by programme; ask us for yours.", "url": "https://jgu.edu.in/opjgublog/jgbs-immersive-bba/", "year": "2026 intake"},
+ "checked": "2026-11-25",
+ "title": "O.P. Jindal Global University: Admission 2027 | MyUniMentor",
+ "desc": "O.P. Jindal Global University, Sonipat: law admission through LSAT—India, BBA and other UG through JSAT, CUET or SAT, merit-cum-means scholarships, fees."
+}

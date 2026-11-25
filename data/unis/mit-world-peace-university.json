@@ -1,0 +1,17 @@
+{
+ "slug": "mit-world-peace-university", "short": "MIT-WPU", "official": "https://mitwpu.edu.in",
+ "basics": {"founded": null, "type": "Private university (Dr. Vishwanath Karad MIT World Peace University)", "ugc": "UGC-recognised state private university; B.Tech programmes approved by AICTE",
+   "campus": "Kothrud, Pune (Maharashtra)",
+   "other": "Engineering, management, design, law, liberal arts, pharmacy, sciences and more; also a B.Tech after Class 10 (3-year diploma + 3-year degree)"},
+ "nirf": {"year": 2025, "ranks": [], "bands": [["University", "151–200"], ["Engineering", "101–150"]]},
+ "naac": null, "placements": null,
+ "admission": [["B.Tech (2026-27)", "50% aggregate in Class 12 with English, and 50% in PCM (or Physics, Maths and a vocational subject; PCB for Bioengineering)", "JEE Main 2026, MHT-CET 2026 or PERA-CET 2026 score, plus a 500-word Statement of Purpose"],
+   ["B.Tech after Class 10", "60% in Class 10", "MIT-WPU CET and a personal interaction"]],
+ "admission_src": "https://mitwpu.edu.in/uploads/events/press/FY_BTech-ADMISSION_RULE_BOOK_2026-27.pdf",
+ "scholarships": {"year": "2026-27", "text": "Merit scholarships, including the 100% Dr. Vishwanath Karad Scholarship, awarded on JEE Main, MHT-CET or MIT-WPU CET scores and valid for the whole programme. They are given on a first-come basis, so apply early.", "url": "https://mitwpu.edu.in/programme/btech-computer-science-and-engineering"},
+ "hostel": null,
+ "fees": {"text": "MIT-WPU lists the fee for each programme on its programme page. Ask us for the current fee for your course.", "url": "https://mitwpu.edu.in/programme/btech-computer-science-and-engineering"},
+ "checked": "2026-11-25",
+ "title": "MIT-WPU Pune: Admission 2027, B.Tech | MyUniMentor",
+ "desc": "MIT World Peace University, Pune: NIRF 2025 engineering 101–150, B.Tech admission through JEE Main, MHT-CET or PERA-CET, merit scholarships and free guidance."
+}

@@ -1,0 +1,17 @@
+{
+ "slug": "amity-university", "short": "Amity Mohali", "official": "https://mohali.amity.edu",
+ "basics": {"founded": null, "type": "Private university (Amity University Punjab), the eleventh university set up by the not-for-profit Amity Foundation", "ugc": "UGC-approved",
+   "campus": "40-acre campus in Mohali, about 10 minutes from Chandigarh International Airport",
+   "other": "90+ undergraduate and postgraduate programmes, plus doctoral programmes; law programmes approved by the Bar Council of India"},
+ "nirf": null, "naac": {"grade": "A", "year": null}, "placements": null,
+ "admission": [["B.Arch", "Class 12 with 50% overall and 50% in PCM", "Valid NATA score of the current year"],
+   ["BA (Hons) Economics", "Class 12 with 60%, and 70% in Maths or Economics", "Amity application and selection process"],
+   ["Other UG programmes", "Class 12; minimum marks differ by programme (often 50–60%)", "Amity application and selection process"]],
+ "admission_src": "https://mohali.amity.edu/programs-eligibility.aspx",
+ "scholarships": {"year": "2026", "text": "Merit scholarships for Class 12 (2025 or 2026) students: 100% for 95% and above and 50% for 90–94.99% from CBSE or ISC; 30% for state-board students with 90% and above. Sports and defence scholarships are also offered. Scholarships are limited and given first come, first served.", "url": "https://www.amity.edu/scholarships/"},
+ "hostel": {"text": "Hostel rooms are allotted on request; details come with the admission letter.", "url": "https://amity.edu/pdf/Admission-Prospectus-2026.pdf"},
+ "fees": {"text": "Amity sends the fees for all semesters in each student's admission letter. Ask us for the current fee for your course.", "url": "https://amity.edu/pdf/Admission-Prospectus-2026.pdf"},
+ "checked": "2026-11-25",
+ "title": "Amity University Mohali: Admission 2027 | MyUniMentor",
+ "desc": "Amity University Punjab, Mohali: admission 2027 eligibility, NATA and Class 12 routes, 100% and 50% merit scholarships, hostels and free admission guidance."
+}

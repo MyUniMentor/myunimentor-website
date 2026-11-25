@@ -1,0 +1,17 @@
+{
+ "slug": "chitkara-university", "short": "Chitkara", "official": "https://www.chitkara.edu.in",
+ "basics": {"founded": null, "type": "Private university set up by the Punjab State Legislature under the Chitkara University Act", "ugc": "Recognised under Sections 2(f), 22(1) and 12(B) of the UGC Act, 1956",
+   "campus": "Rajpura, Punjab (near Chandigarh)",
+   "other": "NAAC A+ (CGPA 3.26) awarded in 2021 for five years, up to September 2026"},
+ "nirf": {"year": 2025, "ranks": [["University", 78], ["Pharmacy", 16], ["Engineering", 89]]},
+ "naac": null, "placements": null,
+ "admission": [["B.E. (all branches)", "Class 12 with 60% aggregate or 60% in PCM (option 1), or 70% (option 2)", "Option 1: JEE Main 2026 All India Rank. Option 2: Class 12 marks. A valid JEE Main score is asked of all B.E. applicants."],
+   ["B.E. CSE with AI & Future Technologies", "Class 12 with 50% in any stream", "Personal interview; Pearson and SAT scores are also accepted"]],
+ "admission_src": "https://www.chitkara.edu.in/engineering/cse/",
+ "scholarships": null,
+ "hostel": {"text": "On-campus hostels with furnished rooms, high-speed internet and 24/7 security.", "url": "https://www.chitkara.edu.in/engineering/electronics-communication-engineering"},
+ "fees": {"text": "Chitkara lists semester-wise fees on each programme page. Ask us for the current fee for your course.", "url": "https://www.chitkara.edu.in/engineering/cse/"},
+ "checked": "2026-11-25",
+ "title": "Chitkara University Punjab: Admission 2027 | MyUniMentor",
+ "desc": "Chitkara University, Rajpura (Punjab): NIRF 2025 rank 78, pharmacy rank 16, B.E. admission through JEE Main or Class 12 marks, hostels and free guidance."
+}
