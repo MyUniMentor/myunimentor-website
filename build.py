@@ -1630,7 +1630,7 @@ def build_404():
 EXAMS = D('exams.json')
 CITIES = D('cities.json')
 TESTIMONIALS = D('testimonials.json')
-CHECKED = '21 November 2026'
+CHECKED = '25 November 2026'
 
 def build_exam_calendar():
     from datetime import date
@@ -1652,12 +1652,14 @@ def build_exam_calendar():
         ("When are the design entrance exams (NID DAT, NIFT, UCEED) for 2027?", "NID DAT 2027 Prelims is on 20 December 2026 (last date to apply: 30 November 2026). NIFT 2027 is on 10 January 2027 (tentative; applications extended to 24 November 2026) and UCEED 2027 is on 17 January 2027. See our <a href=\"bdes-after-12th.html\">B.Des guide</a>."),
         ("When is the CHRIST University entrance test for 2027?", "The CHRIST University online entrance test for UG 2027 admissions is on 5 December 2026. The last date to apply for entrance-test programmes is 25 November 2026 (5 pm), and skill assessment and interviews run from 11 to 13 December 2026."),
         ("When is IPMAT 2027?", "IPMAT Indore 2027 is on 24 April 2027. Registration dates are awaited. It is the entrance exam for the five-year integrated management programme at IIM Indore."),
+        ("When are NMIMS NPAT and Symbiosis SET 2027?", "Neither has been announced yet. For reference, NPAT 2026 was held from 10 February to 31 May 2026, and Symbiosis SET 2026 on 2 and 10 May 2026 (registration closed on 15 April). We will add the 2027 dates as soon as NMIMS and Symbiosis publish them."),
+        ("When are JIPMAT and the IISER Aptitude Test 2027?", "Neither has been announced yet. JIPMAT 2026 (for the integrated management programmes at IIM Bodh Gaya and IIM Jammu) and the IISER Aptitude Test 2026 were both held on 7 June 2026, so both are expected around June 2027."),
         ("When do the CBSE and CISCE board exams 2027 start?", 'CBSE Class 10 and 12 exams start on 16 February 2027; Class 12 ends on 9 April. ISC (Class 12) runs from 9 February to 8 April 2027, and ICSE (Class 10) from 15 February to 31 March 2027. See the full <a href="cbse-class-12-date-sheet-2027.html">CBSE Class 12</a>, <a href="cbse-class-10-date-sheet-2027.html">CBSE Class 10</a>, <a href="isc-date-sheet-2027.html">ISC</a> and <a href="icse-date-sheet-2027.html">ICSE</a> date sheets.'),
         ("Which entrance exams can Commerce and Humanities students take?", "CUET UG (for central and many other universities), CLAT and AILET (law), IPMAT and JIPMAT (integrated management), and NID DAT, NIFT and UCEED (design) are all open to Commerce and Humanities students. JEE and NEET need Science subjects."),
         ("Can PCB students take JEE, or PCM students take NEET?", "B.Tech admissions through JEE generally need Physics, Chemistry and Maths in Class 12, so PCB students usually focus on NEET, CUET and other exams. NEET needs Biology, so PCM students are not eligible. PCMB students can take both."),
         ("How often is this exam calendar updated?", f"We check every date against the official websites regularly. This calendar was last checked on {CHECKED}. Always confirm on the official website before you apply."),
         ("Which exam should I take?", 'It depends on your stream and the course you want. Book free 1-on-1 counselling and a counsellor will map out your exam plan with you.')], "Exam questions students ask")
-    body = page_hero("Entrance exam calendar 2027", f"Key dates for JEE, NEET, CUET, CLAT, NID, NIFT, UCEED and IPMAT, in one place. Last checked on {CHECKED}. Always confirm on the official website before you apply.", "Exam calendar") + f'''
+    body = page_hero("Entrance exam calendar 2027", f"Key dates for JEE, NEET, CUET, CLAT, NID, NIFT, UCEED, IPMAT, NPAT, SET and more, in one place. Last checked on {CHECKED}. Always confirm on the official website before you apply.", "Exam calendar") + f'''
 <section class="section">
   <div class="wrap">
     <h2 class="sr-only">All entrance exams by date</h2>

@@ -182,5 +182,71 @@
   "auto": [
    "pcm"
   ]
+ },
+ {
+  "exam": "NMIMS NPAT 2027",
+  "for": "UG programmes at NMIMS",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2027-02-10",
+  "label": "Feb–May 2027",
+  "status": "expected",
+  "note": "Not announced yet. NPAT 2026 was held from 10 Feb to 31 May 2026, with registration open from 28 Jan to 26 May 2026.",
+  "site": "https://npat.nmims.edu",
+  "id": "nmims-npat",
+  "auto": []
+ },
+ {
+  "exam": "Symbiosis SET / SITEEE 2027",
+  "for": "UG programmes at Symbiosis International University (SITEEE for B.Tech)",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2027-05-01",
+  "label": "Early May 2027",
+  "status": "expected",
+  "note": "Not announced yet. SET 2026 was held on 2 and 10 May 2026; registration closed on 15 April 2026.",
+  "site": "https://www.set-test.org/dates",
+  "id": "symbiosis-set",
+  "auto": []
+ },
+ {
+  "exam": "JIPMAT 2027",
+  "for": "Five-year Integrated Programme in Management at IIM Bodh Gaya and IIM Jammu",
+  "streams": [
+   "pcm",
+   "pcb",
+   "com",
+   "hum"
+  ],
+  "date": "2027-06-06",
+  "label": "June 2027",
+  "status": "expected",
+  "note": "Not announced yet. JIPMAT 2026 was held on 7 June 2026; applications were open from 16 April to 10 May 2026.",
+  "site": "https://exams.nta.nic.in/jipmat",
+  "id": "jipmat",
+  "auto": []
+ },
+ {
+  "exam": "IISER Aptitude Test (IAT) 2027",
+  "for": "BS-MS and other science programmes at the IISERs",
+  "streams": [
+   "pcm",
+   "pcb"
+  ],
+  "date": "2027-06-06",
+  "label": "June 2027",
+  "status": "expected",
+  "note": "Not announced yet. IAT 2026 was held on 7 June 2026.",
+  "site": "https://www.iiseradmission.in",
+  "id": "iiser-iat",
+  "auto": []
  }
 ]
