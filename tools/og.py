@@ -67,3 +67,23 @@ def og_image(slug, title, kicker):
         cache[slug] = key
         json.dump(dict(sorted(cache.items())), open(CACHE, 'w'), indent=1)
     return f'https://myunimentor.in/{rel}'
+
+def person_card(photo, name, role, line, out):
+    """Founder share image: the portrait on the right, name and role on the left (Google and social previews show the face)."""
+    im = background(); d = ImageDraw.Draw(im)
+    p = Image.open(os.path.join(ROOT, photo)).convert('RGB')
+    pw, ph = 420, 525
+    s = max(pw / p.width, ph / p.height); p = p.resize((round(p.width * s), round(p.height * s)), Image.LANCZOS)
+    p = p.crop(((p.width - pw) // 2, 0, (p.width - pw) // 2 + pw, ph))
+    mask = Image.new('L', (pw, ph), 0); ImageDraw.Draw(mask).rounded_rectangle((0, 0, pw, ph), radius=36, fill=255)
+    x, y = 1200 - pw - 64, (630 - ph) // 2
+    d.rounded_rectangle((x - 6, y - 6, x + pw + 6, y + ph + 6), radius=40, fill='#11BDDE')
+    im.paste(p, (x, y), mask)
+    d.text((64, 196), role, font=font('figtree-latin-600-normal', 30), fill='#6FD9EE')
+    d.text((64, 238), name, font=font('bricolage-grotesque-latin-800-normal', 96), fill='#FFFFFF')
+    f = font('figtree-latin-500-normal', 31)
+    yy = 372
+    for ln in wrap(d, line, f, 560)[:3]:
+        d.text((64, yy), ln, font=f, fill='#C9D8E4'); yy += 44
+    d.text((64, 548), 'myunimentor.in/omgarg', font=font('figtree-latin-500-normal', 27), fill='#9FB4C6')
+    im.save(os.path.join(ROOT, out), 'JPEG', quality=86, optimize=True, progressive=True)

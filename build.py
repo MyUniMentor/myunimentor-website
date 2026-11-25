@@ -294,7 +294,9 @@ def head_social(fname, title, schema):
             img = og.og_image(slug, t, og_kicker(slug))
         except Exception as ex:
             print('share images off:', ex)
+    if fname == 'omgarg.html': img = 'https://myunimentor.in/assets/img/om-garg-share.jpg'
     img = img or 'https://myunimentor.in/assets/img/og-image.jpg'
+    if fname == 'omgarg.html': return img, 'Om Garg, Founder of MyUniMentor', ''
     alt = 'MyUniMentor: Right Guidance. Right Fit. Right University.' if img.endswith('og-image.jpg') else title
     art = ''
     if '"@type": "Article"' in schema:
@@ -1150,15 +1152,17 @@ def build_profile():
               "jobTitle": "Founder", "description": "Om Garg is the founder of MyUniMentor, a career counselling and admissions guidance organisation in Dehradun, India.",
               "worksFor": {"@type": "EducationalOrganization", "name": "MyUniMentor", "url": "https://myunimentor.in/"},
               "url": "https://myunimentor.in/omgarg",
-              "image": ["https://myunimentor.in/assets/img/om-garg.jpg"] + [f"https://myunimentor.in/assets/photos/{k}.webp" for k in OM_PHOTOS[:3]],
+              "image": [{"@type": "ImageObject", "@id": "https://myunimentor.in/omgarg#photo", "url": "https://myunimentor.in/assets/img/om-garg.jpg", "contentUrl": "https://myunimentor.in/assets/img/om-garg.jpg",
+                         "width": 960, "height": 1200, "caption": "Om Garg, Founder of MyUniMentor", "creditText": "MyUniMentor", "copyrightNotice": "© MyUniMentor Edtech LLP"}]
+                       + [f"https://myunimentor.in/assets/photos/{k}.webp" for k in OM_PHOTOS[:3]],
               "homeLocation": {"@type": "Place", "name": "Dehradun, Uttarakhand, India"},
               "address": {"@type": "PostalAddress", "addressLocality": "Dehradun", "addressRegion": "Uttarakhand", "addressCountry": "IN"},
               "nationality": {"@type": "Country", "name": "India"},
               "alumniOf": [{"@type": "EducationalOrganization", "name": "Olympus High", "address": "Dehradun"}, {"@type": "CollegeOrUniversity", "name": "Sridev Suman Uttarakhand University"}],
               "hasCredential": [{"@type": "EducationalOccupationalCredential", "name": "Certification in applied AI", "recognizedBy": {"@type": "Organization", "name": x}} for x in ("Vanderbilt University", "IBM", "Lund University")],
               "knowsAbout": ["Career counselling", "University admissions in India", "Choosing a stream after Class 10", "Entrance exams (CUET, JEE, NEET, CLAT)", "Career guidance seminars"],
-              "sameAs": ["https://www.linkedin.com/in/omgarg/", "https://www.instagram.com/theomgarg", "https://www.linkedin.com/company/myunimentor/", "https://www.instagram.com/myunimentor.in/"]}
-    ld = {"@context": "https://schema.org", "@type": "ProfilePage", "url": "https://myunimentor.in/omgarg", "name": "Om Garg", "dateModified": "2026-11-21T13:30:00+05:30", "mainEntity": person}
+              "sameAs": ["https://www.linkedin.com/in/omgarg/", "https://www.instagram.com/theomgarg"]}
+    ld = {"@context": "https://schema.org", "@type": "ProfilePage", "url": "https://myunimentor.in/omgarg", "name": "Om Garg", "dateModified": "2026-11-25T15:00:00+05:30", "primaryImageOfPage": {"@id": "https://myunimentor.in/omgarg#photo"}, "mainEntity": person}
     sessions = [("9 Oct 2026", "Brownwood Public School, Saharanpur", "First MyUniMentor career seminar"), ("Oct 2026", "12 schools, Dehradun and Saharanpur", "School Career Guidance Summit, first edition")]
     sess = ''.join(f'<li data-reveal style="--d:{i}"><span class="when">{a}</span><strong>{b_}</strong><span class="what">{c}</span></li>' for i, (a, b_, c) in enumerate(sessions))
     topics = ["Choosing the right stream after Class 10", "Courses and careers after Class 12", "Entrance exams and how to plan for them", "How to choose the right university", "Sessions for parents on supporting their child's choice"]
@@ -1337,8 +1341,10 @@ def build_seo_files():
         h = hashlib.md5(txt.encode()).hexdigest()
         if known.get(u, {}).get('hash') != h: known[u] = {'hash': h, 'date': today}
     json.dump({u: known[u] for u in urls if u in known}, open(mpath, 'w'), indent=1, sort_keys=True)
-    open(os.path.join(ROOT, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-        ''.join(f'  <url><loc>https://myunimentor.in/{u}</loc>' + (f'<lastmod>{known[u]["date"]}</lastmod>' if u in known else '') + '</url>\n' for u in urls) + '</urlset>\n')
+    om_img = '<image:image><image:loc>https://myunimentor.in/assets/img/om-garg.jpg</image:loc></image:image>'
+    imgs = {'omgarg': om_img + ''.join(f'<image:image><image:loc>https://myunimentor.in/assets/photos/{k}.webp</image:loc></image:image>' for k in OM_PHOTOS[:6]), 'about': om_img}
+    open(os.path.join(ROOT, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n' +
+        ''.join(f'  <url><loc>https://myunimentor.in/{u}</loc>' + (f'<lastmod>{known[u]["date"]}</lastmod>' if u in known else '') + imgs.get(u, '') + '</url>\n' for u in urls) + '</urlset>\n')
     open(os.path.join(ROOT, 'robots.txt'), 'w').write("User-agent: *\nAllow: /\n\n# Search engines and AI assistants are welcome to read and cite this site\n" +
         ''.join(f"User-agent: {x}\nAllow: /\n" for x in AI_BOTS) + "\nSitemap: https://myunimentor.in/sitemap.xml\n# Plain-text summaries for AI: https://myunimentor.in/llms.txt and https://myunimentor.in/llms-full.txt\n")
     unis = '\n'.join((f'- [{u["name"]}](https://myunimentor.in/{slug(u["name"])})' if slug(u["name"]) in UNI_PAGES else f'- {u["name"]}') + f'{" (" + u["short"] + ")" if u.get("short") else ""}, {u["city"]}' + (': admission 2027, NIRF rank, NAAC grade, median salary, fees and scholarships from official sources' if slug(u["name"]) in UNI_PAGES else '') for u in UNIS)
