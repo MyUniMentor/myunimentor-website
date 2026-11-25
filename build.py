@@ -1904,7 +1904,7 @@ def build_unis():
             side = f'<figure class="uni-photo">{pic(photos[0], 0, "", "(max-width: 900px) 100vw, 560px")}<figcaption>{e(b["campus"])}</figcaption></figure>'
         else:
             side = (f'<div class="uni-photo uni-photo-empty">{logo("universities", u, "logo uni-logo-big")}'
-                    f'<p>{e(b["campus"])}</p><p class="uni-photo-tag">MyUniMentor partner university</p></div>')
+                    f'<p>{e(b["campus"])}</p></div>')
         gallery = ('<section class="uni-gallery" id="campus" aria-label="Campus photos"><h2>Campus photos</h2><div class="uni-gal">'
                    + ''.join(pic(p, i + 1, '', '(max-width: 700px) 100vw, 380px') for i, p in enumerate(photos[1:]))
                    + f'</div><p class="src">Photos: {e(short)}.</p></section>') if len(photos) > 1 else ''
