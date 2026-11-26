@@ -8,6 +8,8 @@ All HTML pages are generated. Never hand-edit `*.html`; edit the sources and reb
 pip install --break-system-packages rcssmin rjsmin pillow fonttools brotli
 python3 build.py          # must end with "built 29 universities, 12 schools" (numbers may grow)
 ```
+If Node is installed, the build also minifies the account, admin, test, career-check and tour scripts with terser (via `npx`); without Node they are only trimmed, which still works.
+City fields everywhere complete and correct spellings from `assets/data/cities.json` (loaded on first focus, code in `assets/js/main.js`). Add a city there if students keep typing one that is missing.
 `CLEAN_URLS` defaults to 1 (links like `/about`). Leave it that way for anything pushed to GitHub.
 
 Share images: `tools/og.py` makes a 1200×630 image per page in `assets/og/` (cached in `data/og.json`; it only redraws when a title changes). Commit both. CSS rules that only style `/account`, `/admin` and `/test` (`.acct`, `.adm`, `.psy`) are split into `assets/css/app.min.css` at build time and loaded only on those pages.
