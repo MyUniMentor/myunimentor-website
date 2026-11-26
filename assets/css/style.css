@@ -2271,3 +2271,11 @@ body:has(.psy-stage) .mbar, body:has(.cc-stage) .mbar { display: none; }
 .psy-spa-row figcaption { font-size: .8rem; font-weight: 700; color: var(--ink-2); }
 .psy-spa-row .ok { border-color: #2E9E6A; } .psy-spa-row .ok figcaption { color: #1F7A50; }
 .psy-spa-row .no { border-color: #E59A90; } .psy-spa-row .no figcaption { color: #B3402F; }
+
+/* Admin: change an access code's limit */
+.adm-lim { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; }
+.adm-lim span { white-space: nowrap; }
+.adm-max { width: 5.2rem; padding: .35rem .5rem; border: 1px solid #CFDDE7; border-radius: 10px; font: inherit; }
+.adm-step { width: 2rem; height: 2rem; border: 1px solid #CFDDE7; border-radius: 10px; background: #fff; font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.adm-step:hover { background: #F5F9FB; }
+.adm-full { display: block; margin-top: .3rem; color: #B3402F; font-weight: 600; }
