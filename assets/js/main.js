@@ -382,3 +382,47 @@ function autoplay(el, tick, ms = 3800) {
   const a = document.querySelector('.nav-account'); if (!a) return;
   try { if (localStorage.getItem('mum-acct')) a.textContent = 'My account'; } catch (e) {}
 })();
+/* City fields: no dropdown. As people type, the rest of the city name is filled in (desktop) and up to three
+   suggestions show under the field; on leaving it, a near-miss spelling is corrected, with a one-tap undo. The list loads on first focus. */
+(function () {
+  let C = null, P = null;
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
+  const low = s => s.toLowerCase().replace(/\s+/g, ' ').trim();
+  const dist = (a, b) => { const d = []; for (let i = 0; i <= a.length; i++) { d[i] = [i]; for (let j = 1; j <= b.length; j++) d[i][j] = i ? Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1), i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1] ? d[i - 2][j - 2] + 1 : 99) : j; } return d[a.length][b.length]; };
+  const starts = v => C.filter(c => low(c).startsWith(v));
+  const near = v => { const lim = v.length <= 5 ? 1 : 2; let best = [], min = 9; C.forEach(c => { const n = dist(v, low(c)); if (n < min) { min = n; best = [c]; } else if (n === min) best.push(c); }); return min <= lim ? best : []; };
+  const title = s => s.replace(/\s+/g, ' ').trim().toLowerCase().replace(/(^|[\s-])\S/g, m => m.toUpperCase());
+  const isCity = el => el && el.matches && el.matches('input[name="city"]');
+  function hint(el, html) {
+    let h = el.parentNode.querySelector('.city-hint');
+    if (!html) { if (h) h.remove(); return; }
+    if (!h) { h = document.createElement('span'); h.className = 'city-hint'; h.setAttribute('aria-live', 'polite'); el.insertAdjacentElement('afterend', h); }
+    h.innerHTML = html;
+    h.querySelectorAll('button').forEach(b => { b.addEventListener('mousedown', e => e.preventDefault()); b.addEventListener('click', () => { el.value = b.dataset.v; if (b.dataset.keep) el.dataset.cityKeep = b.dataset.v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); hint(el); }); });
+  }
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const chips = list => list.map(c => `<button type="button" data-v="${esc(c)}">${esc(c)}</button>`).join('');
+  document.addEventListener('focusin', e => { if (isCity(e.target) && !P) P = fetch('/assets/data/cities.json').then(r => r.json()).then(a => { C = a; }).catch(() => { C = []; }); });
+  document.addEventListener('input', e => {
+    const el = e.target; if (!isCity(el) || !C || !e.inputType) return;
+    delete el.dataset.cityKeep;
+    const v = low(el.value); if (v.length < 2) return hint(el);
+    if (C.some(c => low(c) === v)) return hint(el);
+    let s = starts(v);
+    if (e.inputType === 'insertText' && !coarse && v.length >= 3 && s.length && el.selectionStart === el.value.length) {
+      const typed = el.value.length; el.value = s[0]; el.setSelectionRange(typed, s[0].length);
+    }
+    if (!s.length && v.length >= 4) s = near(v);
+    hint(el, s.length ? 'Did you mean ' + chips(s.slice(0, 3)) : '');
+  });
+  document.addEventListener('focusout', e => {
+    const el = e.target; if (!isCity(el) || !C) return;
+    const raw = el.value.trim(), v = low(raw); if (!v || el.dataset.cityKeep === raw) return hint(el);
+    const exact = C.find(c => low(c) === v);
+    if (exact) { el.value = exact; return hint(el); }
+    const s = v.length >= 3 ? starts(v) : [], n = s.length === 1 ? s : v.length >= 4 ? near(v) : [];
+    if (n.length === 1) { el.value = n[0]; hint(el, `Changed to <b>${esc(n[0])}</b>. <button type="button" data-v="${esc(title(raw))}" data-keep="1">Keep “${esc(raw)}”</button>`); }
+    else { el.value = title(raw); hint(el, n.length ? 'Did you mean ' + chips(n.slice(0, 3)) : ''); }
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+})();

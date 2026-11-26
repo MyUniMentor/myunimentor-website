@@ -31,6 +31,7 @@ service cloud.firestore {
                     && request.resource.data.get('whatsapp', '') == resource.data.get('whatsapp', '')
                     && request.resource.data.get('ref', '') == resource.data.get('ref', ''));
       allow delete: if isAdmin();   // students and parents delete with an emailed code; the server keeps a copy in archive
+      allow create: if isAdmin();   // staff restoring an account from the Bin
     }
     match /links/{id} {
       allow read: if signedIn() && (resource.data.parentUid == request.auth.uid || resource.data.childEmail == myEmail() || isAdmin());
@@ -57,6 +58,7 @@ service cloud.firestore {
                     && getAfter(/databases/$(database)/documents/users/$(request.auth.uid)).data.whatsapp == n;
       allow get: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
       allow delete: if isAdmin();
+      allow create: if isAdmin();   // staff restoring an account or changing its number
     }
     // Psychometric test. access/{uid} is written only by the server (payment, three invites, a code) or by staff.
     match /access/{uid} {
@@ -72,11 +74,13 @@ service cloud.firestore {
                     && request.resource.data.keys().hasOnly(['uid', 'state', 'updated', 'done', 'name', 'cls', 'stream', 'code', 'top', 'topN'])
                     && request.resource.data.state is map && request.resource.data.state.size() <= 20;
       allow delete: if isAdmin();
+      allow create: if isAdmin();   // staff restoring a report from the Bin
     }
     match /codes/{id} { allow read, write: if isAdmin(); }
     match /payments/{id} { allow read: if isAdmin(); }
     match /announcements/{id} { allow read, write: if isAdmin(); }
-    match /archive/{id} { allow read, create: if isAdmin(); }
+    match /archive/{id} { allow read, create, delete: if isAdmin(); }   // the Bin: restore or delete forever
+    match /crm/{id} { allow read, write: if isAdmin(); }        // staff-only follow-ups: stage, next date, notes
     match /stats/{id} { allow read: if isAdmin(); }
     match /{document=**} { allow read, write: if false; }
   }

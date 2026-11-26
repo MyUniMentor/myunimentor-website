@@ -1532,7 +1532,7 @@ def build_admin():
     """Staff-only panel at /admin: never linked, noindex, data protected by Firestore rules (admin claim)."""
     if not (SHOW_ACCOUNTS or ACCOUNT_TEST):
         return
-    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('account', 'account.html'), ('exams', f'assets/data/exams.json?v={VER}')] + ([('test', 'test.html')] if SHOW_PSY else []))
+    links = ''.join(f'<a data-k="{k}" href="{h}"></a>' for k, h in [('account', 'account.html'), ('check', 'career-check.html'), ('exams', f'assets/data/exams.json?v={VER}')] + ([('test', 'test.html')] if SHOW_PSY else []))
     body = f'''
 <section class="acct-page"><div class="wrap">
   <h1 class="acct-h1">MyUniMentor admin</h1>
