@@ -567,8 +567,9 @@ def facts_block():
     rows = [("What we do", "Career counselling and admissions guidance for Class 11–12 students"), ("Founded", "2026, by Om Garg"),
             ("Based in", "Dehradun, Uttarakhand"), ("Reach", "Students across India, online and in person"), ("Universities", "{UNI_COUNT} partner universities across India"),
             ("Schools", "{SCHOOL_COUNT} partner schools in Dehradun and Saharanpur"), ("Flagship event", "School Career Guidance Summit (first edition: October 2026)"),
-            ("Next", "In 2027, we plan to expand to Rishikesh, Roorkee, Srinagar and Garhwal"), ("Contact", '+91 74175 57070, <a href="mailto:info@myunimentor.in">info@myunimentor.in</a>')]
-    return '<dl class="facts">' + ''.join(f'<div data-reveal style="--d:{i % 4}"><dt>{a}</dt><dd>{b}</dd></div>' for i, (a, b) in enumerate(rows)) + '</dl>'
+            ("Next", "In 2027, we plan to expand to Rishikesh, Roorkee, Srinagar and Garhwal"), ("Contact", '+91 74175 57070, <a href="mailto:info@myunimentor.in">info@myunimentor.in</a>'),
+            ("Photos and logos", '© MyUniMentor Edtech LLP. To use one, <a href="contact.html">ask us first</a>.')]
+    return '<dl class="facts">' + ''.join(f'<div data-reveal style="--d:{i % 4}"{" id=\"photos\"" if a == "Photos and logos" else ""}><dt>{a}</dt><dd>{b}</dd></div>' for i, (a, b) in enumerate(rows)) + '</dl>'
 
 def journey_section():
     stops = [("Class 10–11", "Choose your stream", "We match subjects to your strengths and interests, not to what everyone else is picking."),
@@ -1156,7 +1157,7 @@ def build_profile():
               "worksFor": {"@type": "EducationalOrganization", "name": "MyUniMentor", "url": "https://myunimentor.in/"},
               "url": "https://myunimentor.in/omgarg",
               "image": [{"@type": "ImageObject", "@id": "https://myunimentor.in/omgarg#photo", "url": "https://myunimentor.in/assets/img/om-garg.jpg", "contentUrl": "https://myunimentor.in/assets/img/om-garg.jpg",
-                         "width": 640, "height": 800, "caption": "Om Garg, Founder of MyUniMentor", "creditText": "MyUniMentor", "copyrightNotice": "© MyUniMentor Edtech LLP", "creator": {"@id": "https://myunimentor.in/#org"}, "acquireLicensePage": "https://myunimentor.in/contact"}]
+                         "width": 640, "height": 800, "caption": "Om Garg, Founder of MyUniMentor", "creditText": "MyUniMentor", "copyrightNotice": "© MyUniMentor Edtech LLP", "creator": {"@type": "Organization", "name": "MyUniMentor", "url": "https://myunimentor.in/"}, "license": "https://myunimentor.in/about#photos", "acquireLicensePage": "https://myunimentor.in/contact"}]
                        + [f"https://myunimentor.in/assets/photos/{k}.webp" for k in OM_PHOTOS[:3]],
               "homeLocation": {"@type": "Place", "name": "Dehradun, Uttarakhand, India"},
               "address": {"@type": "PostalAddress", "addressLocality": "Dehradun", "addressRegion": "Uttarakhand", "addressCountry": "IN"},
