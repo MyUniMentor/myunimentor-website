@@ -26,8 +26,11 @@ def logo(kind, item, cls='logo'):
     """Logo tile: shows the logo file if present, otherwise a clean monogram."""
     s = slug(item['name'])
     label = item.get('short') or item['name']
+    # small tiles get a 128px copy; the big logo on a university page keeps the full file
+    small = (f' srcset="assets/logos/{kind}/{s}-128.webp 128w, assets/logos/{kind}/{s}.webp 200w" sizes="64px"'
+             if 'uni-logo-big' not in cls and 'logo-card' not in cls and os.path.exists(os.path.join(ROOT, f'assets/logos/{kind}/{s}-128.webp')) else '')
     return (f'<span class="{cls}" data-initials="{e(initials(item.get("short") or item["name"]))}">'
-            f'<img src="assets/logos/{kind}/{s}.webp" alt="{e(item["name"])} logo" width="200" height="200" loading="lazy" decoding="async" onerror="this.remove()"></span>')
+            f'<img src="assets/logos/{kind}/{s}.webp"{small} alt="{e(item["name"])} logo" width="200" height="200" loading="lazy" decoding="async" onerror="this.remove()"></span>')
 
 # Sun rays from the logo, fanning out from the bottom centre (used as hero texture)
 def rays_svg(n=23, color='%2311BDDE'):
@@ -91,7 +94,7 @@ def header(active):
             items.append(f'<li><a href="{href}"{cur}>{e(label)}</a></li>')
     return f'''<header class="site-header">
   <div class="wrap header-inner">
-    <a href="index.html" class="brand" aria-label="MyUniMentor home"><img src="assets/img/logo-horizontal-dark.webp" alt="MyUniMentor" width="191" height="52"></a>
+    <a href="index.html" class="brand" aria-label="MyUniMentor home"><img src="assets/img/logo-horizontal-dark-382.webp" srcset="assets/img/logo-horizontal-dark-191.webp 1x, assets/img/logo-horizontal-dark-382.webp 2x, assets/img/logo-horizontal-dark-573.webp 3x" alt="MyUniMentor" width="191" height="52"></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav id="nav" class="nav" aria-label="Main">
       <ul class="nav-list">{''.join(items)}</ul>
@@ -103,7 +106,7 @@ def header(active):
 FOOTER = '''<footer class="site-footer">
   <div class="wrap footer-grid">
     <div>
-      <img src="assets/img/logo-horizontal-light.webp" alt="MyUniMentor" width="191" height="52" loading="lazy" decoding="async">
+      <img src="assets/img/logo-horizontal-light-382.webp" srcset="assets/img/logo-horizontal-light-191.webp 1x, assets/img/logo-horizontal-light-382.webp 2x, assets/img/logo-horizontal-light-573.webp 3x" alt="MyUniMentor" width="191" height="52" loading="lazy" decoding="async">
       <p class="foot-tag">Right Guidance. Right Fit. Right University.</p>
       <p class="foot-legal">MyUniMentor Edtech LLP<br>Dehradun, Uttarakhand 248001</p>
     </div>
@@ -231,6 +234,17 @@ open(os.path.join(ROOT, 'assets/js/ds.min.js'), 'w').write(rjsmin.jsmin(_sjs))
 open(os.path.join(ROOT, 'assets/js/tour.min.js'), 'w').write('\n'.join(l.strip() for l in _tjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
 # rjsmin squeezes spaces inside template strings, so check.js is only trimmed
 open(os.path.join(ROOT, 'assets/js/check.min.js'), 'w').write('\n'.join(l.strip() for l in _cjs.splitlines() if l.strip() and not (l.strip().startswith('/*') and l.strip().endswith('*/'))))
+def terse(names):
+    """Fully minify the page-only scripts with terser when Node is available (npx caches it). Without Node the trimmed files stay as they are."""
+    import subprocess, shutil
+    if not shutil.which('npx'): return
+    for name, module in names:   # one at a time: parallel npx installs trip over each other
+        path = os.path.join(ROOT, f'assets/js/{name}.min.js')
+        try:
+            r = subprocess.run(['npx', '-y', '-q', 'terser@5', path, '-c', 'passes=2', '-m'] + (['--module'] if module else []) + ['-o', path], capture_output=True, timeout=180)
+            if r.returncode: print('terser skipped for', name, r.stderr.decode()[:200])
+        except Exception as e: print('terser skipped for', name, e)
+terse([('psy', True), ('account', True), ('admin', True), ('check', False), ('tour', False)])
 def split_css(css):
     """Rules used only by /account, /admin and /test go to app.css, so public pages load less CSS before showing anything."""
     APP = re.compile(r'(\.acct|\.adm|#adm|\.psy)')
@@ -268,6 +282,7 @@ def clean_urls(h):
     h = re.sub(r'(href)="([a-z0-9-]+)\.html(\?[^"#]*)?(#[^"]*)?"', lambda m: f'{m.group(1)}="/{m.group(2)}{m.group(3) or ""}{m.group(4) or ""}"', h)
     h = re.sub(r'((?:src|href|data-src|srcset|content)=")assets/', r'\1/assets/', h)
     h = re.sub(r'(href=")(favicon\.(?:ico|svg)|site\.webmanifest)"', r'\1/\2"', h)
+    h = re.sub(r'((?:data-)?srcset=")([^"]*)"', lambda m: m.group(1) + re.sub(r'(^|, )assets/', r'\1/assets/', m.group(2)) + '"', h)
     return h
 
 def slim_html(h):
@@ -507,7 +522,7 @@ def delegates_band():
     x = PHOTOS['delegates-2026']
     return f'''<section class="section delegates" id="delegates">
   <div class="wrap"><div class="section-head" data-reveal><h2>The people behind the stalls</h2><p>Admissions teams from our partner universities with the MyUniMentor team, at the wrap-up of the 2026 edition at Saigrace Academy International, Dehradun.</p></div></div>
-  <figure class="delegates-fig" data-reveal><button class="photo photo-wide" data-src="assets/photos/delegates-2026.webp" data-cap="{e(x['alt'])}" aria-label="View photo: {e(x['alt'])}"><img src="assets/photos/delegates-2026.webp" alt="{e(x['alt'])}" width="{x['w']}" height="{x['h']}" draggable="false" loading="lazy"></button>
+  <figure class="delegates-fig" data-reveal><button class="photo photo-wide" data-src="assets/photos/delegates-2026.webp" data-cap="{e(x['alt'])}" aria-label="View photo: {e(x['alt'])}"><img src="assets/photos/delegates-2026.webp" srcset="assets/photos/delegates-2026-sm.webp 720w, assets/photos/delegates-2026.webp {x['w']}w" sizes="(max-width: 1240px) 94vw, 1160px" alt="{e(x['alt'])}" width="{x['w']}" height="{x['h']}" draggable="false" loading="lazy"></button>
   <figcaption class="wrap"><strong>{len(UNIS)} partner universities</strong><span>Every stall at the Summit was run by a university's own admissions team.</span><a href="network.html#universities">See all partner universities</a></figcaption></figure>
 </section>'''
 
@@ -937,7 +952,15 @@ def service_page(fname, crumb, title, sub, head, intro, bullets, step_items, faq
 </div></section>
 {faq_html}
 {cta(*cta_args)}'''
-    page(fname, meta_title, meta_desc, 'Services', body, crumbs_schema([("Home", ""), ("Services", fname.replace('.html', '')), (crumb, fname.replace('.html', ''))]) + faq_schema)
+    slug = fname.replace('.html', '')
+    aud, kind, free = {'services-students': ('Class 11–12 students and their parents', 'Career counselling', 'Free first one-on-one counselling session for Class 11–12 students'),
+                       'services-schools': ('Schools with Class 11–12 students', 'School career guidance seminars and in-school career fairs', 'Career guidance seminars are free for schools'),
+                       'services-universities': ('Universities and colleges', 'University outreach and admission support', None)}[slug]
+    svc = {"@context": "https://schema.org", "@type": "Service", "@id": f"https://myunimentor.in/{slug}#service", "name": title, "serviceType": kind, "description": re.sub('<[^>]+>', '', sub),
+           "url": f"https://myunimentor.in/{slug}", "provider": {"@id": "https://myunimentor.in/#org"}, "areaServed": {"@type": "Country", "name": "India"},
+           "audience": {"@type": "Audience", "audienceType": aud}, "availableChannel": {"@type": "ServiceChannel", "servicePhone": "+91-7417557070", "serviceUrl": f"https://myunimentor.in/{slug}#enquire"}}
+    if free: svc["offers"] = {"@type": "Offer", "price": "0", "priceCurrency": "INR", "description": free}
+    page(fname, meta_title, meta_desc, 'Services', body, crumbs_schema([("Home", ""), ("Services", slug), (crumb, slug)]) + faq_schema + '<script type="application/ld+json">' + json.dumps(svc, ensure_ascii=False) + '</script>')
 
 def build_services():
     service_page('services-students.html', 'For students & parents', 'Career counselling for students and parents',
@@ -1509,7 +1532,10 @@ def build_career_check():
 {f'<script>window.MUM_ACCOUNT={{"firebase":{json.dumps(ACCOUNT["firebase"])}}};</script>' if SHOW_ACCOUNTS else ''}
 <script src="assets/js/check.min.js?v={VER}" defer></script>'''
     page('career-check.html', 'Free Career Check', 'Free career check', 'Resources', body,
-         crumbs_schema([("Home", ""), ("Career check", "career-check")]) + faq_schema)
+         crumbs_schema([("Home", ""), ("Career check", "career-check")]) + faq_schema + '<script type="application/ld+json">' + json.dumps({"@context": "https://schema.org", "@type": "WebApplication",
+         "name": "MyUniMentor Career Check", "url": "https://myunimentor.in/career-check", "applicationCategory": "EducationalApplication", "operatingSystem": "Any web browser",
+         "description": "A free career check for Class 9–12 students in India: 10 quick questions that match interests and strengths to course areas.", "inLanguage": "en-IN",
+         "isAccessibleForFree": True, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "INR"}, "provider": {"@id": "https://myunimentor.in/#org"}}, ensure_ascii=False) + '</script>')
 
 def build_account():
     public = [{k: x.get(k) for k in ('id', 'exam', 'for', 'date', 'label', 'status', 'note', 'site', 'streams', 'auto', 'deadline', 'deadline_label') if x.get(k) is not None} for x in EXAMS]

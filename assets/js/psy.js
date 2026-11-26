@@ -3,6 +3,7 @@
    Sources: interest profiles of occupations from O*NET OnLine (U.S. Department of Labor, CC BY 4.0);
    personality items from the IPIP (public domain: Mini-IPIP, Donnellan et al. 2006, plus five IPIP-50 items);
    aptitude, situation and interest items written by MyUniMentor. */
+if (window.top !== window.self) { try { window.top.location = location.href; } catch (e) {} document.documentElement.style.display = 'none'; }   // never inside someone else's frame (clickjacking)
 const ROOT = document.getElementById('psy');
 const CFG = window.MUM_ACCOUNT || {}, TEST = window.MUM_TEST || {};
 const FB_VER = '12.11.0';

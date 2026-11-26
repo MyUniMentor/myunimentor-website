@@ -1,5 +1,6 @@
 /* MyUniMentor accounts: email-code login, profile, dashboard, family link, counselling requests.
    Loaded only on /account. Firebase is imported here, never on public pages. */
+if (window.top !== window.self) { try { window.top.location = location.href; } catch (e) {} document.documentElement.style.display = 'none'; }   // never inside someone else's frame (clickjacking)
 const ROOT = document.getElementById('acct');
 const CFG = window.MUM_ACCOUNT || {};
 const FB_VER = '12.11.0';

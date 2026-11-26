@@ -1,5 +1,6 @@
 /* MyUniMentor admin panel (/admin). Only accounts in the ADMINS list (admin claim) can read anything; Firestore rules enforce it.
    Loaded only on /admin. Nothing is ever deleted outright: profiles, test reports, test unlocks and drafts go to the Bin first. */
+if (window.top !== window.self) { try { window.top.location = location.href; } catch (e) {} document.documentElement.style.display = 'none'; }   // never inside someone else's frame (clickjacking)
 const ROOT = document.getElementById('adm');
 const CFG = window.MUM_ACCOUNT || {};
 const FB_VER = '12.11.0';
