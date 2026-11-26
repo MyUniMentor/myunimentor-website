@@ -527,6 +527,80 @@ POSTS = [
   ("What Class 12 marks do I need for NITs through JEE Main?", "At least 75% in Class 12 (65% for SC and ST candidates), or a place in the top 20 percentile of your board, according to NTA. JoSAA publishes each board's top 20 percentile cut-off marks every year.")],
  "related": ["cbse-class-12-date-sheet-2027", "isc-date-sheet-2027", "jee-main-2027-session-1-guide"]
 },
+{
+ "slug": "nid-nift-uceed-2027-compared",
+ "date": "2026-11-26",
+ "tag": "Entrance exams",
+ "title": "NID vs NIFT vs UCEED 2027: Design Exams | MyUniMentor",
+ "h1": "NID DAT, NIFT and UCEED 2027: which design exam is right for you?",
+ "desc": "NID DAT, NIFT and UCEED 2027 compared: eligibility, test format, marking and dates from the official sites, so Class 12 students can pick their design exams.",
+ "read": 6,
+ "lede": "If you want to study design after Class 12, three national exams matter most: NID DAT, the NIFT Entrance Exam and UCEED. They test different things, lead to different institutes and run on different calendars. Here is how they compare, based on the official websites checked on 26 November 2026.",
+ "body": """
+<h2>The three exams in one line each</h2>
+<ul>
+<li><strong>NID DAT</strong> is the Design Aptitude Test for the 5.5-year Master of Design (Integrated Pathway)/B.Des at the National Institute of Design, with campuses in Ahmedabad, Gandhinagar and Bengaluru.</li>
+<li><strong>NIFT Entrance Exam</strong> (NIFTEE) is conducted by the National Testing Agency for B.Des and B.F.Tech at NIFT's 20 campuses.</li>
+<li><strong>UCEED</strong> is conducted by IIT Bombay for B.Des at IIT Bombay, IIT Delhi, IIT Guwahati, IIT Hyderabad, IIT Indore, IIT Roorkee and IIITDM Jabalpur.</li>
+</ul>
+<p>All three are open to students from any stream for B.Des, so a Commerce or Humanities student can sit for them as well as a Science student. Some programmes add subject conditions, which we note below.</p>
+
+<h2>Key facts side by side</h2>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th>UCEED 2027</th><th>NIFT 2027 (B.Des)</th><th>NID DAT 2027</th></tr></thead>
+<tbody>
+<tr><td><strong>Exam date</strong></td><td>17 January 2027, 9 am to 12 noon</td><td>10 January 2027 (tentative in the NTA exam calendar)</td><td>Check <a href="https://admissions.nid.edu" target="_blank" rel="noopener">admissions.nid.edu</a></td></tr>
+<tr><td><strong>Applications</strong></td><td>Closed on 10 November 2026</td><td>Late fee until 29 November 2026; corrections 30 November to 2 December</td><td>Last date 30 November 2026, 11:59 pm</td></tr>
+<tr><td><strong>Age rule</strong></td><td>Born on or after 1 October 2002 (1 October 1997 for SC/ST/PwD)</td><td>Under 24 on 1 August of the admission year (5 years' relaxation for SC/ST/PwD)</td><td>See the NID admissions handbook</td></tr>
+<tr><td><strong>Class 12 rule</strong></td><td>First appeared in Class 12 in 2026 or 2027; all streams</td><td>Passed Class 12 (10+2) or an equivalent; all streams</td><td>See the NID admissions handbook</td></tr>
+<tr><td><strong>Stages</strong></td><td>One exam (Part A and Part B)</td><td>GAT and CAT, then a Situation Test for those shortlisted</td><td>Prelims, then Mains</td></tr>
+</tbody></table></div>
+
+<h2>UCEED 2027: one paper, two parts</h2>
+<p>According to <a href="https://www.uceed.iitb.ac.in/2027/" target="_blank" rel="noopener">uceed.iitb.ac.in</a>, UCEED is a single three-hour paper of 300 marks, in English only. Both parts are compulsory.</p>
+<ul>
+<li><strong>Part A (200 marks, 2 hours, on computer):</strong> 14 numerical answer questions with no negative marking, 15 multiple-select questions with partial marks and negative marks for wrong answers, and 28 multiple-choice questions (+3 for a correct answer, –0.71 for a wrong one).</li>
+<li><strong>Part B (100 marks, 1 hour, on paper):</strong> two questions, one on sketching and one on design aptitude, 50 marks each, answered in a booklet.</li>
+</ul>
+<p>You can take UCEED at most twice, in consecutive years, and your score is valid for one year. Registration for 2027 has closed. Results are due on 6 March 2027 and the B.Des application to the participating institutes on 15 March 2027. Not every institute accepts every stream: some of them require Physics, Chemistry and Mathematics in Class 12, so read the eligibility section of the UCEED 2027 information brochure before you choose institutes.</p>
+
+<h2>NIFT 2027: aptitude, creativity and a situation test</h2>
+<p>The NIFTEE 2027 information bulletin and prospectus on <a href="https://exams.nta.nic.in/niftee/" target="_blank" rel="noopener">exams.nta.nic.in/niftee</a> set out the B.Des process in three tests:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Test</th><th>What it is</th><th>Weight</th></tr></thead>
+<tbody>
+<tr><td><strong>GAT</strong> (General Ability Test)</td><td>Computer-based, 120 minutes, 100 questions: communication and English, quantitative ability, analytical and logical ability, and general knowledge</td><td>30%</td></tr>
+<tr><td><strong>CAT</strong> (Creative Ability Test)</td><td>On paper, 3 hours, testing drawing and creative thinking</td><td>50%</td></tr>
+<tr><td><strong>Situation Test</strong></td><td>For shortlisted candidates: a 3D model, a write-up and a presentation</td><td>20%</td></tr>
+</tbody></table></div>
+<p>On 10 January 2027, the B.Des GAT runs from 9 to 11 am and the CAT from 3 to 6 pm. In the GAT, a correct answer gets +1 and a wrong answer –0.25. The tests are in English and Hindi.</p>
+<p><strong>B.F.Tech is different.</strong> It needs Mathematics in Class 12, and the only test is the GAT (Section A for 30% and Section B for 70%, 9 am to 12 noon). There is no CAT or Situation Test for B.F.Tech.</p>
+<p>NTA extended the deadline in a notice dated 14 November 2026. You can still apply with a late fee until 29 November 2026. The correction window is 30 November to 2 December 2026, and NTA says there will be no further chance to correct the form after that. The exam city slip is due on 21 December 2026 and the admit card on 4 January 2027.</p>
+
+<h2>NID DAT 2027: apply by 30 November</h2>
+<p>NID invites applications only through <a href="https://admissions.nid.edu" target="_blank" rel="noopener">admissions.nid.edu</a>. The last date for the Master of Design (Integrated Pathway)/B.Des is <strong>Monday, 30 November 2026, 11:59 pm</strong>. Selection has two stages, DAT Prelims and DAT Mains. The admissions handbook on the same site has the eligibility rules, the test content and your Prelims date. Read it before you pay.</p>
+
+<div class="callout"><strong>MyUniMentor tip</strong><p>Most design aspirants should take more than one of these exams, because each one leads to a different set of institutes. If you have not applied anywhere yet, NID (until 30 November) and NIFT (late fee until 29 November) are still open this week. Then build one practice routine for all of them: a daily sketch, a timed aptitude set and a short written idea. It covers UCEED Part B, the NIFT CAT and NID's design questions at the same time.</p></div>
+
+<h2>How to choose</h2>
+<ul>
+<li><strong>Want product, interaction or communication design at an IIT?</strong> UCEED is your route. Check the stream rules for each IIT you want.</li>
+<li><strong>Interested in fashion, textiles, accessories or the business side of design?</strong> NIFT covers these. Pick B.F.Tech only if you have Maths and enjoy technology.</li>
+<li><strong>Want a broad design education at NID?</strong> Apply for DAT, and remember there are two stages to prepare for.</li>
+<li><strong>Still unsure if design is for you?</strong> Read our <a href="bdes-after-12th.html">B.Des after 12th guide</a> or try the free <a href="career-check.html">career check</a> before you commit to months of preparation.</li>
+</ul>
+
+<h2>Plan the next eight weeks</h2>
+<p>December and January are crowded: board pre-boards, practicals and these exams all overlap. Keep every date in view on our <a href="exam-calendar.html">entrance exam calendar</a>, and read our <a href="entrance-exam-deadlines-december-2026.html">deadlines guide</a> for the other exams in this period. If you want help deciding which design exams and institutes fit your portfolio and goals, <a href="contact.html">book a free counselling session</a>.</p>
+<p>Dates and rules can change. Always confirm on the official website before you apply.</p>
+""",
+ "faq": [
+  ("Can Commerce or Humanities students take UCEED, NIFT and NID DAT?", "Yes. UCEED 2027 allows students from Science, Commerce and Arts & Humanities to appear, and NIFT B.Des and NID's B.Des are open to all streams. Some IITs accept only PCM students through UCEED, and NIFT's B.F.Tech needs Mathematics."),
+  ("When are the design entrance exams for 2027?", "NIFT 2027 is on 10 January 2027 (tentative in the NTA exam calendar) and UCEED 2027 is on 17 January 2027, from 9 am to 12 noon. NID publishes the DAT Prelims date on admissions.nid.edu."),
+  ("Is there negative marking in UCEED and NIFT?", "Yes. In UCEED Part A, multiple-choice questions get +3 or –0.71 and multiple-select questions also lose marks for wrong answers, while numerical questions have no negative marking. In the NIFT GAT, a correct answer gets +1 and a wrong answer –0.25."),
+  ("Can I still apply for NIFT or NID DAT 2027?", "Yes, this week. NIFT accepts applications with a late fee until 29 November 2026, and the NID B.Des application closes on 30 November 2026 at 11:59 pm. UCEED 2027 registration closed on 10 November 2026.")],
+ "related": ["entrance-exam-deadlines-december-2026", "stream-after-class-10", "questions-to-ask-a-university"]
+},
 ]
 
 from content_boards import BOARD_POSTS
