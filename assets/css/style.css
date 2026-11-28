@@ -2448,3 +2448,6 @@ html.adm-lock { overflow: hidden; }
 
 body:has(#adm) .mbar { display: none; }
 .adm-bin-acts small { display: block; margin-top: .35rem; white-space: normal; max-width: 16rem; margin-left: auto; text-align: right; }
+/* v31: home, the two tests */
+.tests-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 760px) { .tests-grid { grid-template-columns: 1fr; } }

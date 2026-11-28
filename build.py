@@ -586,6 +586,24 @@ def facts_block():
             ("Photos and logos", '© MyUniMentor Edtech LLP. To use one, <a href="contact.html">ask us first</a>.')]
     return '<dl class="facts">' + ''.join(f'<div data-reveal style="--d:{i % 4}"{" id=\"photos\"" if a == "Photos and logos" else ""}><dt>{a}</dt><dd>{b}</dd></div>' for i, (a, b) in enumerate(rows)) + '</dl>'
 
+def tests_section():
+    """Home: the two tests, side by side, so both sit one click from the home page."""
+    return f'''<section class="section tests-band">
+  <div class="wrap">
+    <div class="section-head" data-reveal><h2>Two tests to find what fits you</h2><p>For Class 9–12 students. Both match your answers to Indian courses and entrance exams.</p></div>
+    <ul class="help-grid tests-grid">
+      <li class="help-card c-stu spot" data-reveal><span class="help-ico">{ICONS['student']}</span>
+        <h3>Free career check</h3><p>About 4 minutes. The questions change with your stream and answers.</p>
+        <ul class="ticks"><li>Free</li><li>Built around your stream</li><li>Shows the careers, courses and entrance exams that fit you</li></ul>
+        <a class="card-link" href="career-check.html">Take the free career check</a></li>
+      <li class="help-card c-sch spot" data-reveal style="--d:1"><span class="help-ico">{ICONS['tools']}</span>
+        <h3>Psychometric test</h3><p>About 25 minutes. Interests, aptitude, personality and values, with a detailed report.</p>
+        <ul class="ticks"><li>95 questions in 6 parts, plus a one-minute speed round</li><li>Matched to 24 career areas in India</li><li>₹{PSY['price']}, or free when three friends join</li></ul>
+        <a class="card-link" href="psychometric-test.html">See the psychometric test</a></li>
+    </ul>
+  </div>
+</section>'''
+
 def journey_section():
     stops = [("Class 10–11", "Choose your stream", "We match subjects to your strengths and interests, not to what everyone else is picking."),
              ("Class 11–12", "Discover courses and careers", "See what each course actually leads to: the work, the growth and the path after it."),
@@ -704,6 +722,8 @@ def build_home():
 </section>
 
 {journey_section()}
+
+{tests_section()}
 
 <section class="impact">
   <div class="wrap impact-grid">
